@@ -89,7 +89,7 @@ method digits(number)
   yield number % 10
 ```
 
-Here we use streams, which are not documented well yet. I just added the [streams page](/docs/Streams). Basically they grab any array, collection, sequence or data and pass it though the pipe in the lines below. Here we simply create a *Character* for each digit (which does the **"0" + number** thing for us). The stream combines it all back to an array of characters, which automatically matches our *String* we wanted to build (any type can be constructed by supplying the has members, no need to write any method, constructor or factory like that, as usual this is forbidden in Strict ^^).
+Here we use streams, which are not documented well yet. I just added the [streams page](/docs/For). Basically they grab any array, collection, sequence or data and pass it though the pipe in the lines below. Here we simply create a *Character* for each digit (which does the **"0" + number** thing for us). The stream combines it all back to an array of characters, which automatically matches our *String* we wanted to build (any type can be constructed by supplying the has members, no need to write any method, constructor or factory like that, as usual this is forbidden in Strict ^^).
 
 ## Iteration X
 

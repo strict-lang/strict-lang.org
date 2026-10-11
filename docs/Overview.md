@@ -3,153 +3,104 @@ id: Overview
 title: Overview
 ---
 
-A typical _Strict_ file is easy to understand and very short. Unlike other languages following the [Coding Style](CodingStyle.md) is enforced. That is why the language is called Strict, humans and machines can understand it easily, machines can generate code easily and overall it is fun to use! **Strict** is a simple, efficient, and portable programming language that is mostly working like functional programming languages. It only includes the minimum set of features needed to write meaningful, efficient, and portable programs.
+**Strict** is a simple programming language that humans can read and understand, and that computers can also understand, modify and write.
 
-# Example
+The long-term goal is NOT to create just another programming language. Strict is meant to be the foundation for a higher-level language that computers can understand and write code in. Most programming languages are designed for humans to write code, not for computers to understand it. LLMs can be trained to repeat and imitate, which is amazing to see, but they don't really understand anything. They make ridiculous mistakes on any project bigger than a handful of files. For computers to think through millions of lines of code and evaluate them in real time (seconds), Strict has to be very fast, both when executing code and when writing it.
 
-```ocaml
-has App
-has log
+Strict is written in Strict. The compiler is a set of `.strict` packages that compiles itself into a native executable. No .NET, JVM or other runtime is needed. The C# implementation that bootstrapped the language lives on the [`dotnet` branch](https://github.com/strict-lang/Strict/tree/dotnet). All source code is at [github.com/strict-lang/Strict](https://github.com/strict-lang/Strict).
+
+# A first look
+
+Every `.strict` file is one type, and the file name is the type name. Here is [`Examples/TemperatureConverter.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/TemperatureConverter.strict):
+
+```
+has celsius Number
+has logger
+ToFahrenheit Number
+	TemperatureConverter(100).ToFahrenheit is 212
+	TemperatureConverter(0).ToFahrenheit is 32
+	celsius * 9 / 5 + 32
+ToKelvin Number
+	TemperatureConverter(100).ToKelvin is 373
+	TemperatureConverter(0).ToKelvin is 273
+	celsius + 273
 Run
-  log.Write("Hello World")
+	constant boiling = TemperatureConverter(100)
+	constant freezing = TemperatureConverter(0)
+	logger.Log("100C in Fahrenheit: " + boiling.ToFahrenheit)
+	logger.Log("0C in Fahrenheit: " + freezing.ToFahrenheit)
+	logger.Log("100C in Kelvin: " + boiling.ToKelvin)
 ```
 
-The first line implements the *App* interface, which provides us with the *Run* entry point method. The next line injects the *Log* class, the member is called *log*, the parser automatically interprets this as the type *Log*, which isn't written. Normally every method starts with a test, but if a method doesn't mutate anything and doesn't return, there is nothing we can or need to test.
+* `has celsius Number` and `has logger` are **members**. `logger` has no explicit type because the name already says it is a `Logger`.
+* `ToFahrenheit Number` is a **method** that returns a `Number`. Method bodies are indented with one tab.
+* The first lines of each method are **tests**. Every method needs at least one test, written as a comparison with `is`. Tests run once when the code is compiled and are then removed.
+* The last line of a method is its return value. `return` is only needed to leave a method early.
+* `Run` is the entry point used by `NativeCompiler run` and `NativeCompiler build`.
 
-# Why?
+See [Getting Started](GettingStarted.md) to build and run this yourself.
 
-We are great fans and users of _.NET, Java, Python, Go, TypeScript_ and many more good languages. However none of them can be easily understood or written by a computer itself. The syntax for most languages nowadays are easy to learn. However the ecosystems are growing more and more complex, mastering tricks, libraries and frameworks can take many years. Instead of reinventing the wheel, _Strict_ allows you to use any framework or library you like, no matter if it is coming from the Java world, .NET, Python, Go, Javascript, etc.
-
-The main difference to any other language out there is that it can be actually understood and written by machines (unless we are just consuming external libraries). It is also the only language we know of that completely enforces tests and clean code, other languages have great concepts and frameworks and many people doing it correctly, but in no way is it enforced by the language itself, which leads very often to code that is not reusable, can't be understood and a messy eco system of hard to use or even broken libraries, version conflicts and many other pain points.
-
-# Strict Is
+# Strict is
 
 ## Readable
 
-_Strict_ is both readable by humans and machines. It has a simple syntax and throws away much of the boilerplate code that has to be written in other languages. The language constructs are easy to understand and code can be
-read like a good novel. In the compiler pipeline the full source code and the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) are always available to let tools go back and forth easily and quickly. Even if not in memory the .silk files of compiled packages can be read and both the AST and full source code can be reconstructed at any time with ease.
+There is no fluff: no curly brackets, semicolons, empty lines, comments, access modifiers, `static`, `null`, inheritance or exceptions. Indentation is always one tab per level. Methods are short ([13 lines at most, including the header and tests](CodingStyle.md)), so any method fits on one screen and can be understood in seconds.
 
-## Formatting
+## Strict
 
-Lower case means private, constructors don't exist like in go and are autogenerated, for factories we can simply use the **from** keyword and methods appear in the way they are called. Every method must start with at least one test, which are always running in the backrgound via the IDE (ala NCrunch, we call it SCrunch). Any slow running class will fail all tests it is involved it (tests run in less than 10ms) and thus require a Mock implementation that can be used instead of the real thing (e.g. database, file or web access, etc.)
+There is exactly one way to do things. The compiler rejects anything that doesn't follow the rules: unused members or variables, `mutable` values that never change, lines that are too long, too many methods, wrong indentation, and more. There are no warnings, only errors. See [Code Validations](CodeValidations.md) and [Coding Style](CodingStyle.md).
 
-Empty lines can't be written, they are shown by the editor as separators, whitespaces are not allowed and comments can only rarely appear in front of a method, nowhere else. Empty parenthesis are removed, almost everything is immutable and functional, writing mutable code is possible (mostly for optimizations), but highly discouraged (no automatic concurrency). Most of the formatting work is done automatically in any supported IDE or [Editor](#Editors): Visual Studio, Visual Studio Code, IntelliJ, Atom, etc.
+## Tested
 
-## Reusable
+Tests are not optional, they are part of the method. Every method starts with test lines that show how to use it. This is why the base library doubles as the documentation of the language: open [`Number.strict`](https://github.com/strict-lang/Strict/blob/master/Number.strict) or [`List.strict`](https://github.com/strict-lang/Strict/blob/master/List.strict) and you see exactly what each method does. In [VS Code](GettingStarted.md#visual-studio-code), SCrunch runs the tests of a file and of every file that uses it each time you save. See [Tests](Tests.md).
 
-The main goal of any strict package is to be as reusable as possible. The main problem with most of the code out there, especially with very low level languages is that the code is NOT reusable. If anything changes, any library is different, the PC achitecture is different, if the sun is shining or there isn't a full moon, the code breaks and it is certainly not reusable in all other domains. Code is usually rigid, fragile, we cannot take code and reuse it, etc. it is always coupling and dependencies! [Uncle Bob explains this well in this video](https://www.youtube.com/watch?v=QHnLmvDxGTY).
+## Immutable and functional
 
-How do we archive this? Strict checks ALL public code that exists at all times, if there is a package, type, method or even clever algorithm that already exists, it will refuse to compile the code again and force the code to resue the existing code instead. This means there is NO copy+pasting, you can't just take a library you like and make a 5% change to it, you can't take a type or method and just change a detail that doesn't really change the algorithm. High level policies and algorithms should not be coupled with low level crap (as Uncle Bob says in the above video at 34:20).
+Values never change. `list + element` gives a new list. `mutable` exists, but only for values that really change, like loop counters. Everything is an expression: `if` and `for` return values. A `for` loop works like a pipe in functional languages and can filter, map, sum, multiply or concatenate in a couple of lines. See [For](For.md).
 
-## Packages
+## Fast
 
-Packages are small and are very different from what you might know from big frameworks like Java, .NET or std. Strict starts out empty, it doesn't know anything, there are no classes known by default. Most of the time you use the Strict.Base package by using any base type like *Any*, *Number*, *Type*, *Iteration*, etc. but you don't have to. If you are writing a library the *App* trait is never imported or used. Simply generate a small bit of strict code to any other language and you will see only the types that were used are generated (which is a super tiny fraction). This makes the language very fast to parse and use.
+Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. 1 million loop iterations take 45 ms as a native executable (227 KB) and 245 ms on the Strict VM. `NativeCompiler` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
 
-All packages are automatically imported and used (based on build.yml settings, by default anything locally available and that can be downloaded from https://github.com/strict-lang), there is no import, include or using statement, the Editor figures this all out for you. You just type what you want to do and if there is a type already, it will be presented to you, otherwise you become the creator of a new feature (for everyone to use if you choose to publish publicly).
+## Small
 
-## Namespaces
+The base library has a few dozen types: [`Boolean`](https://github.com/strict-lang/Strict/blob/master/Boolean.strict), [`Number`](https://github.com/strict-lang/Strict/blob/master/Number.strict), [`Text`](https://github.com/strict-lang/Strict/blob/master/Text.strict), [`List`](https://github.com/strict-lang/Strict/blob/master/List.strict), [`Dictionary`](https://github.com/strict-lang/Strict/blob/master/Dictionary.strict), [`Range`](https://github.com/strict-lang/Strict/blob/master/Range.strict), [`Error`](https://github.com/strict-lang/Strict/blob/master/Error.strict), [`Logger`](https://github.com/strict-lang/Strict/blob/master/Logger.strict), [`File`](https://github.com/strict-lang/Strict/blob/master/File.strict) and a handful of traits. That is pretty much all you need to write code. See [Base Types](BaseTypes.md).
 
-Strict source files are stored in folders (directories) whose names are used as the last element of the namespace (package if it is at the root level) name. The preceding elements, if any, are made up of the parent folders’ name(s) so that the topmost parent folder adds the first element of the dotted package name, its first child adds the second element of the dotted package name, and so on, until the innermost folder, which adds the final element of the dotted package name.
+## Not general purpose
 
-## Files
+Strict is NOT a general-purpose language. If you want to build a website, a complex app, database code or a game, use external code for that. You can keep the logic in Strict and call any web API or C, C++, C#, Java or Python library. External code is a black box: computers can no longer understand it, and it doesn't follow the strict rules. See [Using APIs](UsingApis.md).
 
-Strict source files ends in the extension `.strict`. The filename is always the type name and the folder structure must always match the namespace.
+# Key design decisions
 
-Each source file is divided into one or more lines. Empty lines may not appear in Strict source files. The line separator character is always the _\n_ line-feed (utf8 character 10 - LF) character, never utf8 character 13 - Carriage Return or a combination of these two.
+1. **Immutable expression tree.** Static analysis only, no runtime state sneaks in.
+2. **Validation before execution.** Catch the trivial stuff early, let the VM handle the hard parts.
+3. **The VM is king.** Only the virtual machine or the native executable sees real values and side effects. Everything before it is compilation.
+4. **One-time tests.** Tests live where the code lives, run once, then disappear from the bytecode.
+5. **Strict rules first, then hardware speed.** The first priority is clean, strict rules with exactly one way to solve each problem. The second is performance and parallelism as close to the hardware as possible (CPU, GPU, NPU, TPU, CUDA, distributed over the network).
 
-Each source file consists of one or more lines **separated** by line-feed character (_\n_). The last line must not end with _\n_, no padding is allowed anywhere in the file.
+# Why this matters
 
-## Characters
+Only code that is actually called is ever parsed, validated, tested and executed. This approach lets you generate millions of lines of `.strict` code and immediately discard anything that isn't needed or doesn't work.
 
-Each source file’s character encoding format is **always** Unicode UTF-8 without a Byte Order Mark (BOM).  A BOM will cause the file to be rejected. These characters may **not** appear in Strict source files at all:
-1. ASCII 0 (`NUL`) through ASCII 8 (Backspace, `BS`).
-2. ASCII 11 (Vertical Tab, `VT`) through ASCII 31 (Unit Separator, `US`).
-3. ASCII 127 (Delete, `DEL`).
+* **Fast feedback.** Formatting and type errors fail instantly, long before the VM.
+* **Deterministic builds.** Immutable trees plus one canonical code style mean no drift. `NativeCompiler` even builds itself byte-identically.
+* **Lean bytecode.** By the time code reaches the VM, dead weight is already gone.
 
-The presence of an invalid Unicode UTF-8 byte sequence or an invalid Unicode code point will cause the source file to be rejected by the compiler.
+# Where to go next
 
-## Indentation
+* [Getting Started](GettingStarted.md): bootstrap the compiler, then run, test and build your first program.
+* [Types](Types.md), [Members and Variables](Variables.md), [Methods](Methods.md), [Tests](Tests.md): the building blocks.
+* [Statements and Expressions](Statements.md), [If](If.md), [For](For.md), [Lists and Dictionaries](Lists.md), [Errors](Errors.md): the language guide.
+* [Base Types](BaseTypes.md), [Architecture](Architecture.md), [Examples](Examples.md): what each source file in the repository does.
 
-Indentation is always done using tab (utf8 character 9 - Horizontal Tabulator) characters only. Thus space (utf8 character 32) may **never** appear in indentation (similar to python, only one way to indent is allowed). A single tabulator stop character is visibly shown as two space characters, thus the indenting level is two characters per level.
+# History
 
-## Comments
+[Benjamin Nitschke](https://BenjaminNitschke.com) first wanted to write his own programming language in the 1990s, after reading his favorite book, "Gödel, Escher, Bach" by Douglas R. Hofstadter, as a child. The first iteration was built in 2008–2010. It worked, but it lacked integration and was dropped in favor of Lua. The current repository started on 2020-06-16 as an experiment in editor plugins and rethinking low-level parsing, using the [old Strict SDK](https://github.com/strict-lang/sdk) as a guide. A few Delta Engine employees helped from 2020 to 2022 (see the [blog](/blog)).
 
-Strict does not allow comments at all because of the extremely simple nature of most Strict modules. Most files don’t need elaborate commenting as the code should be always self explanatory (otherwise the AI could not read it anyways). If you need to explain some behavior or internals about the code use a Readme.md in the folder.
-
-## External Code
-
-Code from the outside can be imported via _external Method(parameters)_ feature (just to interface to C, for C++ or C# or Java put it in a type matching the class name). If a namespace doesn't match use _external namespace Name_.
-
-## Statically Checked
-
-If .strict code is opened and does not show any errors, it already is compiled and will work on your machine and in production. Strong typing, lots of semantic analysis and
-testing (built into the language) ensure that code works as expected when deployed. Not only does the compiler understand whats going on through the tests in each method, it can also modify any written code to a more efficient algorithm in realtime or even figure out what you want to do and generate the code for you based on the test without you having written any execution code yet.
-
-## Concurrent
-
-The time of single core processors is at an end. Programs start to improve performance by leveraging the
-machines ability to execute work concurrently. Concurrency, however, comes with a lot of pitfalls. Strict
-takes the burdon of synchronization and shared state management of the programmer. It is written in a way that can both utilize hundereds or thousands of local threads and also distribute computation accross multiple PCs in the network or cloud if configured for that usecase. Internally it provides coroutines for easy and fast asynchronous execution.
-
-## Parallel
-
-By default all code is executed in parallel (think async/await/coroutines/tasks in other languages), but the compiler will automatically inline code and execute loops sequentially for performance reasons. However in theory all tests, all methods, all calls, all loops are executed in parallel and have to be designed that way (immutable and threadsafe), it is up to the compiler to optimize code paths (unlike other languages were parallelism is optional and hard to enforce correctly). For details see [Concurrency](/docs/Concurrency)
-
-## Composition instead of just Object Oriented
-
-Everything in _Strict_ is an object. However [static methods](<https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods>) and [inheritance](<https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)>) have purposefully been ommited. Instead objects are [composed of other objects and features](https://en.wikipedia.org/wiki/Component-based_software_engineering). Core concepts like [encapsulation](<https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)>) are still embraced by the language and normal usage and implementation of interfaces or external classes is no problem.
-
-## Functional
-
-Due to the fact that there are no static methods (or any globals), no inheritance and everything can be executed in parallel an obvious conclusion is that this could be accomplished via [purely functional programming](https://en.wikipedia.org/wiki/Purely_functional_programming). All fields are constant by default, methods usually have no side effects and are pure, but the programmer is still able to create mutable fields and methods that have side effects (e.g. void methods and especially calling external libraries). However, this is not the norm. In any case the compiler will optimize code into a more efficient code path, no matter if it sees mutable fields that can be optimized into non mutable fields, or is just optimizing calls away, precalculating parameters, optimizes tail recursion calls, makes code lock free, etc.
-
-## Usable Everywhere
-
-Strict can run in its own VM, which is what is used for testing, development and the IDE. Often you might want to dock your code to a bigger project or framework written in a JDK or .NET language and utilize many benefits there, or you want to run on a specific platform and use all tools and other languages there. Strict is flexible and can run on any x64 or ARM64 platform, plus you can generate code in C#, Java, C++ or specific platforms like Arduino or just write your own backend to [generate something you need](https://en.wikipedia.org/wiki/Domain-specific_language). Older x86 also will work, but are not in the focus for optimizations, in fact using the c backend, anything that can run c, can be used.
-
-## Easy to learn
-
-Like Python or many newer languages, _Strict_ is very easy to read and learn. It is obvious what source code does when you see it for the first time, especially as every method has tests showing how it works.
-
-However writing _Strict_ code is more painful if you don't know the rules and as the name implies the language doesn't allow unclean or hacky code by default. We heavily recommend using the Strict IDE to get started easily. _Strict_ enforces a consistent and reusable code base accross all projects, not just the commonly used packages.
-
-## Open Source
-
-_Strict_ is open source, free to use and modify, we welcome an open ecosystem. Our usecase is to make machines more intelligent, hopefully both you can benefit from the clean code and the growing ecosystem can be utilized by machines in the future to make a better world for all of us :)
-
-# Editors
-
-Strict can be written just as a text file or from an Editor like Visual Studio Code or Atom, or you can use a full IDE like Visual Studio or IntelliJ, which we would recommend for any serious user. All these tools already provide a great user experience and have huge communities, _Strict_ fits in nicely.
-
-The backend is very different from most IDEs as most professional code crafters use a wide list of tools, like having the Visual Studio 2019 IDE with lots of features and plugins enabled. Visual Studio itself has not just the normal compiling, there is Code Lens, Refactoring, Code Analysis and much more. Then you might want to have a great editing experience, hotkeys and way more refactorings, you add ReSharper, which runs everything in parallel in the background as well. And to top things of you add NCrunch, which again runs in parallel in the background and has to compile everything at realtime again every time you type in any letter. This is a great experience if you have a super fast PC and a smaller project, but the bigger the project grows the less fun this can be and you might need to scale down a little.
-
-With Strict everything is in one pipeline, the parser, compiler, SCrunch, Refactorings, Code Hints, Annotations, etc. is all coming from the same place and even adding more stuff at any point is easily possible. The main advantage is that compiled code is 100% equal to source code and can always be converted back and forth, thus we can keep everything compiled until something changes in a much easier and faster way. Our goal is to have all useful Strict libraries that are open be compiled and available all the time with any Editor (this is why Strict doesn't have any import, using or include statement, the parser knows everything there is already and fills it in, for conflicts you have to specify with of two possible types you need exactly).
-
-# Sort example
-
-```ocaml
-mutable elements Iterator(Compared)
-Sort
-  Sort(3, 2, 1) is (1, 2, 3)
-  Sort(7, 77, 111, -1, 11) is (-1, 7, 11, 77, 111)
-  for rightIndex from elements.Range()
-    for leftIndex from 0 to elements.Range().End - rightIndex
-      maybeSwap(leftIndex)
-maybeSwap(index)
-  Sort(1, 2, 3).maybeSwap(1) is (1, 2, 3)
-  Sort(3, 1).maybeSwap(0) (1, 3)
-  if elements(index) > elements(index) + 1
-    elements.Swap(index, index + 1)
-```
+In mid 2025 Benjamin picked the project up again, working alone. In 2026 the C# implementation was converted step by step into `.strict` files, until Strict could compile itself natively. The goal is still the original one: a base layer that computers can actually understand and build on. Think of the way DNA and proteins are the building blocks of life, even though day to day we don't really think about them much.
 
 # References
 
-Very good book about Structure and Interpretation of Computer Programs (great way to learn functional programming ala Lisp/Scheme or nowadays Clojure): https://web.mit.edu/alexmv/6.037/sicp.pdf
-
-Good free book about Programming in Go: https://www.golang-book.com/books/intro
-
-There are tons of resources about C++, C#, Java, JavaScript, TypeScript, you should be very comfortable in one of these language at least and preferbly worked with all of them to understand the benefits, pitfalls and issues that each one has.
-
-The best guide for Strict and Test Driven Development is the Clean Code book and video series by Uncle Bob: https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882
-
-Really great list of books for any expert code crafter: https://www.quora.com/What-are-the-must-read-books-for-software-engineers/answer/Jason-Roell
+* [Structure and Interpretation of Computer Programs](https://web.mit.edu/alexmv/6.037/sicp.pdf): a great way to learn functional programming in Lisp/Scheme.
+* [Clean Code](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882) by Uncle Bob: the best guide to the test-driven, clean style Strict enforces.
+* [Gödel, Escher, Bach](https://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach) by Douglas R. Hofstadter.

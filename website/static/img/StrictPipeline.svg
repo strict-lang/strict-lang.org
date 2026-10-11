@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#21434C"/>
+    </marker>
+  </defs>
+  <rect width="960" height="440" fill="#ffffff"/>
+  <text x="24" y="38" font-size="22" font-weight="600" fill="#21434C">How Strict code becomes a program</text>
+  <text x="24" y="62" font-size="14" fill="#4a6670">Every stage is written in Strict. NativeCompiler runs all of them.</text>
+
+  <!-- source -->
+  <rect x="24" y="160" width="150" height="90" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
+  <text x="99" y="196" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">.strict files</text>
+  <text x="99" y="218" font-size="12" fill="#21434C" text-anchor="middle">types, methods,</text>
+  <text x="99" y="234" font-size="12" fill="#21434C" text-anchor="middle">inline tests</text>
+
+  <!-- Expressions -->
+  <rect x="214" y="160" width="170" height="90" rx="10" fill="#52A0C6"/>
+  <text x="299" y="196" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Expressions</text>
+  <text x="299" y="218" font-size="12" fill="#ffffff" text-anchor="middle">tokenize, parse,</text>
+  <text x="299" y="234" font-size="12" fill="#ffffff" text-anchor="middle">infer types</text>
+
+  <!-- Bytecode -->
+  <rect x="424" y="160" width="180" height="90" rx="10" fill="#52A0C6"/>
+  <text x="514" y="196" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Bytecode</text>
+  <text x="514" y="218" font-size="12" fill="#ffffff" text-anchor="middle">fold constants, strip tests,</text>
+  <text x="514" y="234" font-size="12" fill="#ffffff" text-anchor="middle">link only used methods</text>
+
+  <!-- Validators -->
+  <rect x="214" y="300" width="170" height="70" rx="10" fill="#8CC2DD"/>
+  <text x="299" y="330" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">Validators</text>
+  <text x="299" y="352" font-size="12" fill="#21434C" text-anchor="middle">rules and limits</text>
+
+  <!-- Runtime -->
+  <rect x="664" y="90" width="270" height="76" rx="10" fill="#21434C"/>
+  <text x="799" y="122" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Runtime</text>
+  <text x="799" y="146" font-size="12" fill="#D6EAF3" text-anchor="middle">the Strict VM runs the instructions</text>
+
+  <!-- Compiler -->
+  <rect x="664" y="196" width="270" height="88" rx="10" fill="#21434C"/>
+  <text x="799" y="226" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Compiler</text>
+  <text x="799" y="248" font-size="12" fill="#D6EAF3" text-anchor="middle">MLIR + native runtime, then</text>
+  <text x="799" y="266" font-size="12" fill="#D6EAF3" text-anchor="middle">mlir-opt, mlir-translate, clang</text>
+
+  <!-- executable -->
+  <rect x="664" y="320" width="270" height="70" rx="10" fill="#EAF4F9" stroke="#21434C" stroke-width="2"/>
+  <text x="799" y="350" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">native executable</text>
+  <text x="799" y="372" font-size="12" fill="#21434C" text-anchor="middle">Windows and Linux, no runtime needed</text>
+
+  <!-- arrows -->
+  <g stroke="#21434C" stroke-width="2" fill="none">
+    <line x1="174" y1="205" x2="210" y2="205" marker-end="url(#arrow)"/>
+    <line x1="384" y1="205" x2="420" y2="205" marker-end="url(#arrow)"/>
+    <line x1="299" y1="250" x2="299" y2="296" marker-end="url(#arrow)"/>
+    <path d="M604 190 C630 190 635 128 660 128" marker-end="url(#arrow)"/>
+    <line x1="604" y1="232" x2="660" y2="236" marker-end="url(#arrow)"/>
+    <line x1="799" y1="284" x2="799" y2="316" marker-end="url(#arrow)"/>
+    <path d="M664 382 L110 382 L110 254" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- command labels -->
+  <g font-family="Consolas, Menlo, monospace" font-size="13" fill="#21434C">
+    <text x="799" y="82" text-anchor="middle">NativeCompiler run</text>
+    <text x="799" y="188" text-anchor="middle">NativeCompiler build, test</text>
+    <text x="392" y="340">NativeCompiler check</text>
+  </g>
+  <text x="128" y="412" font-size="13" fill="#4a6670">NativeCompiler.exe compiles its own .strict sources, twice gives identical bytes (fixpoint)</text>
+</svg>

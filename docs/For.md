@@ -1,213 +1,385 @@
 ---
 id: For
 title: For
-sidebar_label: For
 ---
 
-# New ideas 2022
-Basically any enum can have sub expressions, which does the pipe stuff automatically
+`for` is the only loop in Strict. It enumerates anything that can be iterated: lists, texts, numbers, ranges, dictionaries and any type with a `for` method. The syntax is closer to functional languages than to C-style loops. A `for` is an expression, and its result can filter, map, sum, multiply or concatenate values, often in two lines.
+
+A `for` loop is also the one place where `mutable` variables make sense. The compiler works hard to avoid actual mutation at runtime, so almost all code can run without side effects and in parallel. You never write threads, processes, async code or locks. Running loops in parallel, and even on the GPU when that is faster, is up to the runtime.
+
+# Normal iteration
+
+```
+has logger
+Run
+	constant someList = (1, 2, 3)
+	for someList
+		logger.Log(index + ": " + value)
+```
+
+This logs (the logger writes to the console by default):
+
+```text
+0: 1
+1: 2
+2: 3
+```
+
+You never declare a loop variable. Inside the loop body:
+
+* `value` is the current element. Any call without an instance uses `value` by default, the same way it uses the instance in a method.
+* `index` is the position, starting at 0.
+* `outer` is the `value` from outside the loop. In a method, that is the instance itself.
+
+# What can be iterated
+
+**Numbers** loop from 0 up to the number. This logs 0 to 9 in 10 lines:
+
+```
+for 10
+	logger.Log(value)
+```
+
+**Ranges** start at `Start` and stop before `ExclusiveEnd`. This logs 2, 3 and 4. Ranges can also be reversed:
+
+```
+for Range(2, 5)
+	logger.Log(value)
+```
+
+```
+Countdown Numbers
+	Counting(3).Countdown is (2, 1, 0)
+	for Range(0, number).Reverse
+		value
+```
+
+**Lists** give their elements and **texts** give their characters, see [Lists and Dictionaries](Lists.md).
+
+**Dictionaries** are lists of key and value pairs. Each element is one pair, and `value.Key` and `value.Value` are its parts:
+
+```
+for someDictionary
+	if value.Key is "Apple"
+		return value.Value
+```
+
+**The instance itself.** A `for` without an iterator enumerates `value`, which is the instance in a method. From [`Text.strict`](https://github.com/strict-lang/Strict/blob/master/Text.strict) and [`Range.strict`](https://github.com/strict-lang/Strict/blob/master/Range.strict):
+
+```
+Upper Text
+	"HeLlo".Upper is "HELLO"
+	for
+		Upper
+```
+
+```
+Sum Number
+	Range(2, 5).Sum is 2 + 3 + 4
+	Range(42, 45).Sum is 42 + 43 + 44
+	for
+		index
+```
+
+**Enums.** An enum type can be enumerated like a list of its values. Enumerating one enum value enumerates that value: a number counts up to it, and a text gives its characters.
+
+```
+for Connection
+	logger.Log(value)
+```
+
+Enumerating an enum type is not supported by the self-hosted compiler yet. Use its values directly for now, like `(Connection.Google, Connection.Microsoft)`.
+
+**Any type with a `for` method.** A type defines how it is iterated with a `for` method that returns an `Iterator`. `Range` simply returns its numbers:
+
+```
+has iterator
+has Start Number
+has ExclusiveEnd Number
+for Iterator(Number)
+	value
+```
+
+[`Math/Size.strict`](https://github.com/strict-lang/Strict/blob/master/Math/Size.strict) is multidimensional. It returns every `Vector2` position, so `for image.Size` visits every pixel of an image:
+
+```
+has Width Number with value > 0
+has Height Number with value > 0
+has iterator
+for Iterator(Vector2)
+	for Height
+		for Width
+			Vector2(index, outer.index)
+```
+
+`Size(0, 0)` or `Size(-1, 5)` are not valid, because the constraints require all dimensions to be positive.
+
+# outer
+
+`outer` is the `value` from outside the loop. In [`List.strict`](https://github.com/strict-lang/Strict/blob/master/List.strict) the loop runs over a range of positions, so `value` is a number, and `outer` is the list being reversed:
+
+```
+Reverse List
+	(1, 2, 3).Reverse is (3, 2, 1)
+	(5, 10, 5).Reverse is (5, 10, 5)
+	for Range(0, Length).Reverse
+		outer.value(index)
+```
+
+# Named loop variables
+
+The grammar also allows a name for the loop variable, which leaves `value` untouched for the outer scope:
+
+```
+for element in (1, 2, 3, 4)
+	logger.Log(element)
+```
+
+The self-hosted compiler doesn't support named loop variables yet. All code in the repository uses `value`, `index` and `outer`.
+
+# Filtering
+
+An `if` without `else` inside a loop is a filter: only the values of iterations where the condition is true end up in the result. From [`Examples/RemoveDuplicateWords.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveDuplicateWords.strict):
+
+```
+has texts
+Remove Texts
+	RemoveDuplicateWords("a", "b", "b").Remove is ("a", "b")
+	RemoveDuplicateWords("a", "b", "c").Remove is ("a", "b", "c")
+	RemoveDuplicateWords("hello", "hi", "hiiii", "hello").Remove is ("hello", "hi", "hiiii")
+	for texts
+		if texts.Index(value) is index
+			value
+```
+
+# Leaving a loop early
+
+`return` leaves the loop and the method. Here the list isn't sorted, so we have to search through it and stop when we find the element:
+
+```
+Index(other Generic) Number
+	(1, 2, 3).Index(2) is 1
+	(1, 2, 3).Index(9) is -1
+	for elements
+		if value is other
+			return index
+	-1
+```
+
+# The for result
+
+When a method ends with a `for`, the loop is its result. The value of the loop body is collected over all iterations, and how it is combined depends on the method's return type:
+
+| Return type | Result | Start value |
+|-------------|--------|-------------|
+| A list (`Numbers`, `Texts`, `List(Vector2)`, ...) | every body value becomes one element | empty list |
+| `Number` | the sum of all body values | 0 |
+| `Number` with `* value` | the product of all body values | 1 |
+| `Text` | all body values concatenated | `""` |
+| `Boolean` | `true` as soon as one iteration is true, otherwise `false` | `false` |
+
+**Lists.** The body value is mapped into a new list:
+
+```
+Doubled Numbers
+	Loops(1, 2, 3).Doubled is (2, 4, 6)
+	for numbers
+		value * 2
+```
+
+**Sums.** `Length` adds 1 for every element, `Sum` adds the elements, and `Count` adds 1 for every element that matches:
+
+```
+Length Number
+	(1, 2).Length is 2
+	for elements
+		1
+```
+
+```
+Sum Generic
+	(1, 2, 3).Sum is 6
+	for elements
+		value
+```
+
+```
+Count(searchFor Generic) Number
+	(1, 2).Count(1) is 1
+	(1, 3).Count(2) is 0
+	("Hi", "Hello", "Hi").Count("Hi") is 2
+	for elements
+		if value is searchFor
+			1
+```
+
+**Other operators.** You can start the body line with an operator instead of using the default. `+ value` gives the same sum as above, so Strict, being very picky, would replace it with the shorter version. Multiplying is different. A body line starting with `*` gives the product. From [`Examples/ReduceButGrow.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ReduceButGrow.strict):
+
 ```
 has numbers
-FirstNonConsecutive returns Number
-	test(1, 2, 3, 5, 6) is 5
-	for index from 1 to numbers.Length
-		if numbers[index] is not numbers[index - 1]
-			return numbers[index]
-	return 0
-GetSquaredTexts returns Texts
-	test(1, 2) is ("1", "4")
-	return numbers
-		to Text
-		result.Length * result.Length
-		result * 3 + 4
-		to Text
-//earlier idea:
-    number * number //Square//number * number
-		number * 3 + 4//Complexomato //test
-		to text //ToText//number to Text //not really needed, would be done automatically when saying to Texts
-Complexomato(number) returns Number
-	test(3) is 13
-	return number * 3 + 4
-Square(number) returns Number
-	test(3) is 9
-	return number * number
-ToText(number) returns Text
-	test(5) is "5"
-	return number to Text
-GetSquaredTexts returns Texts
-	test(1, 2) is ("1", "4")
-	return for number in numbers
-    number * number
-		number to Text
-
-GetSomeArticles(texts) returns Texts
-	test("a", "b") is empty
-	return for text in texts //stream/pipe
-    if text.Length > 1000 // where
-			text.Length, text // trying map
-
-//https://martinfowler.com/articles/collection-pipeline/
-//example 1
-some_articles
-  .group_by {|a| a.type}
-  .map {|pair| [pair[0], pair[1].size]}
-  .to_h
-//example 2
-some_articles
-  .filter (a) ->
-    a.words > 1000
-  .map (a) ->
-    a.words
-  .reduce (x, y) -> x + y
-(a.words for a in some_articles when a.words > 1000)
-.reduce (x
+GetMultiplicationOfNumbers Number
+	ReduceButGrow(2, 3, 4, 5).GetMultiplicationOfNumbers is 120
+	ReduceButGrow(120, 5, 40, 0).GetMultiplicationOfNumbers is 0
+	ReduceButGrow(2, 2, 2, 2).GetMultiplicationOfNumbers is 16
+	for numbers
+		* value
 ```
-# For
-Strict has a flexible and simple way to utilize `for` loop. The `for` statement has a variation of syntatic uses:
-- Standard `for` loop -  The most common type of `for` loops in Strict, you can iterate through the elements without specifying the iterator variable since it already has implicit `index` variable: 
+
+**Texts.** The body values are concatenated. This is how [`Text.Combine`](https://github.com/strict-lang/Strict/blob/master/Text.strict) joins texts with a separator. `index is 0` checks for the first element, which gets no separator in front:
+
+```
+Combine(texts Texts, separator = ", ") Text
+	Combine(("a", "b", "c")) is "a, b, c"
+	Combine(("a", "b"), "") is "ab"
+	Combine(("hi", "there"), Character.NewLine) is "hi\nthere"
+	for texts
+		(index is 0 then "" else separator) + value
+```
+
+If you wrote this loop yourself in another type, Strict would replace it with the existing `Text.Combine` method.
+
+**Booleans.** A `Boolean` method that ends with a `for` returns `true` as soon as one iteration is true. From [`Dictionary.strict`](https://github.com/strict-lang/Strict/blob/master/Dictionary.strict):
+
+```
+in(key Generic) Boolean
+	2 is in Dictionary((1, 1), (2, 2))
+	3 is not in Dictionary((1, 1), (2, 2))
+	for keysAndValues
+		value.Key is key
+```
+
+# Functional programming
+
+The `for` result works like the pipe operator in functional languages (Lisp, Clojure, F#, Haskell). Let's filter the even numbers from 0 to 9, multiply them by 10 and sum them up. All of the following do the same thing.
+
+C#:
+```csharp
+int[] numList = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+int result =
+    numList
+        .Where(n => n % 2 == 0)
+        .Select(n => n * 10)
+        .Sum();
+```
+
+Haskell:
+```haskell
+numList :: [Int]
+numList = [0..9]
+result :: Int
+result =
+    sum
+      . map (* 10)
+      . filter even
+      $ numList
+```
+
+Clojure:
+```clojure
+(def num-list [0 1 2 3 4 5 6 7 8 9])
+(def result
+  (->> num-list
+       (filter even?)
+       (map #(* 10 %))
+       (reduce + 0)))
+```
+
+F#:
+```fsharp
+let numList = [| 0..9 |]
+let result =
+    numList
+    |> Array.filter (fun n -> n % 2 = 0)
+    |> Array.map (fun n -> n * 10)
+    |> Array.sum
+```
+
+JavaScript:
+```javascript
+const numList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const result = numList
+    .filter(n => n % 2 === 0)
+    .map(n => n * 10)
+    .reduce((acc, n) => acc + n, 0);
+```
+
+Python, which is more compact, but maps first and filters last, unlike all the others:
+```python
+num_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+result = sum(n * 10 for n in num_list if n % 2 == 0)
+```
+
+Strict, in a method returning a `Number`:
 ```
 for Range(0, 10)
-	log.Write(index)
-```
-- `for in` loops -  which are simple syntatic sugar over traditional `for` loops, in Strict the purpose of using  `for in` loops is usually to have a custom loop variable: 
-```
-for myIndex in Range(0, 10)
-	...
- ```
-- `for with an iterable object` - a for loop that does not require a loop variable and can be directly iterated through an iterable (see examples below) 
-
-Like in any other programming language, you can easily iterate through the elements using `for` loops, note that index variable is inferred here, you don't need to declare it manually:
-```
-let count = Mutable(0)
-for Range(0, 10)
-	count = count + index
-count
-```
-As mentioned above, you can iterate through the elements without specifying any ending condition or indices: 
-```
-reversedList List(Generic)
-	let index = 0
-	for elements
-		reversedList(elements.Length - 1 - index) = value
-	reversedList
-```
-Furthermore you can perform an operation to object and return it in a single line within the `for` loop, consider this example of Range summation. In Range.strict:
-```
-Sum
-	Range(2, 5).Sum is 2 + 3 + 4
-	Range(42, 45).Sum is 42 + 43 + 44
-	for value
-		+ value
-```
-The above code would iterate through the 'value' (which is basically a pointer to the current class, like "this" in C++ or C#), add the corresponding ranges and return the summation. You can rewrite the above code as such:
-```
-Sum
-	Range(2, 5).Sum is 2 + 3 + 4
-	Range(42, 45).Sum is 42 + 43 + 44
-	let result = Mutable(0)
-	for num in Range(value.Start, value.End)
-		result = result + num
-	result
+	if value % 2 is 0
+		value * 10
 ```
 
-Nested loop works similarly to other programming languages:
-```
-for i in Range(0, 10)
-	for j in Range(0, 10)
-		log.Write(i * j)
-```
+# Pipelines
 
-One of the most important use case of `for` loops in Strict, in a more advanced context is looping using multiple variables, which is easily possible in Strict, consider this example:
-```
-for r, g, b in Colors
-	log.Write(r + g + b)
-```
-# Haskell
+The language design goes further: every line of a loop body can transform the value from the line before it, like a pipeline.
 
-```haskell
-import Control.Monad (unless)
-import Pipes
-import System.IO (isEOF)
-
---         +--------+-- A 'Producer' that yields 'String's
---         |        |
---         |        |      +-- Every monad transformer has a base monad.
---         |        |      |   This time the base monad is 'IO'.
---         |        |      |  
---         |        |      |  +-- Every monadic action has a return value.
---         |        |      |  |   This action returns '()' when finished
---         v        v      v  v
-stdinLn :: Producer String IO ()
-stdinLn = do
-    eof <- lift isEOF        -- 'lift' an 'IO' action from the base monad
-    unless eof $ do
-        str <- lift getLine
-        yield str            -- 'yield' the 'String'
-        stdinLn              -- Loop
+```
+for numbers
+	to Text
+	Length * Length
+	if value > 3
+		4 + value * 3
+		to Text
 ```
 
-Here a standard input *producer* gives us data, which is passed along into the code below it. When eof is reached, the pipe stops, otherwise it goes on and grabs *str* from the current line input, yields it out as string and recursively loops.
+Each number is converted to `Text`. `Length * Length` squares the length of that text, which gives a number again. If that number is above 3, it is transformed once more and converted back to `Text`. The result is a list of texts, or one concatenated `Text` if the method returns a `Text`. Some of this could be written in one line, like `(value to Text).Length * (value to Text).Length`, but that is longer and not preferred.
 
-Here is another example from the Haskell pipes tutorial passing data from a Producer *a* through an effect *m* and returning the result *r*.
-```haskell
-for :: Monad m => Producer a m r -> (a -> Effect m ()) -> Effect m r
+Multi-line pipelines like this are not supported by the self-hosted compiler yet. Today each loop body ends in one expression.
+
+# Mutable variables in loops
+
+Sometimes a loop needs state, like a counter or the previous values. This is where `mutable` belongs. From [`Examples/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Fibonacci.strict):
+
+```
+has number
+has logger
+GetNthFibonacci Number
+	Fibonacci(5).GetNthFibonacci is 5
+	Fibonacci(10).GetNthFibonacci is 55
+	mutable first = 1
+	mutable second = 1
+	for Range(2, number)
+		let next = first + second
+		first = second
+		second = next
+	second
 ```
 
-# JavaScript
+And [`Examples/RemoveParentheses.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveParentheses.strict) combines a mutable counter with filtering:
 
-Here is an example from the JavaScript world:
-```js
-// Fetch the original image
-fetch('./tortoise.png')
-// Retrieve its body as ReadableStream
-.then(response => response.body)
-.then(body => {
-  const reader = body.getReader();
-  ...
-})
+```
+has text
+Remove Text
+	RemoveParentheses("example(unwanted thing)example").Remove is "exampleexample"
+	mutable parentheses = 0
+	for text
+		if value is "("
+			parentheses = parentheses.Increment
+		else if value is ")"
+			parentheses = parentheses.Decrement
+		else if parentheses is 0
+			value
 ```
 
-Here we grab an image over http and then get the body inside of the response, which is a ReadableStream we can then pass into the next *then* call, which gets the reader and so on (the .body.getReader is syncronous and doesn't need to be done this way, but you get the idea you can pass things along and you don't have to wait for each call to complete).
+# Image processing
 
-If you want to return the whole thing you get a Promise object and not the original http fetch request or the body or reader or whatever else is at the end of your stream pipe. The promise object needs to be awaited at the caller in the same manner (via *.then* or using *await*).
+Iterating over a multidimensional type and changing a mutable parameter, from [`ImageProcessing/AdjustBrightness.strict`](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/AdjustBrightness.strict):
 
-# F#
-
-```fs
-let finalSeq = 
-    seq { 0..10 }
-    |> Seq.filter (fun c -> (c % 2) = 0)
-    |> Seq.map ((*) 2)
-    |> Seq.map (sprintf "The value is %i.")
+```
+Process(mutable image) Image
+	constant testImage = Image(Size(1, 1), (testColor))
+	AdjustBrightness(0.25).Process(testImage) is Image(Size(1, 1), (ColorValue(0.5, 0.75, 0.5)))
+	for image.Size
+		let normalized = image.Colors(index) to ColorValue
+		image.Colors(index) = GetBrightnessAdjustedColor(normalized)
+	image
 ```
 
-F# is very similar to C# and shows how to write functional code in the .NET world nicely. It also matches what we want to do in Strict except of the seq and |> keyword.
-
-This code creates a sequence of 10 numbers (from 0 to 10, which is Range(0, 10) in Strict), then passed it through 3 pipes and returns the result all the way up to the original *finalSeq* definition. The first pipe does filters out uneven numbers, the next one multiplies each number by two and the final one converts each filtered and modified number to a string.
-
-# Strict
-
-Streams are used in Strict via the simple stream keyword, which does all of the above automatically, there is nothing else needed. Just keep in mind that every line that follows stream is operating on that stream and types often change along the way. The editor will tell you which type is used on each line and keep your Auto Complete clever and easy to use. Its probably easier to just write this code than to explain it or read it without an editor at hand:
-
-```ocaml
-PipeFSharpExample
-  test is ("value=0", "value=1", "value=2")
-  return stream number from Range(0, 3)
-    number % 2
-    number * 2
-    "value=" + number
-```
-
-The method will return a *Sequence* of strings (the Editor will show you that always) and you can see it anyways from the test in the first line. The stream is constructed on the Range 0, 1, 2 and number is used in the first line of the pipe (at any point you can create new types and whatever is returned is used downwards, simple things like filters are done via booleans and any operator on an existing type will return the type again).
-
-Pretty self explanatory for now. This is not implemented in the [sdk](https://github.com/strict-lang/sdk) yet and this documentation needs to be updated one that is done.
-
-# References
-
-https://hackage.haskell.org/package/pipes-4.3.13/docs/Pipes-Tutorial.html
-
-https://developer.mozilla.org/en-US/docs/Web/API/Streams_API
-
-https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams
-
-https://riptutorial.com/fsharp/example/14158/pipe-forward-and-backward
+You don't need to think about loop order for cache efficiency, for example iterating over y first. Strict picks the fastest execution. If it can see that the input image stays unchanged and the result is assigned back to it, it removes the mutation and just swaps two images (double buffering).

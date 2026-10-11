@@ -146,7 +146,7 @@ digits(number) returns Iterator<Number>
   return self.Characters + other.Characters
 ```
 
-See the [blog post June 17, 2020 As Simple As Possible](https://strict.dev/blog/2020/06/17/as-simple-as-possible) for details. Because Characters ends with s, the type Character is used as an Iterator (readonly array). The + method adds two texts by using the + method for Iterators, which will just create a new bigger list containing both parts.
+See the [blog post June 17, 2020 As Simple As Possible](https://strict-lang.org/blog/2020/06/17/as-simple-as-possible) for details. Because Characters ends with s, the type Character is used as an Iterator (readonly array). The + method adds two texts by using the + method for Iterators, which will just create a new bigger list containing both parts.
 
 ## Input.strict
 
@@ -184,4 +184,4 @@ Another very simple trait just telling us to implement *Run*, which is the entry
 All this was just done to force me to implement pre-loading types in a package for the current *LoadStrictBaseTypes* test, then pre-load each of the implementations, members and methods (which might use other not yet loaded types from the same package). And then do the same for the methods, which are evalutated lazily until they are needed. All types and methods defined in a method body need to be available to compile correctly.
 
 This is not easy at all, I tried several approaches and had to revisit and update this a few times until it all made sense and worked, luckily unit tests helped to stay sane. The following picture shows the typical search steps and optimizations done. It is different from simple binary searchs or finding types in other languages because in Strict any public type can be used at any place. There is much more to be done to make this work by discovering types from packages.strict.dev, more on that later.
-![FindType](https://strict.dev/img/FindType2020-07-01.png)
+![FindType](https://strict-lang.org/img/FindType2020-07-01.png)

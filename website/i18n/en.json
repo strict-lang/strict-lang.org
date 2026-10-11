@@ -3,8 +3,14 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Create well written and efficient code quickly",
+    "tagline": "Create well-written and efficient code quickly",
     "docs": {
+      "Architecture": {
+        "title": "Architecture"
+      },
+      "BaseTypes": {
+        "title": "Base Types"
+      },
       "CodeValidations": {
         "title": "Code Validations"
       },
@@ -14,23 +20,36 @@
       "Concurrency": {
         "title": "Concurrency"
       },
+      "Errors": {
+        "title": "Errors"
+      },
       "EverythingNeededForKata": {
-        "title": "Everything you need for the Weekly Kata"
+        "title": "Cheat Sheet"
+      },
+      "Examples": {
+        "title": "Examples"
       },
       "For": {
-        "title": "For",
-        "sidebar_label": "For"
+        "title": "For"
       },
       "GettingStarted": {
         "title": "Getting Started"
       },
+      "Grammar": {
+        "title": "Grammar"
+      },
       "If": {
-        "title": "If",
-        "sidebar_label": "If"
+        "title": "If"
       },
       "Keywords": {
         "title": "Keywords",
         "sidebar_label": "Keywords"
+      },
+      "Lists": {
+        "title": "Lists and Dictionaries"
+      },
+      "Methods": {
+        "title": "Methods"
       },
       "Microservices": {
         "title": "Microservices"
@@ -38,29 +57,38 @@
       "Naming": {
         "title": "Naming"
       },
-      "obsolete": {
-        "title": "obsolete"
-      },
       "Overview": {
         "title": "Overview"
       },
+      "Statements": {
+        "title": "Statements and Expressions"
+      },
+      "Tests": {
+        "title": "Tests"
+      },
       "Types": {
-        "title": "Types",
-        "sidebar_label": "Types"
+        "title": "Types"
       },
       "UsingApis": {
         "title": "Using APIs"
+      },
+      "Variables": {
+        "title": "Members and Variables"
       }
     },
     "links": {
       "Docs": "Docs",
-      "API": "API",
-      "Blog": "Blog"
+      "Language": "Language",
+      "Source": "Source",
+      "Blog": "Blog",
+      "GitHub": "GitHub"
     },
     "categories": {
       "Documentation": "Documentation",
-      "API": "API",
-      "Future": "Future"
+      "Language": "Language",
+      "Rules": "Rules",
+      "Source": "Source",
+      "More": "More"
     }
   },
   "pages-strings": {

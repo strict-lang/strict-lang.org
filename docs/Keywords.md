@@ -4,110 +4,65 @@ title: Keywords
 sidebar_label: Keywords
 ---
 
-Strict doesn't need a lot of keywords, most code is only valid written in one way. Switching arguments or changing code style will make the code usually not longer compile (or at least not behave the same way). Strict keywords are most similar to the go language, Python and C#. For details check the [grammar strict.iro file](https://github.com/strict-lang/sdk/blob/master/grammar/strict.iro).
+Strict needs very few keywords. Most code can only be written in one way, so swapping arguments or changing the style usually means the code no longer compiles, or at least doesn't behave the same way. You will understand any `.strict` code you read. Writing it is harder because of all the strict rules.
 
-You will understand any .strict code you read, writing code is much harder due to all the strict rules ^^
+Keywords and operator words can't be used as names.
 
-# Loops and control flow
+# Declarations
 
-- for
-- in (part of `for` loop syntax)
-- if
-- else
+| Keyword | Meaning | See |
+|---------|---------|-----|
+| `has` | Member that is set once when the instance is created | [Members and Variables](Variables.md) |
+| `constant` | Member or variable computed only from constants, always optimized away | [Members and Variables](Variables.md) |
+| `let` | Variable that doesn't change | [Members and Variables](Variables.md) |
+| `mutable` | Member or variable that may change (parameters never do) | [Members and Variables](Variables.md) |
+| `with` | Constraint on a member | [Types](Types.md#constraints-with-with) |
+| `from` | Custom constructor | [Types](Types.md#creating-instances) |
 
-# Comparsions and Operators
+# Control flow
 
-- is (any equal comparsion)
-- not (negation)
-- to (type conversion)
-- and, or (english words instead of strange C operators)
-- +, -, \*, /, ^, %, <, >, <=, >=, xor (for math)
-- ? (conditional operator to use if else expression in one line followed with else keyword)
-- () for lists/arrays, which includes method parameters and method call arguments, there is no empty list (), it is never written and just None. Thus method and method calls must not use empty ().
+| Keyword | Meaning | See |
+|---------|---------|-----|
+| `if`, `else` | Conditional blocks, `else if` chains and selector `if` | [If](If.md) |
+| `then` | Single-line conditional `condition then a else b` and selector cases | [If](If.md) |
+| `for` | The only loop, also the `for` method that makes a type iterable | [For](For.md) |
+| `in` | Containment (`is in`), and naming a loop variable | [For](For.md) |
+| `return` | Leave a method early with a value | [Methods](Methods.md) |
 
-# General
+# Operators
 
-- has (used to define member either as component or trait)
-- return
-- constant and = to assign initial value
-- mutable and = to assign initial value
+| Keyword | Meaning |
+|---------|---------|
+| `is`, `is not` | Equality, also used by every test |
+| `is in`, `is not in` | Containment |
+| `and`, `or`, `xor`, `not` | Logic, as English words instead of C symbols |
+| `to` | Conversion: `5 to Text`, and conversion methods like `to Number` |
+| `+` `-` `*` `/` `%` `^` `<` `>` `<=` `>=` | Arithmetic and comparison |
+| `=` | Assignment. Equality is always `is` |
+| `()` | Lists, which includes method parameters and call arguments. An empty `()` is never written |
 
-# Buildin Types
+# Implicit names
 
-Everything in [Strict.Base](https://github.com/strict-lang/Strict.Base) is always available, everything else you can just import
+| Name | Meaning |
+|------|---------|
+| `value` | The instance in a method, the current element in a `for` loop, the member value in a `with` constraint |
+| `index` | The position in a `for` loop, starting at 0 |
+| `outer` | The `value` from outside the current `for` loop |
+| `true`, `false` | The two `Boolean` values |
+| `None` | The state of an optional value that was never set, see [`or None`](Types.md#optional-values-with-or-none) |
 
-- Any
-- App
-- Number
-- Text
-- Boolean
-- Directory
-- Character
-- Log
-- Method
-- Output
-- Stacktrace
-- System
-- List
-- Input
-- Iterator
-- Mutable
-- Range
-- Error
-- HashCode
-- File
-- Type
-- Enum
-- Generic
-- Member
-- Dictionary
+# Base types
 
-# Assignments
+The base types in the [repository root](https://github.com/strict-lang/Strict) are always available, everything else is found by name. [Base Types](BaseTypes.md) describes each of them:
 
-Assignments can be done only once for a constant type member/variable/parameter and which is during constant declaration.
+`Any`, `Boolean`, `Byte`, `BytesReader`, `BytesWriter`, `Character`, `Closeable`, `Dictionary`, `Directory`, `Enum`, `Error`, `ErrorWithValue`, `File`, `Generic`, `HashCode`, `Iterator`, `Length`, `List`, `Logger`, `Method`, `Mutable`, `Name`, `Number`, `Path`, `Process`, `ProcessResult`, `Range`, `Stacktrace`, `Text`, `TextReader`, `TextWriter`, `Type`, `Variable`
 
-```ocaml
-constant number = 5
-constant text = "Hey"
-```
+# Package structure
 
-For mutable member/variable/parameter, the value can be reassigned as many times as required. Only mutable types can even change their state, and they are rarely used (linked lists or counts). In this example count, list and index are all mutable, the compiler can still optimize index away, but count and list will prevent this code from running automatically in parallel like all immutable code will do in any loop.
+A Strict package is a folder:
 
-```ocaml
-let count = Count(0)
-let list = List(Number)
-for index in Range(0, 10)
-  count.Increase(1)
-  list.Add(count)
-```
+* Every type is a `.strict` file. Subfolders are packages of their own.
+* A `README.md` explains the package and should show how to use it. This is the only place for explanations, because code has no comments.
+* `.editorconfig` sets up any editor for tabs and the Strict style.
 
-# Comments
-
-Any comment is considered bad. Only add comments to methods to explain functionality or link to more information, comments for members, types, inside methods are all not allowed. Like in C, Java or C# comments start with //, no other type of comment is allowed, multiline comments are not needed, if your comment is more than 3 lines, the compiler will refuse it.
-
-# Everything is an expression
-
-All statements are expressions in Strict, in fact any expression can be put into a line of code, can be a parameter, part of a if statement or for loop, etc. If an expression stands on its own and returns a value, it must be true, otherwise it will cause a runtime, test and even compiler error immediately.
-
-# File Structure
-
-A Strict package folder looks like this (folder must match project name):
-
-- build.yml (package meta data, autogenerated if missing: author, creation date and special build settings if needed)
-- README.md (description, must start with project name header, should contain usage examples of the package and maybe a quick overview of types available, only allowed in main folder)
-- .gitignore (is usually empty, but if you really need to exclude files, do it here)
-- .editorconfig (defaults to tabs with 2 spaces and the default styling used for Strict, this way all editors will behave the normal way)
-- any other file MUST be a .strict file, which defines a type each (class or trait)
-- - SubFolder can contain more .strict files
-
-# Examples
-
-[https://github.com/strict-lang/Strict.Base](https://github.com/strict-lang/Strict.Base)
-
-[https://github.com/strict-lang/Strict.App](https://github.com/strict-lang/Strict.App)
-
-[https://github.com/strict-lang/Strict.File](https://github.com/strict-lang/Strict.File)
-
-[https://github.com/strict-lang/Strict.Math](https://github.com/strict-lang/Strict.Math)
-
-and more at [https://github.com/strict-lang](https://github.com/strict-lang)
+See [Grammar](Grammar.md) for the complete syntax.

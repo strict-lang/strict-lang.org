@@ -3,7 +3,7 @@ title: October 2022 Shunting Yard
 author: Murali Tandabany
 ---
 
-When I was struggling with parsing the nested group expressions, Benjamin Nitschke introduced an algorithm to me called `Shuting Yard` which solves group expression parsing in a much simpler way. In this blog, we are going to discuss the details about this Shunting Yard algorithm and learn it's usages in Strict.
+When I was struggling with parsing the nested group expressions, Benjamin Nitschke introduced an algorithm to me called `Shunting Yard` which solves group expression parsing in a much simpler way. In this blog, we are going to discuss the details about this Shunting Yard algorithm and learn it's usages in Strict.
 
 ## What is Shunting Yard?
 

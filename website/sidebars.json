@@ -3,13 +3,23 @@
     "Documentation": [
       "Overview",
       "GettingStarted",
-      "EverythingNeededForKata",
-      "CodingStyle",
-      "CodeValidations",
-      "Naming",
-      "UsingApis"
+      "EverythingNeededForKata"
     ],
-    "API": ["Keywords", "For"],
-    "Future": ["Concurrency", "Microservices", "Ideas", "Types"]
+    "Language": [
+      "Types",
+      "Variables",
+      "Methods",
+      "Tests",
+      "Statements",
+      "If",
+      "For",
+      "Lists",
+      "Errors",
+      "Keywords",
+      "Grammar"
+    ],
+    "Rules": ["CodingStyle", "CodeValidations", "Naming"],
+    "Source": ["BaseTypes", "Architecture", "Examples"],
+    "More": ["UsingApis", "Concurrency", "Microservices"]
   }
 }

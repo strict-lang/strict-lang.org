@@ -13,13 +13,37 @@ const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
+const exampleCode = `\`\`\`
+has number
+has logger
+Classify Text
+	FizzBuzz(3).Classify is "Fizz"
+	FizzBuzz(5).Classify is "Buzz"
+	FizzBuzz(15).Classify is "FizzBuzz"
+	FizzBuzz(7).Classify is "7"
+	if number % 15 is 0
+		return "FizzBuzz"
+	if number % 3 is 0
+		return "Fizz"
+	if number % 5 is 0
+		return "Buzz"
+	number to Text
+Run
+	logger.Log("FizzBuzz(15) = " + FizzBuzz(15).Classify)
+\`\`\``;
+
+const exampleText = `Every \`.strict\` file is one type, named after the file. Members come first, then methods.
+
+The first lines of every method are its **tests**. They run once when the code is compiled and are then removed, so they cost nothing at runtime.
+
+The last line is the result. There are no curly brackets, semicolons, comments, empty lines, \`null\` or exceptions.
+
+[Read the language guide](/docs/Types) or [see more examples](/docs/Examples).`;
+
 class HomeSplash extends React.Component {
   render() {
-    const { siteConfig, language = "" } = this.props;
-    const { baseUrl, docsUrl } = siteConfig;
-    const docsPart = `${docsUrl ? `${docsUrl}/` : ""}`;
-    const langPart = `${language ? `${language}/` : ""}`;
-    const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
+    const { siteConfig } = this.props;
+    const { baseUrl } = siteConfig;
 
     const SplashContainer = props => (
       <div className="homeContainer">
@@ -27,19 +51,6 @@ class HomeSplash extends React.Component {
           <div className="wrapper homeWrapper">{props.children}</div>
         </div>
       </div>
-    );
-
-    const Logo = props => (
-      <div className="projectLogo">
-        <img src={props.img_src} alt="Project Logo" />
-      </div>
-    );
-
-    const ProjectTitle = props => (
-      <h2 className="projectTitle">
-        {props.title}
-        <small>{props.tagline}</small>
-      </h2>
     );
 
     const PromoSection = props => (
@@ -61,17 +72,12 @@ class HomeSplash extends React.Component {
     return (
       <SplashContainer>
         <div className="inner">
-          {/* <ProjectTitle tagline={siteConfig.tagline} title={siteConfig.title} /> */}
-          <img src="/img/StrictBanner.png" alt={siteConfig.title} />
+          <img src={`${baseUrl}img/StrictBanner.png`} alt={siteConfig.title} />
           <MarkdownBlock>{siteConfig.tagline}</MarkdownBlock>
           <PromoSection>
-            <Button href="https://github.com/strict-lang/strict">
-              Try It Out
-            </Button>
-            <Button href="https://github.com/strict-lang/strict-vscode-client">
-              IDE
-            </Button>
-            <Button href="https://github.com/strict-lang/sdk">SDK</Button>
+            <Button href={`${baseUrl}docs/GettingStarted`}>Get Started</Button>
+            <Button href={`${baseUrl}docs/Types`}>Language Guide</Button>
+            <Button href={siteConfig.repoUrl}>GitHub</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -91,88 +97,112 @@ class Index extends React.Component {
         background={props.background}
       >
         <GridBlock
-          align="center"
+          align={props.align || "center"}
           contents={props.children}
           layout={props.layout}
         />
       </Container>
     );
 
-    const FeatureCallout = () => (
-      <div
-        className="productShowcaseSection paddingBottom"
-        style={{ textAlign: "center" }}
-      >
-        <h2>Feature Callout</h2>
-        <MarkdownBlock>These are features of this project</MarkdownBlock>
-      </div>
-    );
-
-    const Layers = () => {
-      return (
-        <div
-          className="productShowcaseSection"
-          style={{
-            paddingTop: "30px",
-            paddingBottom: "30px",
-            background: "#f7f7f7"
-          }}
-        >
-          <img src="img/StrictLayers.svg" width="1280px" />
-        </div>
-      );
-    };
-
     const LearnHow = () => (
       <Block>
         {[
           {
             content:
-              "Strict is a simple to understand programming language that not only humans can read and understand, but also computer AI is able to read, modify and write. It has backends for many common frameworks like JDK, .NET and allows you to generate C++, C#, Java, etc. code or run in its own VM.",
+              "Strict is a simple programming language that humans can read and understand, and that computers can also understand, modify and write. " +
+              "The long-term goal is not just another programming language, but a foundation for computers to understand and write code themselves. " +
+              "For that it has to be very fast, both when executing code and when writing it, so millions of lines of code can be evaluated in seconds.",
             image: `${baseUrl}img/StrictLogoBlue256x256.png`,
             imageAlign: "right",
-            title: "Strict is a language computers can understand"
+            title: "A language computers can understand"
           }
         ]}
       </Block>
     );
 
-    const TryOut = () => (
-      <Block id="try">
+    const Example = () => (
+      <Container padding={["bottom", "top"]} background="light">
+        <div className="gridBlock">
+          <div className="blockElement twoByGridBlock">
+            <div className="blockContent">
+              <h2>Strict at a glance</h2>
+              <MarkdownBlock>{exampleText}</MarkdownBlock>
+            </div>
+          </div>
+          <div className="blockElement twoByGridBlock">
+            <div className="blockContent">
+              <MarkdownBlock>{exampleCode}</MarkdownBlock>
+            </div>
+          </div>
+        </div>
+      </Container>
+    );
+
+    const Features = () => (
+      <Block layout="threeColumn">
         {[
           {
+            title: "Tested by design",
             content:
-              "To make your landing page more attractive, use illustrations! Check out " +
-              "[**unDraw**](https://undraw.co/) which provides you with customizable illustrations which are free to use. " +
-              "The illustrations you see on this page are from unDraw.",
-            image: `${baseUrl}img/undraw_code_review.svg`,
-            imageAlign: "left",
-            title: "Wonderful SVG Illustrations"
+              "Every method starts with tests that show how to use it. The base library is the documentation of the language. " +
+              "In VS Code, SCrunch runs the tests on every save. " +
+              "[Tests](/docs/Tests)"
+          },
+          {
+            title: "Exactly one way",
+            content:
+              "Code that breaks the rules doesn't compile: unused values, `mutable` values that never change, long methods, wrong formatting. No warnings, only errors. " +
+              "[Coding Style](/docs/CodingStyle)"
+          },
+          {
+            title: "Immutable and functional",
+            content:
+              "Values never change, everything is an expression, and a `for` loop filters, maps, sums or multiplies in two lines. " +
+              "[For](/docs/For)"
+          },
+          {
+            title: "Written in Strict",
+            content:
+              "The compiler is a set of `.strict` packages that compiles itself into a native executable. No .NET or other runtime needed. " +
+              "[Architecture](/docs/Architecture)"
+          },
+          {
+            title: "Fast and native",
+            content:
+              "MLIR, LLVM and clang turn Strict into small native executables for Windows and Linux. Immutable values reuse memory in place instead of copying. " +
+              "[Getting Started](/docs/GettingStarted)"
+          },
+          {
+            title: "Small",
+            content:
+              "A few dozen base types: `Number`, `Text`, `List`, `Dictionary`, `Range`, `Error`, `Logger`, `File` and a handful of traits. External code plugs in through traits. " +
+              "[Base Types](/docs/BaseTypes)"
           }
         ]}
       </Block>
     );
 
-    const Description = () => (
-      <Block background="dark">
-        {[
-          {
-            content:
-              "This is another description of how this project is useful",
-            image: `${baseUrl}img/undraw_note_list.svg`,
-            imageAlign: "right",
-            title: "Description"
-          }
-        ]}
-      </Block>
+    const Pipeline = () => (
+      <div
+        className="productShowcaseSection"
+        style={{ paddingTop: "30px", paddingBottom: "30px", background: "#f7f7f7" }}
+      >
+        <img
+          src={`${baseUrl}img/StrictPipeline.svg`}
+          alt="How Strict code becomes a program"
+          style={{ maxWidth: "960px", width: "100%" }}
+        />
+      </div>
     );
 
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
-          <Layers />
           <LearnHow />
+          <Example />
+          <Features />
+          <Pipeline />
         </div>
       </div>
     );

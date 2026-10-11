@@ -3,6 +3,8 @@ id: Concurrency
 title: Concurrency
 ---
 
+> This page is early brainstorming from 2020 and uses an old syntax that is no longer valid Strict. The direction still holds: values are immutable, so loops, tests and method calls can run in parallel without any code from you. Parallel execution is the runtime's job. See [For](For.md) for how loops are written today.
+
 Strict Solutions:
 
 - Coroutines

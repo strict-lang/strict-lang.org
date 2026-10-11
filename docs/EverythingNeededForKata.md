@@ -1,224 +1,152 @@
 ---
 id: EverythingNeededForKata
-title: Everything you need for the Weekly Kata
+title: Cheat Sheet
 ---
 
-# Installation
+Everything you need on one page to solve a kata in Strict. For the details, follow the links.
 
-1. Use Visual Studio Code
-2. Click Extensions tab on Left Navigation bar (L=last one in the list)
-3. Click ... menu above Search placeholder and click Install from VSIX
-4. Download Strict extension using this link https://drive.google.com/file/d/1CEFDCB3OIEDEJOV8vfz2ErXxVBZZthKy/view and use the vsix file
-5. Create a new folder and name it as "Kata" (like namespace in CSharp)
-6. Create a new file and name it as "ClassNameForKata.strict" (use best suitable class name for the Kata)
-7. Clone Strict repository into your machine
-  Github - https://github.com/strict-lang/Strict
-  Clone Folder Path - C:\code\GitHub\strict-lang\Strict
-8. Open Strict.sln in Visual Studio Run Strict.LanguageServer 
-9. Start coding in Strict using below language guidelines
+# Setup
 
-# How to Run Strict
-
-As of now, executing the whole type is not implemented so we have to execute only the methods using command pallete.
-
-1. Press Ctrl + Shift + P to open command palette
-2. Click Run Strict option
-3. Type the test method call expression with type name and press enter. For example, FileName.MethodName(testArguments,..) OR FileName(constructorArgument1,..).MethodName(testArguments,..)
-4. Output can be viewed in the Output tab (Terminal) and select Strict in the Tasks dropdown
-
-# Package
-
-The folder that contains .strict extension files are created as a package in Strict. For example, if your folder name is Kata, then the strict package name is Kata which has all of the types present in the folder. By default this Kata package will be stored as a sub package under Base package so that all your custom types can access the base package types easily.
-
-# Base Types
-
- Basically, everything in Strict is a type. For example, Number, Text, Boolean etc. are already present in the base package and avaialble all the time. By just using the type name anywhere in your program, it can be inferred automatically based on the usage and either gets an instance of the type or use it as a type definition.
-
-Example:
-
-ArithmeticOperation.strict
-```
-has number //--> This will create a Number instance automatically (mostly use the same Number instance everytime as everything is immutable by default)
-// OR alternatively
-has memberName Number // --> This is manually declaring the type of the member
+```sh
+git clone https://github.com/strict-lang/Strict
+cd Strict
+Compiler\Bootstrap.cmd                       # or: sh Compiler/bootstrap.sh
+mkdir Kata                                   # your package
+NativeCompiler test Kata/MyKata.strict .     # run all tests
+NativeCompiler run Kata/MyKata.strict .      # run the Run method on the Strict VM
+NativeCompiler check Kata .                  # validate the style rules
 ```
 
-# Custom Types
+See [Getting Started](GettingStarted.md).
 
-In strict, every new file with .strict extension creates a new type with program present in the file similar to a class in C# language. You can use all the existing types such as base package types and example package types in your program all the time. The type name is same as the file name. Type can contain members and methods.
+# A type
 
-# Enum
-
-Type with only members will be treated as Enum in Strict. Refer Enum https://strict.dev/docs/Types#enum
-
-# Members
-
-Members in strict are like the properties of a class in C# language. You can define a private or public member based on the requirement of the type. The syntax to define a member is as follows
+The file `Kata/MyKata.strict` is the type `MyKata`. Members come first, then methods. Every method starts with tests, and its last line is the result.
 
 ```
-has memberName TypeName
-//OR
-has typeName //--> member with name typeName will be created and automatically finds the type without defintion
+has numbers
+has logger
+Doubled Numbers
+	MyKata((1, 2)).Doubled is (2, 4)
+	for numbers
+		value * 2
+Run
+	logger.Log(MyKata((1, 2, 3)).Doubled to Text)
 ```
 
-Example
-```
-has input Number
-//OR
-has number
-```
-Each type should have atleast one memeber otherwise the type will be treated as a trait which similar to an interface in C#.
+If a list is the only member, its elements can be passed directly: `ReverseList(1, 2, 3)`. With more members, put the list in brackets: `MyKata((1, 2))`.
+
+# Members and variables
+
+| Code | Meaning |
+|------|---------|
+| `has number` | Member, the name says the type |
+| `has start Number` | Member with an explicit type |
+| `has Alpha = 1` | Member with an initial value, public because it is uppercase |
+| `has Width Number with value > 0` | Member with a constraint |
+| `constant Max = 255` | Constant member |
+| `mutable Colors` | Member that may change |
+| `constant zero = 0` | Variable computed from constants |
+| `let fraction = value % 1` | Variable that doesn't change |
+| `mutable count = 0` | Variable that changes |
+| `count = count + 1` | Reassignment of a mutable variable |
+
+See [Members and Variables](Variables.md).
 
 # Methods
 
-Always after members, methods should be declared. Syntax for the method definition is as follows,
+| Header | Meaning |
+|--------|---------|
+| `Floor Number` | No parameters, no brackets |
+| `Log(text)` | No return type, the parameter name says its type |
+| `Clamp(minimum = 0, maximum = 1) Number` | Parameters with default values |
+| `+(other) Number` | Operator method |
+| `to Text` | Conversion, called as `value to Text` |
+| `from(text)` | Custom constructor, called as `Type(text)` |
+
+`value` is the instance. `return` is only needed to leave early. See [Methods](Methods.md) and [Tests](Tests.md).
+
+# Expressions
 
 ```
-has memberName
-MethodName(optionalParam1 Param1Type,..) MethodReturnType  // Brackets should not be used for parameter less method defintion
-	test expression 1 // atleast one test expression should be added for each method
-	method body line1 // method body should start with a tab in the beginning
-	method body line2
-	returnExpression // return keyword is not needed if the last expression is the return expression
+3 + 4 * 2 is 11
+7 % 4 is 3
+2 ^ 3 is 8
+"Your age is " + 18 is "Your age is 18"
+5 to Text is "5"
+"5" to Number is 5
+3 is in (1, 2, 3)
+"lo" is in "hello"
+(1 is 1) and (2 is not 3)
+value > 0 then value else 0
 ```
 
-Example
-```
-Floor(input Number) Number
-	Floor(1) is 1
-	Floor(2.4) is 2
-	value - value % 1
-```
+See [Statements and Expressions](Statements.md).
 
-To know the methods avaialble in base types, open a base strict file and then you can see all of the available methods and the method definition. Visual studio code does show these details with autocomplete feature.
-
-# Test expressions
-
-Each method should have at least one test expression otherwise it won't be allowed for parsing. To write a test expression, follow the below syntax,
+# If
 
 ```
-TypeName.MethodName(testArguments,..)
-OR
-TypeName(constructorArgument1,..).MethodName(testArguments,..)
+if number % 15 is 0
+	return "FizzBuzz"
+else if number % 3 is 0
+	return "Fizz"
 ```
 
-Here type name is the file name where the program is written. 
-
-# Constructor
-
-All members which are not initialized in the type are constructor arguments. When a type instance is created, those constructor arguments should be passed otherwise the parser will throw error.
-
-Example:
-ReverseList.strict
 ```
-has elements List
-Reverse List
-	ReverseList(1, 2, 3, 4).Reverse is (4, 3, 2, 1) // Here (1, 2, 3, 4) is a constructor argument and will be used to initialize elements member during ReverseList type instance creation
-	ReverseList("A", "B", "C", "D").Reverse is ("D", "C", "B", "A")
-	ReverseList(true, false).Reverse is (false, true)
-	return for Range(elements.Length - 1, 0)
-		elements(index)
+if operation is
+	"add" then first + second
+	"subtract" then first - second
+	else 0
 ```
 
-# If Else
+See [If](If.md).
 
-IfElse works the similar way as any other programming language and the syntax is as follows,
+# For
 
-```
-if condition
-	then expression		// should start with a tab in the beginning and can be multiline
-	return expression	// return keyword should be used here for method return expression
-else								// else block is optional
-	optional else block expression
-```
+`value` is the current element and `index` its position. What a method ending in `for` returns depends on its return type:
 
-Example
-
-```
-if value is "("
-	parentheses.Increment
-else if value is ")"
-	parentheses = parentheses - 1
-else if parentheses is 0
-	result = result + value
-```
-
-# For Loop
-
-Refer For loop in this document https://strict.dev/docs/For#for
-
-# List
-
-List data structure in strict can contain multiple elements of same type and the syntax for a list is as follows,
+| Loop | Result |
+|------|--------|
+| `for numbers` + `value * 2` in a `Numbers` method | the list `(2, 4, 6)` |
+| `for numbers` + `value` in a `Number` method | the sum |
+| `for numbers` + `* value` in a `Number` method | the product |
+| `for numbers` + `if value > 0` + `value` | only the positive numbers |
+| `for texts` + `value` in a `Text` method | all texts concatenated |
+| `for elements` + `value is other` in a `Boolean` method | `true` if any iteration is true |
+| `for 10` | 0 to 9 |
+| `for Range(2, 5)` | 2, 3 and 4 |
+| `for Range(0, 5).Reverse` | 4 down to 0 |
 
 ```
-(element1, element2, element3,..)
-```
-Round brackets should be used in the beginning and end of the list; elements should be separated by a comma followed by space character.
-
-Example:
-```
-(1, 2, 3, 4, 5)
-("Hi", "Hello")
-(true, true, false, false, true)
+Positives Numbers
+	Kata((1, -2, 3)).Positives is (1, 3)
+	for numbers
+		if value > 0
+			value
 ```
 
-List uses Generics and any type ends with an 's' character will be automatically inferred as List of that type. For example, Numbers automatically means List of Number, similarly Texts, Booleans creates their own List implementation with that type.
+See [For](For.md).
 
-# Assignment
-
-You can do assignments to either a member of a method variable. The syntax for both are as follows,
-
-For member assignment
+# Lists and texts
 
 ```
-has memberName = Assignment expression
+(1, 2, 3).Length is 3
+(1, 2, 3).Sum is 6
+(1, 2, 3).First is 1
+(1, 2, 3).Last is 3
+(1, 2, 3) + 4 is (1, 2, 3, 4)
+(1, 2, 3) - 3 is (1, 2)
+(1, 2) * 3 is (3, 6)
+(1, 2, 3).Reverse is (3, 2, 1)
+(1, 2, 3).Index(2) is 1
+"a,b".Split(",") is ("a", "b")
+"hello".Substring(1, 3) is "ell"
+"hello".IndexOf("ll") is 2
+" hi ".Trim is "hi"
 ```
 
-Example
-```
-has inputList = (1, 2, 3)
-has input = 5
-```
+`numbers(0)` is the first element and `numbers(-1)` the last. See [Lists and Dictionaries](Lists.md) and [Base Types](BaseTypes.md).
 
-For method variable assignment
+# Limits
 
-```
-constant variableName = Assignment expression
-```
-
-Example
-```
-constant input = (1, 2, 3)
-```
-
-Members or variables declared as constant are always immutable and cannot be changed. 
-
-# Mutability
-
-Members or variables defined using constant keyword are always immutable. In fact, everything in Strict is immutable unless it is declared as Mutable using below syntax,
-
-```
-mutable memberName = Assignment expression
-mutable variableName = Assignment expression
-```
-
-Example:
-```
-mutable result = Numbers // this assigns a mutable empty list expression of type number to the member result
-mutable counter = 0 // this assigns a mutable number expression with value 0 to the variable counter
-```
-
-# Range
-
-Range works similar to C# Range type. Start and End value should be passed to the constructor of Range during instance creation. This can be used for repeated iterations in the loop. Refer Range.strict in base folder for more details about Range. Syntax to create Range is as follows,
-
-```
-Range(startNumber, endNumber)
-```
-
-Example
-```
-Range(0, 10)
-```
-
+120 characters per line, 13 lines per method, 4 parameters, 15 methods, 15 members, 5 nesting levels. Tabs only, no empty lines, no comments. See [Coding Style](CodingStyle.md).

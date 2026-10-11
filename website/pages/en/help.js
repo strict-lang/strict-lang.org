@@ -13,26 +13,27 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
 function Help(props) {
-  const {config: siteConfig, language = ''} = props;
-  const {baseUrl, docsUrl} = siteConfig;
+  const {config: siteConfig} = props;
+  const {baseUrl, docsUrl, repoUrl} = siteConfig;
   const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
-  const langPart = `${language ? `${language}/` : ''}`;
-  const docUrl = (doc) => `${baseUrl}${docsPart}${langPart}${doc}`;
+  const docUrl = (doc) => `${baseUrl}${docsPart}${doc}`;
 
   const supportLinks = [
     {
-      content: `Learn more using the [documentation on this site.](${docUrl(
-        'doc1.html',
-      )})`,
+      content: `Start with [Getting Started](${docUrl('GettingStarted')}), the [language guide](${docUrl(
+        'Types',
+      )}) and the [cheat sheet](${docUrl('EverythingNeededForKata')}).`,
       title: 'Browse Docs',
     },
     {
-      content: 'Ask questions about the documentation and project',
-      title: 'Join the community',
+      content: `Every base type starts with tests showing how to use it. Read the [source on GitHub](${repoUrl}) and the [Base Types](${docUrl(
+        'BaseTypes',
+      )}) overview.`,
+      title: 'Read the Source',
     },
     {
-      content: "Find out what's new with this project",
-      title: 'Stay up to date',
+      content: `Found a bug or have a question? [Open an issue](${repoUrl}/issues), or follow the [blog](${baseUrl}blog).`,
+      title: 'Get in Touch',
     },
   ];
 
@@ -43,7 +44,6 @@ function Help(props) {
           <header className="postHeader">
             <h1>Need help?</h1>
           </header>
-          <p>This project is maintained by a dedicated group of people.</p>
           <GridBlock contents={supportLinks} layout="threeColumn" />
         </div>
       </Container>
