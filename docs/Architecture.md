@@ -3,30 +3,30 @@ id: Architecture
 title: Architecture
 ---
 
-Strict is written in Strict. The compiler, the validators, the virtual machine and the native code generator are plain `.strict` packages in the [Strict repository](https://github.com/strict-lang/Strict), next to the base types. `NativeCompiler` compiles them into one native executable, and that executable then compiles its own sources again, byte for byte identical.
+Strict is written in Strict. The compiler, the validators, the virtual machine and the native code generator are plain `.strict` packages in the [Strict repository](https://github.com/strict-lang/Strict), next to the base types. They compile into one native executable, `strict` (`strict.exe` on Windows), and that executable then compiles its own sources again, byte for byte identical.
 
 ![How Strict code becomes a program](/img/StrictPipeline.svg)
 
 Every source file is short and self-explanatory, and it starts with tests that show how to use it. This page gives a one-line summary of each type and links to its source. Folder names link to the package on GitHub.
 
-![Strict layers: VS Code and NativeCompiler on top of the Strict packages](/img/StrictLayers.svg)
+![Strict layers: VS Code and strict on top of the Strict packages](/img/StrictLayers.svg)
 
 | Package | Responsibility |
 |---------|----------------|
-| [root types](BaseTypes.md) | `Number`, `Text`, `List`, `Dictionary`, `Error`, `File`, ... define the language and are its documentation |
+| [root types](BaseTypes.md) | `Number`, `Text`, `List`, `Dictionary`, `Error`, `File`, ... define the language and are its documentation, [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) is the `strict` command |
 | [`Expressions`](#expressions) | Tokenizer, syntax tree, statements, header tokens, type shapes, known types, and type inference over all packages |
-| [`Validators`](#validators) | Unused and never-changed variables, names, constant folding, limits (`ValidateCheck` behind `NativeCompiler check`) |
+| [`Validators`](#validators) | Unused and never-changed variables, names, constant folding, limits (`ValidateCheck` behind `strict check`) |
 | [`Bytecode`](#bytecode) | Compiles a type into register-based instructions (`FileCompiler`), inlines constants, removes tests, links used types, writes `.strictbinary` |
-| [`Runtime`](#runtime) | The Strict VM that runs those instructions (`Execute` behind `NativeCompiler run`) |
-| [`Compiler`](#compiler) | `NativeCompiler`: instructions to MLIR, the native runtime (texts, lists, files, processes, collector), then `mlir-opt`, `mlir-translate` and `clang` |
-| [VS Code extension](#tools) | Edit, test, check and run `.strict` files, all through `NativeCompiler` |
+| [`Runtime`](#runtime) | The Strict VM that runs those instructions (`Execute` behind `strict <file>` and `strict test`) |
+| [`Compiler`](#compiler) | `NativeBuild` behind `strict build`: instructions to MLIR, the native runtime (texts, lists, files, processes, collector), then `mlir-opt`, `mlir-translate` and `clang` |
+| [VS Code extension](#tools) | Edit, test, check and run `.strict` files, all through `strict` |
 
 # How a program is compiled
 
-1. **[`SourceFiles`](https://github.com/strict-lang/Strict/blob/master/Bytecode/SourceFiles.strict)** collects the `.strict` files of the source folder, the base types, and every package that is referenced.
+1. **[`SourceFiles`](https://github.com/strict-lang/Strict/blob/master/Bytecode/SourceFiles.strict)** collects the `.strict` files of the current folder and its sub folders, then the base types and packages next to `strict.exe`, see [how strict finds types](GettingStarted.md#6-how-strict-finds-types).
 2. **[`Expressions`](#expressions)** reads type shapes and method headers, parses each method body into a syntax tree, and infers the type of every expression across all packages.
-3. **[`Bytecode`](#bytecode)** compiles the entry type into register-based instructions. Constants are inlined and folded, inline tests are removed (or collected into a `$Tests` method for `NativeCompiler test`), and the [`Linker`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Linker.strict) adds only the methods of other types that are actually called.
-4. Then either **[`Runtime`](#runtime)** runs the instructions on the Strict VM (`NativeCompiler run`), or **[`Compiler`](#compiler)** translates them into one MLIR module, appends the handwritten native runtime and lowers everything to an executable (`NativeCompiler build`).
+3. **[`Bytecode`](#bytecode)** compiles the entry type into register-based instructions. Constants are inlined and folded, inline tests are removed (or collected into a `$Tests` method for `strict test`), and the [`Linker`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Linker.strict) adds only the methods of other types that are actually called.
+4. Then either **[`Runtime`](#runtime)** runs the instructions on the Strict VM (`strict <file>` and `strict test`), or **[`Compiler`](#compiler)** translates them into one MLIR module, appends the handwritten native runtime and lowers everything to an executable (`strict build`).
 
 Only code that is actually called is parsed, validated, tested and executed. This is what makes it possible to generate huge amounts of code and discard what isn't needed or doesn't work almost immediately.
 
@@ -37,7 +37,7 @@ Only code that is actually called is parsed, validated, tested and executed. Thi
 * Lists append in place as long as they are the newest version.
 * Memory is managed by a conservative mark-sweep collector with 64 KB pages, size classes and interior pointers. It collects after 4 MB or 8 times the live data. 1 million loop iterations on the Strict VM use 9 MB.
 
-Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 ms on the Strict VM, and 420 ms with the old C# `Strict.exe`. `NativeCompiler` builds itself in about 10 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
+Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 ms on the Strict VM, and 420 ms with the old C# `Strict.exe`. `strict` builds itself in about 10 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
 
 # Expressions
 
@@ -71,41 +71,10 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 
 - [`TypeReport`](https://github.com/strict-lang/Strict/blob/master/Expressions/TypeReport.strict): logs the inferred type of every statement line in a folder.
 - [`RoundTrip`](https://github.com/strict-lang/Strict/blob/master/Expressions/RoundTrip.strict): checks that parsed method bodies print back exactly as their source lines.
-- [`ParseDemo`](https://github.com/strict-lang/Strict/blob/master/Expressions/ParseDemo.strict) (demo): logs expression classifications and a `ShuntingYard` result.
-
-**Simple text-backed expression model.** These are small records for each kind of expression, from before the syntax tree. Most of them aren't used by the compiler anymore:
-[`Expression`](https://github.com/strict-lang/Strict/blob/master/Expressions/Expression.strict) (result type, line, mutability),
-[`ExpressionParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/ExpressionParser.strict) (classifies a line),
-[`Binary`](https://github.com/strict-lang/Strict/blob/master/Expressions/Binary.strict),
-[`BooleanExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/BooleanExpression.strict),
-[`NumberExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/NumberExpression.strict),
-[`TextExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/TextExpression.strict),
-[`ListExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/ListExpression.strict),
-[`DictionaryExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/DictionaryExpression.strict),
-[`Declaration`](https://github.com/strict-lang/Strict/blob/master/Expressions/Declaration.strict),
-[`MutableReassignment`](https://github.com/strict-lang/Strict/blob/master/Expressions/MutableReassignment.strict),
-[`Return`](https://github.com/strict-lang/Strict/blob/master/Expressions/Return.strict),
-[`IfExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/IfExpression.strict),
-[`SelectorIf`](https://github.com/strict-lang/Strict/blob/master/Expressions/SelectorIf.strict),
-[`ForExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/ForExpression.strict),
-[`NotExpression`](https://github.com/strict-lang/Strict/blob/master/Expressions/NotExpression.strict),
-[`To`](https://github.com/strict-lang/Strict/blob/master/Expressions/To.strict),
-[`TypeComparison`](https://github.com/strict-lang/Strict/blob/master/Expressions/TypeComparison.strict),
-[`Instance`](https://github.com/strict-lang/Strict/blob/master/Expressions/Instance.strict),
-[`MethodCall`](https://github.com/strict-lang/Strict/blob/master/Expressions/MethodCall.strict),
-[`MemberCall`](https://github.com/strict-lang/Strict/blob/master/Expressions/MemberCall.strict),
-[`ListCall`](https://github.com/strict-lang/Strict/blob/master/Expressions/ListCall.strict),
-[`ParameterCall`](https://github.com/strict-lang/Strict/blob/master/Expressions/ParameterCall.strict),
-[`VariableCall`](https://github.com/strict-lang/Strict/blob/master/Expressions/VariableCall.strict),
-[`Value`](https://github.com/strict-lang/Strict/blob/master/Expressions/Value.strict),
-[`ValueInstance`](https://github.com/strict-lang/Strict/blob/master/Expressions/ValueInstance.strict),
-[`ValueListInstance`](https://github.com/strict-lang/Strict/blob/master/Expressions/ValueListInstance.strict),
-[`ValueDictionaryInstance`](https://github.com/strict-lang/Strict/blob/master/Expressions/ValueDictionaryInstance.strict) and
-[`ValueTypeInstance`](https://github.com/strict-lang/Strict/blob/master/Expressions/ValueTypeInstance.strict).
 
 # Validators
 
-[`Validators`](https://github.com/strict-lang/Strict/tree/master/Validators) holds the static code-quality rules behind `NativeCompiler check`, see [Code Validations](CodeValidations.md).
+[`Validators`](https://github.com/strict-lang/Strict/tree/master/Validators) holds the static code-quality rules behind `strict check`, see [Code Validations](CodeValidations.md).
 
 - [`ValidateCheck`](https://github.com/strict-lang/Strict/blob/master/Validators/ValidateCheck.strict): the `check` entry point. Collects mutating methods across files, validates each file, logs the issues and returns their count.
 - [`TypeValidator`](https://github.com/strict-lang/Strict/blob/master/Validators/TypeValidator.strict): per-type checks for unused private members and computed `has` members that should be `constant`, plus `UsageRules` for every method.
@@ -156,7 +125,7 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`TypeEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/TypeEntry.strict): a compiled type with members and methods, encoded as `.bytecode` bytes.
 - [`BinaryNames`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryNames.strict): the per-type name table (predefined built-in names plus the type's own names) and its encoding.
 - [`ByteEncoder`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ByteEncoder.strict): encodes integers, 7-bit variable-length numbers, UTF-8 texts and IEEE doubles as bytes.
-- [`NumberLiteral`](https://github.com/strict-lang/Strict/blob/master/Bytecode/NumberLiteral.strict): checks whether a text is a number literal.
+- [`Register`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Register.strict): the 64 registers of the Strict VM, named `R0` to `R63`.
 
 **Packaging**
 
@@ -165,40 +134,9 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`ZipEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ZipEntry.strict): named bytes with their CRC-32 checksum.
 - [`Crc`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Crc.strict): CRC-32 computed with plain arithmetic.
 
-**Older line-based instruction model**, still used by the old `Optimizers` package and some tests:
-[`BytecodeInstruction`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BytecodeInstruction.strict) (text-named register instruction),
-[`InstructionList`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionList.strict),
-[`InstructionNames`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionNames.strict),
-[`InstructionText`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionText.strict) (assembly-like text),
-[`Decompiler`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Decompiler.strict) (instructions back to lines like `R2 = R0 + R1`),
-[`LineGenerator`](https://github.com/strict-lang/Strict/blob/master/Bytecode/LineGenerator.strict),
-[`ExpressionCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ExpressionCodegen.strict),
-[`ExpressionKind`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ExpressionKind.strict),
-[`GenerationResult`](https://github.com/strict-lang/Strict/blob/master/Bytecode/GenerationResult.strict),
-[`Registry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Registry.strict) (register allocator),
-[`Register`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Register.strict) (64 registers named `R<n>`),
-[`NameTable`](https://github.com/strict-lang/Strict/blob/master/Bytecode/NameTable.strict),
-[`BytecodeValue`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BytecodeValue.strict),
-[`BinaryExecutable`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryExecutable.strict),
-[`BinaryTypeData`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryTypeData.strict),
-[`BinaryMethod`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryMethod.strict),
-[`BinaryMember`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryMember.strict),
-[`InvokeInfo`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InvokeInfo.strict) and
-[`ValueKind`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ValueKind.strict).
-
-**Tests and demos:**
-[`BytecodeDemo`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BytecodeDemo.strict),
-[`DecompilerTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/DecompilerTests.strict),
-[`ExecutableTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ExecutableTests.strict),
-[`GeneratorTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/GeneratorTests.strict),
-[`InstructionTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionTests.strict),
-[`NameTableTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/NameTableTests.strict),
-[`RegistryTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/RegistryTests.strict) and
-[`ValueTests`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ValueTests.strict).
-
 # Runtime
 
-[`Runtime`](https://github.com/strict-lang/Strict/tree/master/Runtime) is the Strict VM. It runs the instructions that `FileCompiler` produces, using immutable frames and values. `NativeCompiler run` calls [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict).
+[`Runtime`](https://github.com/strict-lang/Strict/tree/master/Runtime) is the Strict VM. It runs the instructions that `FileCompiler` produces, using immutable frames and values. `strict <file>` and `strict test` call [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict).
 
 - [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict): compiles a file, checks that it has a `Run` method, converts the command-line numbers, and launches the machine or runs the tests.
 - [`Machine`](https://github.com/strict-lang/Strict/blob/master/Runtime/Machine.strict): the VM core. Finds methods, binds members and parameters, and steps through the instructions, handling calls, indexing, printing and field loads.
@@ -211,15 +149,17 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`Operations`](https://github.com/strict-lang/Strict/blob/master/Runtime/Operations.strict): arithmetic and comparisons, including text and list concatenation and removing list elements.
 - [`Storage`](https://github.com/strict-lang/Strict/blob/master/Runtime/Storage.strict): loads and stores between registers and locals, plus list appends.
 - [`Natives`](https://github.com/strict-lang/Strict/blob/master/Runtime/Natives.strict): built-in behavior for methods without bytecode: `from` constructors, `to` conversions, `Length`, logic, `in`, text methods, processes and default member values.
+- [`Hosted`](https://github.com/strict-lang/Strict/blob/master/Runtime/Hosted.strict): file, directory, process and `Math` calls that the Strict VM hands to the running `strict` executable.
 - [`PayloadDecoder`](https://github.com/strict-lang/Strict/blob/master/Runtime/PayloadDecoder.strict): decodes instruction payloads into numbers, doubles, texts, booleans, lists and ids.
 
 # Compiler
 
-[`Compiler`](https://github.com/strict-lang/Strict/tree/master/Compiler) translates the linked types from `FileCompiler` into one MLIR module, appends the handwritten MLIR runtime, and lowers everything with `mlir-opt`, `mlir-translate` and `clang` into a standalone executable. The entry point is [`NativeCompiler`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeCompiler.strict), see [Getting Started](GettingStarted.md#4-commands) for its commands.
+[`Compiler`](https://github.com/strict-lang/Strict/tree/master/Compiler) translates the linked types from `FileCompiler` into one MLIR module, appends the handwritten MLIR runtime, and lowers everything with `mlir-opt`, `mlir-translate` and `clang` into a standalone executable. The entry point is [`NativeBuild`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeBuild.strict) behind `strict build`, see [Getting Started](GettingStarted.md#5-commands) for all commands.
 
 **Command line and toolchain**
 
-- [`NativeCompiler`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeCompiler.strict): the command-line entry with the `build`, `test`, `check` and `run` commands.
+- [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) (in the repository root): the `strict` command. Runs a file, or the `test`, `check`, `build` and `version` commands, and finds the base types next to `strict.exe`.
+- [`NativeBuild`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeBuild.strict): `strict build`. Runs the tests, compiles the program (or its tests for a type without `Run`) to MLIR, builds the executables and removes the intermediate tool files.
 - [`Toolchain`](https://github.com/strict-lang/Strict/blob/master/Compiler/Toolchain.strict): finds and installs the tools, lowers MLIR, links executables, and cross-builds the Linux executable through WSL.
 - [`ToolRunner`](https://github.com/strict-lang/Strict/blob/master/Compiler/ToolRunner.strict): finds and runs an external tool and returns its `ProcessResult`.
 - [`Platform`](https://github.com/strict-lang/Strict/blob/master/Compiler/Platform.strict): the Windows, Linux and MacOS constants and detection of the current OS.
@@ -236,6 +176,7 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`MlirLayout`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLayout.strict): decides the memory layout: base type, single-member wrapper or heap struct.
 - [`MlirKinds`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirKinds.strict): infers which kind of value (number, text, boolean, list, type) each register holds.
 - [`MlirLists`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLists.strict): list literals, appending, indexing, element writes, copies and list operators.
+- [`MlirListOperators`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirListOperators.strict): `+`, `-`, `*` and `/` between lists, or between a list and a number.
 - [`MlirLoops`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLoops.strict): loop begin and end for ranges, counts and collections.
 - [`MlirTexts`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirTexts.strict): text concatenation and conversions from and to text.
 - [`MlirNatives`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirNatives.strict): maps `Text`, `List`, `File`, `Directory` and `Process` methods to runtime functions.
@@ -249,101 +190,20 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`NativeRuntimeWindows.mlir`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeRuntimeWindows.mlir): Windows memory, directories, temporary files and processes.
 - [`NativeRuntimeLinux.mlir`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeRuntimeLinux.mlir): Linux memory, directories, temporary files and processes.
 
-**Bootstrapping.** `Compiler/Bootstrap.mlir` is `NativeCompiler.strict` compiled by itself. `Compiler/Bootstrap.cmd` (Windows) and `Compiler/bootstrap.sh` (Linux) combine it with the native runtime and build `NativeCompiler` with just the LLVM tools, see [Getting Started](GettingStarted.md#3-bootstrap-the-compiler).
-
-# Older packages
-
-[`Language`](https://github.com/strict-lang/Strict/tree/master/Language), [`HighLevelRuntime`](https://github.com/strict-lang/Strict/tree/master/HighLevelRuntime), [`TestRunner`](https://github.com/strict-lang/Strict/tree/master/TestRunner) and [`Optimizers`](https://github.com/strict-lang/Strict/tree/master/Optimizers) were the first Strict versions of the compiler. They work line by line on texts and have been replaced by the packages above.
-
-**Language**, replaced by `Expressions` and `Validators/Limits`:
-[`Package`](https://github.com/strict-lang/Strict/blob/master/Language/Package.strict) (loads a folder of `.strict` files),
-[`Type`](https://github.com/strict-lang/Strict/blob/master/Language/Type.strict),
-[`TypeLines`](https://github.com/strict-lang/Strict/blob/master/Language/TypeLines.strict),
-[`TypeKind`](https://github.com/strict-lang/Strict/blob/master/Language/TypeKind.strict),
-[`TypeFinder`](https://github.com/strict-lang/Strict/blob/master/Language/TypeFinder.strict),
-[`TypeParser`](https://github.com/strict-lang/Strict/blob/master/Language/TypeParser.strict),
-[`Member`](https://github.com/strict-lang/Strict/blob/master/Language/Member.strict) (parses `has`/`mutable`/`constant` lines),
-[`MethodParser`](https://github.com/strict-lang/Strict/blob/master/Language/MethodParser.strict),
-[`Parameter`](https://github.com/strict-lang/Strict/blob/master/Language/Parameter.strict),
-[`NamedType`](https://github.com/strict-lang/Strict/blob/master/Language/NamedType.strict),
-[`Body`](https://github.com/strict-lang/Strict/blob/master/Language/Body.strict) (classifies body lines),
-[`Expression`](https://github.com/strict-lang/Strict/blob/master/Language/Expression.strict),
-[`ConcreteExpression`](https://github.com/strict-lang/Strict/blob/master/Language/ConcreteExpression.strict),
-[`ExpressionParser`](https://github.com/strict-lang/Strict/blob/master/Language/ExpressionParser.strict),
-[`Context`](https://github.com/strict-lang/Strict/blob/master/Language/Context.strict),
-[`Keyword`](https://github.com/strict-lang/Strict/blob/master/Language/Keyword.strict) (all keywords as constants),
-[`BinaryOperator`](https://github.com/strict-lang/Strict/blob/master/Language/BinaryOperator.strict),
-[`UnaryOperator`](https://github.com/strict-lang/Strict/blob/master/Language/UnaryOperator.strict),
-[`Limit`](https://github.com/strict-lang/Strict/blob/master/Language/Limit.strict) (all code size limits as constants),
-[`Parser`](https://github.com/strict-lang/Strict/blob/master/Language/Parser.strict) (demo) and
-[`PackageTests`](https://github.com/strict-lang/Strict/blob/master/Language/PackageTests.strict) (tests).
-
-**HighLevelRuntime**, a text-based interpreter replaced by `Runtime`:
-[`Interpreter`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/Interpreter.strict),
-[`ExecutionContext`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/ExecutionContext.strict),
-[`RuntimeValue`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/RuntimeValue.strict),
-[`BodyEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/BodyEvaluator.strict),
-[`BodyResult`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/BodyResult.strict),
-[`ExpressionEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/ExpressionEvaluator.strict),
-[`MethodCallEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/MethodCallEvaluator.strict),
-[`IfEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/IfEvaluator.strict),
-[`SelectorIfEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/SelectorIfEvaluator.strict),
-[`ForEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/ForEvaluator.strict),
-[`ToEvaluator`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/ToEvaluator.strict),
-[`TestBehavior`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/TestBehavior.strict),
-[`RuntimeStatistics`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/RuntimeStatistics.strict),
-plus the tests and demos
-[`BodyTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/BodyTests.strict),
-[`ContextTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/ContextTests.strict),
-[`EvaluatorTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/EvaluatorTests.strict),
-[`IfToTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/IfToTests.strict),
-[`InterpreterTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/InterpreterTests.strict),
-[`RuntimeValueTests`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/RuntimeValueTests.strict) and
-[`RuntimeDemo`](https://github.com/strict-lang/Strict/blob/master/HighLevelRuntime/RuntimeDemo.strict).
-
-**TestRunner**, replaced by `Bytecode/TestLines` and `Bytecode/TestCodegen` behind `NativeCompiler test`:
-[`TestInterpreter`](https://github.com/strict-lang/Strict/blob/master/TestRunner/TestInterpreter.strict),
-[`Assertion`](https://github.com/strict-lang/Strict/blob/master/TestRunner/Assertion.strict),
-[`MethodUnderTest`](https://github.com/strict-lang/Strict/blob/master/TestRunner/MethodUnderTest.strict),
-[`TypeUnderTest`](https://github.com/strict-lang/Strict/blob/master/TestRunner/TypeUnderTest.strict),
-[`TestResult`](https://github.com/strict-lang/Strict/blob/master/TestRunner/TestResult.strict),
-[`TestStatistics`](https://github.com/strict-lang/Strict/blob/master/TestRunner/TestStatistics.strict) and
-[`TestDemo`](https://github.com/strict-lang/Strict/blob/master/TestRunner/TestDemo.strict) (demo).
-
-**Optimizers**, peephole passes over the older instruction model, replaced by `Bytecode/ConstantFolding`, `Bytecode/LoadReuse` and test removal in `Bytecode/TestLines`:
-[`AllOptimizers`](https://github.com/strict-lang/Strict/blob/master/Optimizers/AllOptimizers.strict),
-[`ConstantFolder`](https://github.com/strict-lang/Strict/blob/master/Optimizers/ConstantFolder.strict),
-[`DeadStore`](https://github.com/strict-lang/Strict/blob/master/Optimizers/DeadStore.strict),
-[`JumpThread`](https://github.com/strict-lang/Strict/blob/master/Optimizers/JumpThread.strict),
-[`RedundantLoad`](https://github.com/strict-lang/Strict/blob/master/Optimizers/RedundantLoad.strict),
-[`StrengthReduce`](https://github.com/strict-lang/Strict/blob/master/Optimizers/StrengthReduce.strict),
-[`TestCodeRemove`](https://github.com/strict-lang/Strict/blob/master/Optimizers/TestCodeRemove.strict),
-[`UnreachableCode`](https://github.com/strict-lang/Strict/blob/master/Optimizers/UnreachableCode.strict),
-[`OptimizerStats`](https://github.com/strict-lang/Strict/blob/master/Optimizers/OptimizerStats.strict),
-plus the tests and demo
-[`DeadStoreTests`](https://github.com/strict-lang/Strict/blob/master/Optimizers/DeadStoreTests.strict),
-[`FolderTests`](https://github.com/strict-lang/Strict/blob/master/Optimizers/FolderTests.strict),
-[`PipelineTests`](https://github.com/strict-lang/Strict/blob/master/Optimizers/PipelineTests.strict),
-[`StrengthTests`](https://github.com/strict-lang/Strict/blob/master/Optimizers/StrengthTests.strict),
-[`UnreachableTests`](https://github.com/strict-lang/Strict/blob/master/Optimizers/UnreachableTests.strict) and
-[`OptimizerDemo`](https://github.com/strict-lang/Strict/blob/master/Optimizers/OptimizerDemo.strict).
+**Bootstrapping.** `Compiler/Bootstrap.mlir` is `Strict.strict` compiled by itself. `Compiler/Bootstrap.cmd` (Windows) and `Compiler/bootstrap.sh` (Linux) combine it with the native runtime and build `strict.exe` (Linux: `strict`) in the repository root with just the LLVM tools, see [Getting Started](GettingStarted.md#3-bootstrap-strict).
 
 # Tools
 
-The [Strict extension for Visual Studio Code](https://github.com/strict-lang/strict-vscode-client) is written in TypeScript and is the main way to work on Strict code. It has no compiler of its own. Every action is a `NativeCompiler` call with the Strict folder as root:
+The [Strict extension for Visual Studio Code](https://github.com/strict-lang/strict-vscode-client) is written in TypeScript and is the main way to work on Strict code. It has no compiler of its own. Every action is a `strict` call with the Strict folder as root:
 
 | Purpose | Command |
 |---------|---------|
-| Inline tests of a file (SCrunch, on open and on save) | `NativeCompiler run test <file> .` |
-| Validator diagnostics for the folder of a tested file | `NativeCompiler check <folder> .` |
-| Strict: Run File (Ctrl+Shift+R) | `NativeCompiler run <file> . [arguments]` |
+| Inline tests of a file (SCrunch, on open and on save) | `strict test <file> .` |
+| Validator diagnostics for the folder of a tested file | `strict check <folder> .` |
+| Strict: Run File (Ctrl+Shift+R) | `strict <file> . [arguments]` |
 
-Each call looks up the newest `Compiler/NativeCompiler.exe` again, so a rebuilt compiler is used on the next save. Agents can run the same commands to verify `.strict` changes without VS Code. See [Getting Started](GettingStarted.md#visual-studio-code) for the features and how to install it.
-
-# The C# implementation
-
-Strict was bootstrapped by a C# implementation on .NET, which included a Language Server, a C# transpiler and a CUDA compiler. All of it lives on the [`dotnet` branch](https://github.com/strict-lang/Strict/tree/dotnet). It isn't needed anymore to build or run Strict.
+Each call looks up the newest `strict.exe` again, so a rebuilt `strict` is used on the next save. Agents can run the same commands to verify `.strict` changes without VS Code. See [Getting Started](GettingStarted.md#visual-studio-code) for the features and how to install it.
 
 # Open work
 
-[`improvements.md`](https://github.com/strict-lang/Strict/blob/master/improvements.md) lists what is missing, in priority order: generic types like `Dictionary` in native code, operators between lists, the same results on the Strict VM as natively, better test output for VS Code, and replacing the older packages. A language server written in Strict comes after that.
+[`improvements.md`](https://github.com/strict-lang/Strict/blob/master/improvements.md) lists what is missing, in priority order: finding packages in GitHub repositories, a `.strictbinary` cache so unchanged files aren't compiled and tested again, neural networks as the first real use case, the rest of the `Dictionary` generics, and errors with stack traces instead of crashes. A language server written in Strict comes after that.

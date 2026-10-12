@@ -98,7 +98,7 @@ Now `Register(0, 1, 2) + Register(1, 2, 3)` calls this method.
 | `in(...)` | Containment, called as `a is in b` and `a is not in b` | `in(number) Boolean` in [`Range.strict`](https://github.com/strict-lang/Strict/blob/master/Range.strict) |
 | `for` | Defines how a type is iterated in a `for` loop | `for Iterator(Number)` in [`Range.strict`](https://github.com/strict-lang/Strict/blob/master/Range.strict) |
 | `not`, `and`, `or`, `xor` | Logic operators | [`Boolean.strict`](https://github.com/strict-lang/Strict/blob/master/Boolean.strict) |
-| `Run` | Entry point for `NativeCompiler run` and `build` | [`Examples/HelloLogger.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/HelloLogger.strict) |
+| `Run` | Entry point for `strict <file>` and `strict build` | [`Examples/HelloLogger.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/HelloLogger.strict) |
 
 [`Any.strict`](https://github.com/strict-lang/Strict/blob/master/Any.strict) gives every type a default `from`, `to Type`, `to Text`, `to HashCode` and `is`.
 

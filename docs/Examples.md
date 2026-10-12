@@ -6,9 +6,9 @@ title: Examples
 The [`Examples`](https://github.com/strict-lang/Strict/tree/master/Examples) folder holds example programs that show the current language features. It is also a playground for katas and for trying out new syntax. Every example can be tested, run and built:
 
 ```sh
-NativeCompiler test Examples/FizzBuzz.strict .
-NativeCompiler run Examples/FizzBuzz.strict .
-NativeCompiler build Examples/FizzBuzz.strict .
+strict Examples/FizzBuzz.strict
+strict test Examples/FizzBuzz.strict
+strict build Examples/FizzBuzz.strict
 ```
 
 # Showcase

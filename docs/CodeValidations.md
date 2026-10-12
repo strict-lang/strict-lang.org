@@ -8,7 +8,7 @@ After parsing, Strict runs a set of validation rules over every type. In other l
 Run all validations on a package folder:
 
 ```sh
-NativeCompiler check Examples .
+strict check Examples
 ```
 
 Every issue is printed as `RuleName: target`, followed by `Validation issues: N`. The exit code is the number of issues.

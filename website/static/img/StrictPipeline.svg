@@ -6,7 +6,7 @@
   </defs>
   <rect width="960" height="440" fill="#ffffff"/>
   <text x="24" y="38" font-size="22" font-weight="600" fill="#21434C">How Strict code becomes a program</text>
-  <text x="24" y="62" font-size="14" fill="#4a6670">Every stage is written in Strict. NativeCompiler runs all of them.</text>
+  <text x="24" y="62" font-size="14" fill="#4a6670">Every stage is written in Strict. The strict command runs all of them.</text>
 
   <!-- source -->
   <rect x="24" y="160" width="150" height="90" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
@@ -60,9 +60,9 @@
 
   <!-- command labels -->
   <g font-family="Consolas, Menlo, monospace" font-size="13" fill="#21434C">
-    <text x="799" y="82" text-anchor="middle">NativeCompiler run</text>
-    <text x="799" y="188" text-anchor="middle">NativeCompiler build, test</text>
-    <text x="392" y="340">NativeCompiler check</text>
+    <text x="799" y="82" text-anchor="middle">strict &lt;file&gt;, strict test</text>
+    <text x="799" y="188" text-anchor="middle">strict build</text>
+    <text x="392" y="340">strict check</text>
   </g>
-  <text x="128" y="412" font-size="13" fill="#4a6670">NativeCompiler.exe compiles its own .strict sources, twice gives identical bytes (fixpoint)</text>
+  <text x="128" y="412" font-size="13" fill="#4a6670">strict.exe compiles its own .strict sources, twice gives identical bytes (fixpoint)</text>
 </svg>

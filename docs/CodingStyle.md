@@ -9,7 +9,7 @@ In most languages a coding style is a guideline. In Strict it is the language. C
 
 # Limits
 
-Line, method, member and nesting limits are checked by [`Validators/Limits.strict`](https://github.com/strict-lang/Strict/blob/master/Validators/Limits.strict) when you run `NativeCompiler check`:
+Line, method, member and nesting limits are checked by [`Validators/Limits.strict`](https://github.com/strict-lang/Strict/blob/master/Validators/Limits.strict) when you run `strict check`:
 
 | Code block | Limit | Notes |
 |-----------:|------:|:------|

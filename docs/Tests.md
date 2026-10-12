@@ -40,20 +40,22 @@ Every expression in Strict that stands on its own has to be true, not just tests
 # Running tests
 
 ```sh
-NativeCompiler test Examples/FizzBuzz.strict .
+strict test Examples/FizzBuzz.strict
 ```
 
-`test` collects the inline tests of every method into a generated `$Tests` method, compiles it into a native `FizzBuzz.test.exe` and runs it. Every failing test is printed with the value it actually got:
+`test` collects the inline tests of every method into a generated `$Tests` method and runs it on the Strict VM, in memory and without the MLIR tools. Every failing test is printed with the value it actually got:
 
 ```text
 Test failed: Squares(1, 2, 3).Squared is (1, 4, 9) in Squared
   got: 1
-1 failed in Kata/Squares.strict
+1 tests failed in Kata/Squares.strict
 ```
 
 The exit code is the number of failed tests, so it plugs straight into any build script or CI.
 
-`NativeCompiler run test Examples/FizzBuzz.strict .` runs the same tests on the Strict VM. It doesn't need the MLIR tools and starts faster. The [VS Code extension](GettingStarted.md#visual-studio-code) uses it to test every file when a folder opens and again on every save, and shows the results as green and red dots next to the tests.
+`strict build` runs the same tests before it builds anything, and a failing test stops the build. For a type without a `Run` method, `strict build Character.strict` compiles the tests natively into `Character.test.exe`. Its exit code is the number of failed tests too, this is how the native code generator is tested.
+
+The [VS Code extension](GettingStarted.md#visual-studio-code) runs `strict test` for every file when a folder opens and again on every save, and shows the results as green and red dots next to the tests.
 
 # Tests run once
 

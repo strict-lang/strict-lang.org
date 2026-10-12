@@ -36,7 +36,7 @@ Run
 * `ToFahrenheit Number` is a **method** that returns a `Number`. Method bodies are indented with one tab.
 * The first lines of each method are **tests**. Every method needs at least one test, written as a comparison with `is`. Tests run once when the code is compiled and are then removed.
 * The last line of a method is its return value. `return` is only needed to leave a method early.
-* `Run` is the entry point used by `NativeCompiler run` and `NativeCompiler build`.
+* `Run` is the entry point used by `strict <file>` and `strict build`.
 
 See [Getting Started](GettingStarted.md) to build and run this yourself.
 
@@ -60,7 +60,7 @@ Values never change. `list + element` gives a new list. `mutable` exists, but on
 
 ## Fast
 
-Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. 1 million loop iterations take 45 ms as a native executable (227 KB) and 245 ms on the Strict VM. `NativeCompiler` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
+Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. 1 million loop iterations take 45 ms as a native executable (227 KB) and 245 ms on the Strict VM. `strict` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
 
 ## Small
 
@@ -83,7 +83,7 @@ Strict is NOT a general-purpose language. If you want to build a website, a comp
 Only code that is actually called is ever parsed, validated, tested and executed. This approach lets you generate millions of lines of `.strict` code and immediately discard anything that isn't needed or doesn't work.
 
 * **Fast feedback.** Formatting and type errors fail instantly, long before the VM.
-* **Deterministic builds.** Immutable trees plus one canonical code style mean no drift. `NativeCompiler` even builds itself byte-identically.
+* **Deterministic builds.** Immutable trees plus one canonical code style mean no drift. `strict` even builds itself byte-identically.
 * **Lean bytecode.** By the time code reaches the VM, dead weight is already gone.
 
 # Where to go next

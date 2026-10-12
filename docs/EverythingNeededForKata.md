@@ -9,12 +9,12 @@ Everything you need on one page to solve a kata in Strict. For the details, foll
 
 ```sh
 git clone https://github.com/strict-lang/Strict
-cd Strict
-Compiler\Bootstrap.cmd                       # or: sh Compiler/bootstrap.sh
-mkdir Kata                                   # your package
-NativeCompiler test Kata/MyKata.strict .     # run all tests
-NativeCompiler run Kata/MyKata.strict .      # run the Run method on the Strict VM
-NativeCompiler check Kata .                  # validate the style rules
+Strict\Compiler\Bootstrap.cmd            # or: sh Strict/Compiler/bootstrap.sh, creates strict(.exe)
+                                         # then put the Strict folder on your PATH
+mkdir Kata && cd Kata                    # your project, can be anywhere
+strict MyKata.strict                     # run the Run method on the Strict VM
+strict test MyKata.strict                # run all tests
+strict check .                           # validate the style rules
 ```
 
 See [Getting Started](GettingStarted.md).

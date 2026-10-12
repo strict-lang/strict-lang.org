@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 656" font-family="Segoe UI, Helvetica, Arial, sans-serif">
-  <title>Strict layers: VS Code and NativeCompiler on top of the Strict packages</title>
+  <title>Strict layers: VS Code and strict on top of the Strict packages</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" fill="#21434C"/>
@@ -10,12 +10,12 @@
   </defs>
   <rect width="960" height="656" fill="#ffffff"/>
   <text x="24" y="38" font-size="22" font-weight="600" fill="#21434C">Strict layers</text>
-  <text x="24" y="62" font-size="14" fill="#4a6670">Every package is a folder of .strict files in the Strict repository. NativeCompiler compiles all of them, including itself.</text>
+  <text x="24" y="62" font-size="14" fill="#4a6670">Every package is a folder of .strict files in the Strict repository. The strict command compiles all of them, including itself.</text>
 
   <!-- tools -->
   <rect x="24" y="84" width="212" height="96" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
   <text x="130" y="122" font-size="16" font-weight="600" fill="#21434C" text-anchor="middle">Terminal, CI, agents</text>
-  <text x="130" y="144" font-size="12" fill="#21434C" text-anchor="middle">call NativeCompiler directly,</text>
+  <text x="130" y="144" font-size="12" fill="#21434C" text-anchor="middle">call strict directly,</text>
   <text x="130" y="161" font-size="12" fill="#21434C" text-anchor="middle">exit codes count failures</text>
 
   <rect x="252" y="84" width="452" height="96" rx="10" fill="#0078D4"/>
@@ -30,24 +30,24 @@
   <text x="832" y="140" font-size="12" fill="#21434C" text-anchor="middle">in Strict, for autocomplete,</text>
   <text x="832" y="157" font-size="12" fill="#21434C" text-anchor="middle">hover and go to definition</text>
 
-  <!-- NativeCompiler -->
+  <!-- strict -->
   <rect x="24" y="208" width="680" height="60" rx="10" fill="#21434C"/>
-  <text x="364" y="234" font-size="19" font-weight="600" fill="#ffffff" text-anchor="middle">NativeCompiler  build | test | check | run</text>
-  <text x="364" y="255" font-size="12" fill="#D6EAF3" text-anchor="middle">one native executable, written in Strict, builds itself byte for byte</text>
+  <text x="364" y="234" font-size="19" font-weight="600" fill="#ffffff" text-anchor="middle">strict  &lt;file&gt; | build | test | check | version</text>
+  <text x="364" y="255" font-size="12" fill="#D6EAF3" text-anchor="middle">Strict.strict, one native executable written in Strict, builds itself byte for byte</text>
 
   <rect x="728" y="208" width="208" height="60" rx="10" fill="#EAF4F9" stroke="#21434C" stroke-width="2"/>
   <text x="832" y="234" font-size="14" font-weight="600" fill="#21434C" text-anchor="middle">Bootstrap.mlir seed</text>
-  <text x="832" y="254" font-size="12" fill="#21434C" text-anchor="middle">the compiler as MLIR</text>
+  <text x="832" y="254" font-size="12" fill="#21434C" text-anchor="middle">strict itself as MLIR</text>
 
   <!-- execution -->
   <rect x="24" y="288" width="332" height="80" rx="10" fill="#2F6F8A"/>
   <text x="190" y="318" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Runtime</text>
   <text x="190" y="340" font-size="12" fill="#E3F1F7" text-anchor="middle">the Strict VM runs the instructions</text>
-  <text x="190" y="357" font-size="12" fill="#E3F1F7" text-anchor="middle">NativeCompiler run, run test</text>
+  <text x="190" y="357" font-size="12" fill="#E3F1F7" text-anchor="middle">strict &lt;file&gt;, strict test</text>
 
   <rect x="372" y="288" width="332" height="80" rx="10" fill="#2F6F8A"/>
   <text x="538" y="318" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Compiler</text>
-  <text x="538" y="340" font-size="12" fill="#E3F1F7" text-anchor="middle">MLIR code and the native runtime,</text>
+  <text x="538" y="340" font-size="12" fill="#E3F1F7" text-anchor="middle">strict build: MLIR code and the native runtime,</text>
   <text x="538" y="357" font-size="12" fill="#E3F1F7" text-anchor="middle">then mlir-opt, mlir-translate and clang</text>
 
   <rect x="728" y="288" width="208" height="80" rx="10" fill="#EAF4F9" stroke="#21434C" stroke-width="2"/>
@@ -56,40 +56,29 @@
   <text x="832" y="357" font-size="12" fill="#21434C" text-anchor="middle">no runtime needed</text>
 
   <!-- compiling -->
-  <rect x="24" y="384" width="332" height="80" rx="10" fill="#52A0C6"/>
-  <text x="190" y="414" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Bytecode</text>
-  <text x="190" y="436" font-size="12" fill="#ffffff" text-anchor="middle">FileCompiler, codegens, Linker,</text>
-  <text x="190" y="453" font-size="12" fill="#ffffff" text-anchor="middle">constant folding, .strictbinary</text>
+  <rect x="24" y="384" width="448" height="80" rx="10" fill="#52A0C6"/>
+  <text x="248" y="414" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Bytecode</text>
+  <text x="248" y="436" font-size="12" fill="#ffffff" text-anchor="middle">FileCompiler, codegens, Linker,</text>
+  <text x="248" y="453" font-size="12" fill="#ffffff" text-anchor="middle">constant folding, test removal, .strictbinary</text>
 
-  <rect x="372" y="384" width="332" height="80" rx="10" fill="#52A0C6"/>
-  <text x="538" y="414" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Validators</text>
-  <text x="538" y="436" font-size="12" fill="#ffffff" text-anchor="middle">ValidateCheck, TypeValidator, UsageRules,</text>
-  <text x="538" y="453" font-size="12" fill="#ffffff" text-anchor="middle">Names, Limits, ConstantCollapser</text>
-
-  <rect x="728" y="384" width="208" height="80" rx="10" fill="#ffffff" stroke="#9AAAB0" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="832" y="414" font-size="15" font-weight="600" fill="#6B7F86" text-anchor="middle">Older packages</text>
-  <text x="832" y="436" font-size="12" fill="#6B7F86" text-anchor="middle">Language, HighLevelRuntime,</text>
-  <text x="832" y="453" font-size="12" fill="#6B7F86" text-anchor="middle">TestRunner, Optimizers</text>
+  <rect x="488" y="384" width="448" height="80" rx="10" fill="#52A0C6"/>
+  <text x="712" y="414" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">Validators</text>
+  <text x="712" y="436" font-size="12" fill="#ffffff" text-anchor="middle">strict check: ValidateCheck, TypeValidator, UsageRules,</text>
+  <text x="712" y="453" font-size="12" fill="#ffffff" text-anchor="middle">Names, Limits, ConstantCollapser</text>
 
   <!-- front end -->
-  <rect x="24" y="480" width="680" height="64" rx="10" fill="#8CC2DD"/>
-  <text x="364" y="506" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">Expressions</text>
-  <text x="364" y="528" font-size="12" fill="#21434C" text-anchor="middle">Tokenizer, parsers, syntax tree, TypeShape, TypeInference, ResolveCheck</text>
+  <rect x="24" y="480" width="912" height="64" rx="10" fill="#8CC2DD"/>
+  <text x="480" y="506" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">Expressions</text>
+  <text x="480" y="528" font-size="12" fill="#21434C" text-anchor="middle">Tokenizer, parsers, syntax tree, TypeShape, TypeInference, ResolveCheck</text>
 
   <!-- library -->
-  <rect x="24" y="560" width="452" height="72" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
-  <text x="250" y="590" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">Base types</text>
-  <text x="250" y="613" font-size="12" fill="#21434C" text-anchor="middle">33 root types: Number, Text, List, Dictionary, Error, File, ...</text>
+  <rect x="24" y="560" width="552" height="72" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
+  <text x="300" y="590" font-size="18" font-weight="600" fill="#21434C" text-anchor="middle">Base types</text>
+  <text x="300" y="613" font-size="12" fill="#21434C" text-anchor="middle">33 root types: Number, Text, List, Dictionary, Error, File, Process, ...</text>
 
-  <rect x="492" y="560" width="212" height="72" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
-  <text x="598" y="590" font-size="16" font-weight="600" fill="#21434C" text-anchor="middle">Packages</text>
-  <text x="598" y="613" font-size="12" fill="#21434C" text-anchor="middle">Math, ImageProcessing, Examples</text>
-
-  <rect x="728" y="480" width="208" height="152" rx="10" fill="#ffffff" stroke="#9AAAB0" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="832" y="532" font-size="15" font-weight="600" fill="#6B7F86" text-anchor="middle">dotnet branch</text>
-  <text x="832" y="554" font-size="12" fill="#6B7F86" text-anchor="middle">the C# implementation that</text>
-  <text x="832" y="571" font-size="12" fill="#6B7F86" text-anchor="middle">bootstrapped Strict, and the</text>
-  <text x="832" y="588" font-size="12" fill="#6B7F86" text-anchor="middle">old C# Language Server</text>
+  <rect x="592" y="560" width="344" height="72" rx="10" fill="#EAF4F9" stroke="#52A0C6" stroke-width="2"/>
+  <text x="764" y="590" font-size="16" font-weight="600" fill="#21434C" text-anchor="middle">Packages</text>
+  <text x="764" y="613" font-size="12" fill="#21434C" text-anchor="middle">Math, ImageProcessing, Examples and your own project</text>
 
   <!-- arrows -->
   <g stroke="#21434C" stroke-width="2" fill="none">
@@ -99,6 +88,6 @@
     <line x1="704" y1="328" x2="724" y2="328" marker-end="url(#arrow)"/>
   </g>
   <line x1="728" y1="132" x2="708" y2="132" stroke="#0078D4" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrowBlue)"/>
-  <text x="140" y="198" font-size="11" fill="#4a6670">build, test, check, run</text>
-  <text x="488" y="198" font-size="11" fill="#4a6670">run test, check, run</text>
+  <text x="140" y="198" font-size="11" fill="#4a6670">&lt;file&gt;, build, test, check</text>
+  <text x="488" y="198" font-size="11" fill="#4a6670">test, check, &lt;file&gt;</text>
 </svg>
