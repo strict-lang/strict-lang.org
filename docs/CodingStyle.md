@@ -41,7 +41,7 @@ There is exactly one way to format Strict code:
 * **Values never change.** `list + element` gives a new list, and a `mutable` variable can only be reassigned to such a new value. Never change an old version of a list. A list is either fixed, or growing and then only its latest version is used.
 * **Tests are Boolean comparisons** at the start of every method. `is true` is never written.
 * **Other packages are written as `Package/Type`** only in declarations: members, parameters and return types. Method bodies use the plain type name.
-* **`is` has the lowest precedence.** Write `(a is b) and (c is d)`, see [precedence](Statements.md#precedence).
+* **Comparisons bind before Boolean operators.** `a is b and c is d` needs no extra brackets, see [precedence](Statements.md#precedence).
 * **A conditional as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.
 * **Keywords and operator words** (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, `let`, ...) can't be names. A parameter can't be called `value` either, because that is always the instance.
 * **No duplicated code.** Use what exists: `Text.Combine` instead of joining texts in your own loop, `Length` instead of `characters.Length`. Strict replaces reimplemented code with the existing method.

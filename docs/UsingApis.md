@@ -20,9 +20,24 @@ Width Number
 Height Number
 ```
 
-It is implemented by a small C library in [`NativePlugins/ImageLoader`](https://github.com/strict-lang/Strict/tree/master/NativePlugins/ImageLoader), which uses stb_image to decode JPG and PNG files. It exports `ImageLoader_Create`, `ImageLoader_Colors` and `ImageLoader_Delete` through a plain C interface. [`NativePlugins/ImageSaver`](https://github.com/strict-lang/Strict/tree/master/NativePlugins/ImageSaver) does the same for writing images.
+The image codecs are now implemented in Strict in the [ImageProcessing package](https://github.com/strict-lang/Strict/tree/master/ImageProcessing), including PNG and JPG reading and PNG writing. The old `NativePlugins` integration has been replaced by package-local native code where an external implementation is needed.
 
-The base types use the same idea for the operating system. `File`, `Directory`, `Process` and `Logger` are Strict types whose bodies come from the [native runtime](Architecture.md#compiler).
+# Native packages
+
+A bodyless type can be implemented by C sources in a `native/` folder next to its `.strict` file. The working [NativeAdd example](https://github.com/strict-lang/Strict/tree/master/Examples/NativeAdd) includes an `Adder.strict` trait with this header:
+
+```
+Add(left Number, right Number) Number
+```
+
+Its `native/Adder.c` exports `Adder_Add`. Calls on a type pass zero as `self`; a native type with one member can instead hold a handle returned by its bodyless `from` constructor.
+
+* Every argument and result uses one double-sized slot. The shared [strict.h](https://github.com/strict-lang/Strict/blob/master/Compiler/strict.h) exposes helpers for Text, Numbers, packed numeric rows and `strict_fail("Name")` errors.
+* `strict build` compiles and links the C sources. `native/Windows.flags` and `native/Linux.flags` supply platform libraries and flags. Compiled objects are reused until their source, headers or flags change.
+* The VM builds and loads `native/<Folder>.dll` on Windows or `.so` on Linux. Packages copied into a project retain their `native/` folder.
+* A bodyless trait call needs an implementation. On the VM a missing one returns `TraitHasNoImplementation`; it is not an automatic bridge to an arbitrary C#, Java or Python library. Those libraries need an appropriate native adapter or external process/API boundary.
+
+The base types use the native runtime for operating-system services: `File`, `Directory`, `Process` and `Logger`. See [Architecture](Architecture.md#compiler).
 
 # Structure based on intent
 

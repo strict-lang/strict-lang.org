@@ -57,10 +57,11 @@ Operators work on lists element by element: `(1, 2) * 3 is (3, 6)` and `(1, 2) *
 
 Arithmetic works as in mathematics: `(1 + 2) * 3 is not 1 + 2 * 3`. These rules are worth knowing:
 
-* **`is` has the lowest precedence.** `a is b and c is d` must be written `(a is b) and (c is d)`.
-* **`is not` and `is not in` bind tighter**, so `value > 31 and value is not in (34, 92)` needs no brackets.
+* **Comparisons bind before Boolean operators.** `a is b and c is d` means `(a is b) and (c is d)`. `value > 31 and value is not in (34, 92)` needs no brackets.
+* **From loosest to tightest:** `then`/`else`, `not`, `or`, `xor`, `and`, comparisons (`is`, `is not`, `is in`, `is not in`, `<`, `>`, `<=`, `>=`), `in`, `+`/`-`, `%`, `*`/`/`, `^`, `to`.
+* **Numbers have bitwise `and`, `or` and `xor`.** Write `(12 and 10) is 8` to compare a bitwise result, because comparisons bind more tightly than `and`.
 * **A conditional used as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.
-* **`(x)` is just `x`**, brackets only group. Where a single-element list is needed and the type isn't clear, build it with `List(Number) + x`.
+* **Single-element brackets have a known ambiguity.** `(x)` can currently produce a list instead of grouping a bare value. Use `List(Number) + x` when you need an explicit one-element number list, and avoid redundant brackets around bare values. See the [current reproductions](https://github.com/strict-lang/Strict/blob/master/improvements.md).
 
 # Lines are short
 

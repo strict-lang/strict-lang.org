@@ -5,7 +5,7 @@ title: For
 
 `for` is the only loop in Strict. It enumerates anything that can be iterated: lists, texts, numbers, ranges, dictionaries and any type with a `for` method. The syntax is closer to functional languages than to C-style loops. A `for` is an expression, and its result can filter, map, sum, multiply or concatenate values, often in two lines.
 
-A `for` loop is also the one place where `mutable` variables make sense. The compiler works hard to avoid actual mutation at runtime, so almost all code can run without side effects and in parallel. You never write threads, processes, async code or locks. Running loops in parallel, and even on the GPU when that is faster, is up to the runtime.
+A `for` loop is also the one place where `mutable` variables make sense. The compiler works hard to avoid actual mutation at runtime, so almost all code can run without side effects and in parallel. You never write threads, processes, async code or locks. Native builds can run eligible pure numeric collecting loops on a CPU worker pool or an NVIDIA GPU. Loops with logging, mutation or other side effects remain serial. See [Concurrency](Concurrency.md) for eligibility and current limits.
 
 # Normal iteration
 
@@ -113,6 +113,16 @@ for Iterator(Vector2)
 ```
 
 `Size(0, 0)` or `Size(-1, 5)` are not valid, because the constraints require all dimensions to be positive.
+
+# Condition-controlled loops
+
+`for as long as condition` repeats while the Boolean condition is true. A plain `for` over a Boolean is a `NotIterable` error. For example, inside a method:
+
+```
+mutable count = 0
+for as long as count < 3
+	count = count + 1
+```
 
 # outer
 
@@ -370,16 +380,17 @@ Remove Text
 
 # Image processing
 
-Iterating over a multidimensional type and changing a mutable parameter, from [`ImageProcessing/AdjustBrightness.strict`](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/AdjustBrightness.strict):
+Parameters never change. Work on a mutable local copy and return it, as [`ImageProcessing/AdjustBrightness.strict`](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/AdjustBrightness.strict) does:
 
 ```
-Process(mutable image) Image
+Process(image) Image
 	constant testImage = Image(Size(1, 1), (testColor))
 	AdjustBrightness(0.25).Process(testImage) is Image(Size(1, 1), (ColorValue(0.5, 0.75, 0.5)))
-	for image.Size
-		let normalized = image.Colors(index) to ColorValue
-		image.Colors(index) = GetBrightnessAdjustedColor(normalized)
-	image
+	AdjustBrightness(0.5).Process(Image(Size(1, 1), (testColor))) is Image(Size(1, 1), (ColorValue(0.75, 1, 0.75)))
+	mutable adjusted = image
+	for adjusted.Size
+		adjusted.Colors(index) = GetBrightnessAdjustedColor(adjusted.Colors(index))
+	adjusted
 ```
 
-You don't need to think about loop order for cache efficiency, for example iterating over y first. Strict picks the fastest execution. If it can see that the input image stays unchanged and the result is assigned back to it, it removes the mutation and just swaps two images (double buffering).
+The input remains readable as its original value. This loop writes image elements and is not eligible for the pure numeric parallel-loop path.

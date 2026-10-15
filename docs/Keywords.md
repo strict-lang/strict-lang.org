@@ -16,7 +16,7 @@ Keywords and operator words can't be used as names.
 | `constant` | Member or variable computed only from constants, always optimized away | [Members and Variables](Variables.md) |
 | `let` | Variable that doesn't change | [Members and Variables](Variables.md) |
 | `mutable` | Member or variable that may change (parameters never do) | [Members and Variables](Variables.md) |
-| `with` | Constraint on a member | [Types](Types.md#constraints-with-with) |
+| `with` | Constraint on a member or parameter | [Types](Types.md#constraints-with-with) |
 | `from` | Custom constructor | [Types](Types.md#creating-instances) |
 
 # Control flow
@@ -26,6 +26,7 @@ Keywords and operator words can't be used as names.
 | `if`, `else` | Conditional blocks, `else if` chains and selector `if` | [If](If.md) |
 | `then` | Single-line conditional `condition then a else b` and selector cases | [If](If.md) |
 | `for` | The only loop, also the `for` method that makes a type iterable | [For](For.md) |
+| `as long as` | Repeat a `for` while its condition is true | [For](For.md#condition-controlled-loops) |
 | `in` | Containment (`is in`), and naming a loop variable | [For](For.md) |
 | `return` | Leave a method early with a value | [Methods](Methods.md) |
 
@@ -55,7 +56,7 @@ Keywords and operator words can't be used as names.
 
 The base types in the [repository root](https://github.com/strict-lang/Strict) are always available, everything else is found by name. [Base Types](BaseTypes.md) describes each of them:
 
-`Any`, `Boolean`, `Byte`, `BytesReader`, `BytesWriter`, `Character`, `Closeable`, `Dictionary`, `Directory`, `Enum`, `Error`, `ErrorWithValue`, `File`, `Generic`, `HashCode`, `Iterator`, `Length`, `List`, `Logger`, `Method`, `Mutable`, `Name`, `Number`, `Path`, `Process`, `ProcessResult`, `Range`, `Stacktrace`, `Text`, `TextReader`, `TextWriter`, `Type`, `Variable`
+`Any`, `Boolean`, `Byte`, `BytesReader`, `BytesWriter`, `Character`, `Closeable`, `Dictionary`, `Directory`, `Enum`, `Error`, `ErrorWithValue`, `File`, `Generic`, `HashCode`, `Iterator`, `Length`, `Library`, `List`, `Logger`, `Method`, `Mutable`, `Name`, `Number`, `Path`, `Process`, `ProcessResult`, `Range`, `Stacktrace`, `Text`, `TextReader`, `TextWriter`, `Type`, `Variable`
 
 # Package structure
 

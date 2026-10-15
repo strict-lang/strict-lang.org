@@ -51,9 +51,27 @@ Numbers.X is Error
 
 An error can also be created with a message: `Error("Cannot downcast Text to Number for list: Text \"Hi\"")`.
 
+# Handling an error
+
+Keep the result, check it, then use the normal value. From [`Examples/ErrorHandling.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ErrorHandling.strict):
+
+```
+Checked Number
+	ErrorHandling(5).Checked is 10
+	ErrorHandling(0).Checked is 0
+	let found = Found
+	if found is Error
+		return 0
+	found * 2
+```
+
+`is Error` matches any error; `is Missing` or `is Error("Missing")` matches a named one. `found is in (Missing, Error("Other"))` matches several. Inside `if found is Error`, `found` is treated as an Error, so `found.Name` and `found to Text` are available.
+
 # Errors stop execution
 
-You can't use an error as a normal value. Using it, or any expression on its own line that isn't true, stops execution and shows the error message with clickable `file:line` locations pointing back into the `.strict` source. Each location is a [`Stacktrace`](https://github.com/strict-lang/Strict/blob/master/Stacktrace.strict):
+An error must be handled where it appears. You can return it, keep it in a `let` or `mutable` variable, or compare it against an error. Arithmetic, comparisons such as `<`, conditions, calls, arguments, storing an error in a member or list, or dropping it as a statement immediately stop the current method and return that error to its caller. Each caller adds a stack frame.
+
+A failed test reports the error as its actual value. An unhandled error reaching `Run` prints `Error: Name` and its stack trace and exits with code 1. A standalone Boolean expression must also be true; otherwise it fails. Each trace location points into the `.strict` source and is a [`Stacktrace`](https://github.com/strict-lang/Strict/blob/master/Stacktrace.strict):
 
 ```
 has Method

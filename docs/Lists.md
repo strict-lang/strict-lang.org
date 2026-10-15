@@ -167,4 +167,12 @@ for someDictionary
 
 You might be surprised how simple `Dictionary.strict` is: lookups are plain loops over pairs. The base types describe how a type behaves functionally, not how it is made fast. All optimizations happen at runtime, where Strict decides on the internal structure based on how the dictionary is used.
 
-`Dictionary` methods don't work in native executables yet, because generic types aren't compiled per concrete type there. It's at the top of the [improvements list](https://github.com/strict-lang/Strict/blob/master/improvements.md).
+Dictionaries and generic types compile for their concrete key and value types on both the Strict VM and native backend. Native lookup supports instance keys by comparing their members. A mutable dictionary also supports indexed assignment:
+
+```
+mutable prices = Dictionary(Text, Number)
+prices.Add("Apple", 2)
+prices("Apple") = 3
+```
+
+`Add` rejects duplicate keys; indexed assignment updates the mapped value. A mutating call used as a statement must target a `mutable` variable, otherwise it is a `MutatingCallNeedsMutableVariable` error.

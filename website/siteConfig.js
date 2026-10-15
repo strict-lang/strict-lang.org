@@ -14,7 +14,7 @@ const hljs = require('highlight.js');
 const strictLanguage = hljs => ({
   aliases: ['str'],
   keywords: {
-    keyword: 'has constant let mutable if else then for in is not and or xor return to from with',
+    keyword: 'has constant let mutable if else then for in is not and or xor return to from with as long',
     literal: 'true false None',
     built_in: 'value index outer',
   },

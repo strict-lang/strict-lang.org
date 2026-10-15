@@ -19,7 +19,7 @@
       "Grammar"
     ],
     "Rules": ["CodingStyle", "CodeValidations", "Naming"],
-    "Source": ["BaseTypes", "Architecture", "Examples"],
+    "Source": ["BaseTypes", "Architecture", "Examples", "MachineLearning"],
     "More": ["UsingApis", "Concurrency", "Microservices"]
   }
 }

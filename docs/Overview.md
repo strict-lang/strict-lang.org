@@ -60,7 +60,7 @@ Values never change. `list + element` gives a new list. `mutable` exists, but on
 
 ## Fast
 
-Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. 1 million loop iterations take 45 ms as a native executable (227 KB) and 245 ms on the Strict VM. `strict` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
+Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The current runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. `strict` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
 
 ## Small
 
@@ -69,6 +69,16 @@ The base library has a few dozen types: [`Boolean`](https://github.com/strict-la
 ## Not general purpose
 
 Strict is NOT a general-purpose language. If you want to build a website, a complex app, database code or a game, use external code for that. You can keep the logic in Strict and call any web API or C, C++, C#, Java or Python library. External code is a black box: computers can no longer understand it, and it doesn't follow the strict rules. See [Using APIs](UsingApis.md).
+
+# Current developments
+
+* **Faster feedback:** `.strictbinary` caches reuse tested bytecode until source or test-read files change; `strict test <file> lines` provides native line counts and timings.
+* **Packages and native code:** `strict update .` refreshes fetched packages, and package-local `native/` C code works on the VM and in native builds.
+* **Language improvements:** native generic dictionaries, member replacement copies, parameter constraints and `for as long as` loops are implemented. Errors propagate immediately with source stack frames when used without handling.
+* **Working workloads:** [Machine Learning](MachineLearning.md) introduces classifiers, training examples, GPT-2 and Qwen3 inference.
+* **VS Code:** completion, navigation, rename, coverage, formatting and implementations suggested from tests are available without a separate language server.
+
+See the [October 15 update](/blog/2026/10/15/strict-packages-parallel-loops-and-models) for the changes since self-hosting.
 
 # Key design decisions
 

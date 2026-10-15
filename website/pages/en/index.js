@@ -145,7 +145,7 @@ class Index extends React.Component {
             title: "Tested by design",
             content:
               "Every method starts with tests that show how to use it. The base library is the documentation of the language. " +
-              "In VS Code, SCrunch runs the tests on every save. " +
+              "In VS Code, SCrunch tests on save, shows timings and native coverage, and reuses cached results. " +
               "[Tests](/docs/Tests)"
           },
           {
@@ -169,7 +169,7 @@ class Index extends React.Component {
           {
             title: "Fast and native",
             content:
-              "MLIR, LLVM and clang turn Strict into small native executables for Windows and Linux. Immutable values reuse memory in place instead of copying. " +
+              "MLIR, LLVM and clang produce native executables for Windows and Linux. Eligible numeric loops use SIMD, CPU workers and NVIDIA GPUs. " +
               "[Getting Started](/docs/GettingStarted)"
           },
           {
@@ -177,6 +177,21 @@ class Index extends React.Component {
             content:
               "A few dozen base types: `Number`, `Text`, `List`, `Dictionary`, `Range`, `Error`, `Logger`, `File` and a handful of traits. External code plugs in through traits. " +
               "[Base Types](/docs/BaseTypes)"
+          }
+        ]}
+      </Block>
+    );
+
+    const Latest = () => (
+      <Block background="light">
+        {[
+          {
+            title: "October 2026: packages, parallel loops and language models",
+            content:
+              "Strict now caches tested bytecode, refreshes packages and profiles source lines. " +
+              "Native C packages work on the VM and in executables; the VS Code extension adds completion, navigation and implementations from tests. " +
+              "[Machine-learning examples](/docs/MachineLearning) include GPT-2 and Qwen3 inference. " +
+              "[Read the latest update](/blog/2026/10/15/strict-packages-parallel-loops-and-models)"
           }
         ]}
       </Block>
@@ -202,6 +217,7 @@ class Index extends React.Component {
           <LearnHow />
           <Example />
           <Features />
+          <Latest />
           <Pipeline />
         </div>
       </div>

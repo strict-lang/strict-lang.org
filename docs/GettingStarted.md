@@ -38,12 +38,13 @@ Compiler\Bootstrap.cmd        # Windows, creates strict.exe in the Strict folder
 sh Compiler/bootstrap.sh      # Linux, creates strict in the Strict folder
 ```
 
-From now on `strict` can build itself from its own `.strict` sources. A running `strict.exe` can't overwrite itself on Windows, so build through a copy:
+From now on `strict` can build itself from its own `.strict` sources:
 
 ```sh
-copy strict.exe strict0.exe
-strict0 build Strict.strict
+strict build Strict.strict
 ```
+
+On Windows the compiler links `strict.new.exe`, swaps it into place and keeps the running executable as `strict.old.exe` until the next build.
 
 Running this twice gives byte-identical output. `strict` is a fixpoint of itself.
 
@@ -64,7 +65,7 @@ export PATH="$PATH:$HOME/Strict"
 Check that it works:
 
 ```sh
-strict version    # 1.0 2026-10-12 01:27
+strict version    # prints the version and build date
 ```
 
 `strict version` prints the version number and when this `strict` was built. `strict` alone, `strict help` or `--help` lists the commands.
@@ -83,8 +84,11 @@ strict build Examples/Sum.strict     # run the tests, then build a native execut
 | Command | What it does | Exit code |
 |---------|--------------|-----------|
 | `strict <file> [arguments]` | Compiles the file to bytecode and runs its `Run` method on the Strict VM. This is the fastest way to run code, everything stays in memory and no native code is involved. Arguments are passed to `Run` as numbers. A type without a `Run` method runs all its tests instead. | 0 |
-| `strict test <file>` | Runs the inline tests of every method on the Strict VM. Prints every failing test with the value it got. | number of failed tests |
-| `strict check <folder>` | Runs the [validators](CodeValidations.md) on every `.strict` file in the folder. | number of validation issues |
+| `strict test <file or folder>` | Runs inline tests on the Strict VM. A folder includes its package subfolders. Prints test locations and timings, or a cached result when nothing changed. | number of failed tests |
+| `strict test <file> lines` | Builds and runs tests natively, then reports execution counts, total time and self time per source line. Requires the native toolchain. | number of failed tests, nonzero on build failure |
+| `strict format <file>` | Prints the canonical source to standard output; it does not overwrite the file. | 0 on success, nonzero on parsing failure |
+| `strict update .` | Refreshes copied packages from their `.origin` sources. Run this inside your project folder. | 0 on success |
+| `strict check <folder>` | Runs the [validators](CodeValidations.md) on every `.strict` file in the folder and its package subfolders. | number of validation issues |
 | `strict build <file>` | Runs the tests first. If they pass, it compiles the type and every type it uses into MLIR, lowers it with `mlir-opt` and `mlir-translate`, and `clang` links `Name.exe` (Windows) or `Name` (Linux) next to the `.strict` file. On Windows it also builds the Linux executable through WSL. The executable and its `.mlir` are kept, the other tool files are removed. A type without a `Run` method builds its tests into `Name.test.exe` instead, whose exit code is the number of failed tests. | number of failed tests, 1 if the native build failed |
 | `strict version` | Prints the version number and when this `strict` was built. | 0 |
 
@@ -106,12 +110,14 @@ A type is used by its name, there are no imports. `strict` looks for it in this 
 
 1. **The current folder and all its sub folders.** In your project folder, `Shapes/Square.strict` is just `Square`. Your own packages win over the ones that come with Strict.
 2. **The folder of the `strict` executable.** All base types and all packages of the Strict repository (`Math`, `ImageProcessing`, `Examples`, ...) live there. This is why putting the Strict folder on the `PATH` is all the setup a project needs.
-3. **The GitHub repositories linked in your project's README.**
-4. **All repositories of [github.com/strict-lang](https://github.com/strict-lang/).**
+3. **Package folders in sibling projects.** Local projects next to yours can supply types and their `native/` implementations in place.
+4. **The GitHub repositories linked in your project's README, then [github.com/strict-lang](https://github.com/strict-lang/).** Missing packages are copied from local clones when available, or downloaded with `curl`. Their subfolders and `native/` code come with them.
 
 If the type isn't found anywhere, compilation fails. The error names the missing type and has tips on how to fix it: correct the typo, or tell the compiler where to find the type, for example by adding its package to your project folder or linking its repository in your README.
 
-A folder after the file overrides where the base types come from, for example `strict test Game.strict C:/code/Strict`. You rarely need it.
+Copied packages have a `.origin` file naming their source. Run `strict update .` from the project folder to refresh them; a package missing a newly used type is also refreshed automatically. A declaration like `has scene WebWars/Scene` selects a specific package when type names collide. Otherwise Strict prefers the file's own folder and reports `AmbiguousType` if it cannot choose.
+
+A folder containing `Any.strict` after the file overrides where the base types come from, for example `strict test Game.strict C:/code/Strict`. Put it before program arguments. Use paths relative to the project root: absolute paths still have known type-resolution gaps.
 
 # 7. Your first type
 
@@ -172,7 +178,14 @@ The [Strict extension for VS Code](https://github.com/strict-lang/strict-vscode-
 
 To install it, clone [strict-vscode-client](https://github.com/strict-lang/strict-vscode-client) next to the Strict repository, run `bun install` and `bun run package`, then use *Extensions: Install from VSIX…* in VS Code. The extension always uses the newest `strict.exe` it finds (in the workspace, or in a `Strict` folder next to it or next to the extension), so rebuilding `strict` is enough to update it. The `strict.root` setting forces one folder.
 
-Autocomplete, hover and go to definition will come with a language server written in Strict.
+The extension also provides completion, hover, go to definition, signature help, references, rename and call hierarchy by indexing `.strict` source files. A language server written in Strict remains future work.
+
+* **Timings and coverage:** test durations, slow-test reports and Run with Coverage, using `strict test <file> lines` for native execution counts and total/self timings.
+* **Implementations from tests:** ghost-text suggestions are checked against the method's tests before you accept them. Strong tests matter: a suggestion passing weak tests can still be wrong.
+* **Editing tools:** Format Document uses `strict format`; quick fixes, Fix All, extract/inline refactorings and create-from-usage help maintain the canonical style.
+* **Build and packages:** Strict: Build Native Executable and Strict: Update Packages run the same CLI commands available in a terminal.
+
+See the [extension README](https://github.com/strict-lang/strict-vscode-client#features) for commands, settings and known limitations.
 
 ## Other editors
 
@@ -180,4 +193,4 @@ Autocomplete, hover and go to definition will come with a language server writte
 
 # Status
 
-Strict compiles itself, but not every feature of the base library works natively yet. Each remaining gap has a failing inline test. The [improvements list](https://github.com/strict-lang/Strict/blob/master/improvements.md) names them in priority order, for example `Dictionary` methods and operators between lists.
+Native dictionaries, concrete generic instances, list operators, package fetching and `.strictbinary` caching are implemented. Remaining issues include some member/parameter defaults, multiple types with the same name in one build, absolute-path resolution and complete stack-overflow diagnostics. GPU execution currently covers eligible numeric loops, not arbitrary Strict code. The [improvements list](https://github.com/strict-lang/Strict/blob/master/improvements.md) tracks the current reproductions and limitations.

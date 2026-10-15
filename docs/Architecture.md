@@ -35,9 +35,9 @@ Only code that is actually called is parsed, validated, tested and executed. Thi
 * Every value is one 64-bit slot. Numbers are doubles, and texts, lists and instances are pointer bits. `Error` values carry a tag in the top bits, so `x is Error` works for a value of any type.
 * A type with one member is that member: `Name` is its text, `Degrees` its number. Other instances are heap blocks with one slot per member.
 * Lists append in place as long as they are the newest version.
-* Memory is managed by a conservative mark-sweep collector with 64 KB pages, size classes and interior pointers. It collects after 4 MB or 8 times the live data. 1 million loop iterations on the Strict VM use 9 MB.
+* Memory is managed by a conservative mark-sweep collector with 64 KB pages, size classes and interior pointers. It collects after 16 MB or 8 times the live data. The current runtime measurements report 22 MB for 1 million VM loop iterations.
 
-Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 ms on the Strict VM, and 420 ms with the old C# `Strict.exe`. `strict` builds itself in about 10 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
+The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Runtime/README.md) reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These development measurements depend on the workload and hardware. `strict` builds itself in about 10 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
 
 # Expressions
 
@@ -70,7 +70,7 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 **Tools**
 
 - [`TypeReport`](https://github.com/strict-lang/Strict/blob/master/Expressions/TypeReport.strict): logs the inferred type of every statement line in a folder.
-- [`RoundTrip`](https://github.com/strict-lang/Strict/blob/master/Expressions/RoundTrip.strict): checks that parsed method bodies print back exactly as their source lines.
+- [`RoundTrip`](https://github.com/strict-lang/Strict/blob/master/Validators/RoundTrip.strict): checks that parsed method bodies print back exactly as their source lines.
 
 # Validators
 
@@ -94,6 +94,10 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`SourceFiles`](https://github.com/strict-lang/Strict/blob/master/Bytecode/SourceFiles.strict): collects the `.strict` files of the source folder and the packages it references.
 - [`TypeCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/TypeCodegen.strict): compiles a type's lines into a `TypeEntry`: members, constants, and all or only the selected methods.
 - [`Linker`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Linker.strict): repeatedly adds the used types, with only their called methods, to the compiled entry type.
+
+**Caches and packages**
+
+Successful tests write a `.strictbinary` cache. Source and test-read file timestamps determine freshness, so unchanged code can run, test and build without recompilation. Matching package caches can be referenced instead of embedding the same dependencies repeatedly. `strict update .` refreshes packages tracked by `.origin`; resolution can use sibling projects, local clones or GitHub. See [Getting Started](GettingStarted.md#6-how-strict-finds-types) and [Tests](Tests.md#folder-tests-caches-and-profiling).
 
 **Code generation**
 
@@ -136,15 +140,15 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 
 # Runtime
 
-[`Runtime`](https://github.com/strict-lang/Strict/tree/master/Runtime) is the Strict VM. It runs the instructions that `FileCompiler` produces, using immutable frames and values. `strict <file>` and `strict test` call [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict).
+[`Runtime`](https://github.com/strict-lang/Strict/tree/master/Runtime) is the Strict VM. It runs the instructions that `FileCompiler` produces, using slot-based frames and values. `strict <file>` and `strict test` call [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict).
 
 - [`Execute`](https://github.com/strict-lang/Strict/blob/master/Runtime/Execute.strict): compiles a file, checks that it has a `Run` method, converts the command-line numbers, and launches the machine or runs the tests.
 - [`Machine`](https://github.com/strict-lang/Strict/blob/master/Runtime/Machine.strict): the VM core. Finds methods, binds members and parameters, and steps through the instructions, handling calls, indexing, printing and field loads.
-- [`Frame`](https://github.com/strict-lang/Strict/blob/master/Runtime/Frame.strict): the immutable state of one method execution: method, instruction position, registers and locals.
-- [`Locals`](https://github.com/strict-lang/Strict/blob/master/Runtime/Locals.strict): an immutable map from names to values for local variables.
+- [`Frame`](https://github.com/strict-lang/Strict/blob/master/Runtime/Frame.strict): executes a method using an owned list of slots for registers and locals, avoiding a new frame per instruction.
+- [`Resolver`](https://github.com/strict-lang/Strict/blob/master/Runtime/Resolver.strict): resolves names to slots before execution.
 - [`VmValue`](https://github.com/strict-lang/Strict/blob/master/Runtime/VmValue.strict): the universal runtime value (kind, number, text, items) with factories and text formatting.
 - [`Invocation`](https://github.com/strict-lang/Strict/blob/master/Runtime/Invocation.strict): decodes an invoke instruction into type, method, return type, parameters, arguments and instance.
-- [`Flow`](https://github.com/strict-lang/Strict/blob/master/Runtime/Flow.strict): control flow: returns, conditional jumps, jump ends, and dispatching loop instructions.
+- [`ErrorCheck`](https://github.com/strict-lang/Strict/blob/master/Runtime/ErrorCheck.strict): detects unhandled Error values and propagates them with source stack frames.
 - [`Looping`](https://github.com/strict-lang/Strict/blob/master/Runtime/Looping.strict): loop begin and end, keeping the `index` and `value` state for numbers, ranges, lists and texts.
 - [`Operations`](https://github.com/strict-lang/Strict/blob/master/Runtime/Operations.strict): arithmetic and comparisons, including text and list concatenation and removing list elements.
 - [`Storage`](https://github.com/strict-lang/Strict/blob/master/Runtime/Storage.strict): loads and stores between registers and locals, plus list appends.
@@ -158,7 +162,7 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 
 **Command line and toolchain**
 
-- [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) (in the repository root): the `strict` command. Runs a file, or the `test`, `check`, `build` and `version` commands, and finds the base types next to `strict.exe`.
+- [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) (in the repository root): the `strict` command. Runs a file, or the `test`, `check`, `build`, `format`, `update` and `version` commands, and finds the base types next to `strict.exe`.
 - [`NativeBuild`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeBuild.strict): `strict build`. Runs the tests, compiles the program (or its tests for a type without `Run`) to MLIR, builds the executables and removes the intermediate tool files.
 - [`Toolchain`](https://github.com/strict-lang/Strict/blob/master/Compiler/Toolchain.strict): finds and installs the tools, lowers MLIR, links executables, and cross-builds the Linux executable through WSL.
 - [`ToolRunner`](https://github.com/strict-lang/Strict/blob/master/Compiler/ToolRunner.strict): finds and runs an external tool and returns its `ProcessResult`.
@@ -184,6 +188,12 @@ Speed for 1 million loop iterations: 45 ms as a native executable (227 KB), 245 
 - [`MlirAutomatic`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirAutomatic.strict): generates automatic `to Text` for types and lists of them.
 - [`MlirEquality`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirEquality.strict): generates member-by-member equality for types and lists, used by `is`.
 
+**Native optimizations and packages**
+
+[SIMD, packed numeric rows, CPU worker pools and NVIDIA PTX kernels](Concurrency.md) accelerate eligible numeric loops. [Neural-network and machine-learning programs](MachineLearning.md) are working workloads for these paths. Ordinary `Number` values remain doubles.
+
+[Package-local `native/` C implementations](UsingApis.md#native-packages) link into native builds and load as shared libraries on the VM. Native builds reuse compiled C objects until sources, headers or flags change. On Windows an `App.ico` next to `App.strict` becomes the executable icon via `llvm-rc`; a changed icon is compiled again each build.
+
 **Native runtime**, written by hand in MLIR:
 
 - [`NativeRuntime.mlir`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeRuntime.mlir): the garbage collector, texts, lists, number formatting, math, files, arguments and processes.
@@ -206,4 +216,4 @@ Each call looks up the newest `strict.exe` again, so a rebuilt `strict` is used 
 
 # Open work
 
-[`improvements.md`](https://github.com/strict-lang/Strict/blob/master/improvements.md) lists what is missing, in priority order: finding packages in GitHub repositories, a `.strictbinary` cache so unchanged files aren't compiled and tested again, neural networks as the first real use case, the rest of the `Dictionary` generics, and errors with stack traces instead of crashes. A language server written in Strict comes after that.
+Package fetching, bytecode caching, native generic dictionaries, neural-network examples and Error stack traces are implemented. [`improvements.md`](https://github.com/strict-lang/Strict/blob/master/improvements.md) now tracks remaining defaults and resolution gaps, model formats, GPU transfers, release packaging and more complete stack-overflow diagnostics. A Strict language server remains future work; VS Code already offers completion and navigation through its own source index.

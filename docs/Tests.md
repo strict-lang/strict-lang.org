@@ -35,7 +35,7 @@ get(key Generic) Generic
 	KeyNotFound
 ```
 
-Every expression in Strict that stands on its own has to be true, not just tests. If it isn't, execution stops with an error.
+A Boolean expression standing on its own must be true, not just in tests. An unhandled Error also stops the current method and propagates to its caller, see [Errors](Errors.md).
 
 # Running tests
 
@@ -43,10 +43,10 @@ Every expression in Strict that stands on its own has to be true, not just tests
 strict test Examples/FizzBuzz.strict
 ```
 
-`test` collects the inline tests of every method into a generated `$Tests` method and runs it on the Strict VM, in memory and without the MLIR tools. Every failing test is printed with the value it actually got:
+`test` collects the inline tests of every method into a generated `$Tests` method and runs it on the Strict VM, in memory and without the MLIR tools. Each executed test reports its source location and elapsed time. A failed test also prints the value it actually got:
 
 ```text
-Test failed: Squares(1, 2, 3).Squared is (1, 4, 9) in Squared
+Test failed: Squares(1, 2, 3).Squared is (1, 4, 9) in Squared at Kata/Squares.strict:line 3 (0.02 ms)
   got: 1
 1 tests failed in Kata/Squares.strict
 ```
@@ -56,6 +56,16 @@ The exit code is the number of failed tests, so it plugs straight into any build
 `strict build` runs the same tests before it builds anything, and a failing test stops the build. For a type without a `Run` method, `strict build Character.strict` compiles the tests natively into `Character.test.exe`. Its exit code is the number of failed tests too, this is how the native code generator is tested.
 
 The [VS Code extension](GettingStarted.md#visual-studio-code) runs `strict test` for every file when a folder opens and again on every save, and shows the results as green and red dots next to the tests.
+
+# Folder tests, caches and profiling
+
+`strict test Examples` tests a folder and its package subfolders. Successful tests write `Name.strictbinary` next to the source, containing the bytecode of used types and references to matching caches in the same package. Running, testing and building reuse this bytecode while its tracked inputs are unchanged. Inputs include source files and files read by tests through `Process.FilesRead`; replacing `strict.exe` alone does not invalidate the cache. A cached test result does not measure a fresh execution.
+
+```sh
+strict test Examples/FizzBuzz.strict lines
+```
+
+The `lines` option builds and runs tests natively. It reports how often each source line ran, its total time including callees, and its self time excluding them. It needs the LLVM tools and has native-build overhead. VS Code exposes it as **Run with Coverage** and marks slow lines. **SCrunch: Time All Tests (without cache)** forces fresh test timings.
 
 # Tests run once
 

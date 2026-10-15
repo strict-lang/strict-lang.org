@@ -46,6 +46,10 @@ Index(other Generic) Number
 
 A method may be at most 13 lines long, including its header and tests. There are no empty lines and no comments.
 
+# Computed methods
+
+A header such as `Area = Width * Height` defines a computed method and infers its return type. It is evaluated when used, like a computed name inside a method. See [Members and Variables](Variables.md#computed-names).
+
 # Calling methods
 
 ```

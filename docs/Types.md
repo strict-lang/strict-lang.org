@@ -58,6 +58,10 @@ from(text)
 
 Types are values too. `List(Number)` is an empty list of numbers, `Dictionary(Text, Number)` is an empty dictionary, and `Numbers` is the same as `List(Number)`.
 
+# Copies with replaced members
+
+`Type(instance, member = value)` creates a copy with selected members replaced, leaving the original unchanged. This is useful for updating immutable state without repeating every constructor argument. See the [replacement-copy tests](https://github.com/strict-lang/Strict/commit/61183c25).
+
 # Composition instead of inheritance
 
 Almost every type is composed of more basic types and can be used as those types. `has` a member and you get all of that member's features. This works like multiple inheritance, but it is just composition. A [`Text`](https://github.com/strict-lang/Strict/blob/master/Text.strict) is a list of characters, so every list method also works on texts:
@@ -96,7 +100,7 @@ Exists Boolean
 Delete
 ```
 
-Traits are also how external code plugs in. [`ImageProcessing/ImageLoader.strict`](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/ImageLoader.strict) is a trait implemented by a [native C plugin](https://github.com/strict-lang/Strict/tree/master/NativePlugins/ImageLoader).
+Traits are also how external code plugs in. [`Examples/NativeAdd/Adder.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeAdd/Adder.strict) is implemented by C code in the package's `native/` folder. See [Using APIs](UsingApis.md#native-packages).
 
 # Enums
 
@@ -132,7 +136,7 @@ Use the values directly through the type name, no instance needed: `InstructionT
 
 # Constraints with `with`
 
-Members can be constrained with `with` and a Boolean expression, where `value` is the member value. Creating an instance that breaks a constraint is an error.
+Members and parameters can be constrained with `with` and a Boolean expression. `value` is the constrained value; names like `Length` refer to its type, and other names can refer to the containing type. A constructor or method call that violates a constraint returns `Error("ConstraintNotMet: ...")` on both the Strict VM and native backend. Use `with`, not `where`.
 
 ```
 has number with value >= 0 and value <= Max
@@ -147,6 +151,8 @@ has numbers with Length is 2
 has Red Number with value >= 0 and value <= 1
 mutable Colors with Length is Size.Length
 ```
+
+Parameter defaults can precede the constraint, for example `Run(frames = 0 with value >= 0)`. The compiler generates a `Validated` method for constrained types; its error location points to the member declaration that failed.
 
 # Optional values with `or None`
 

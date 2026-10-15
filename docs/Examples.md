@@ -131,4 +131,6 @@ More showcases are on the other pages: [FizzBuzz](If.md#block-if), [ArithmeticFu
 
 # Bigger programs
 
-The biggest Strict program is Strict itself. The packages described in [Architecture](Architecture.md) are written in the same language, follow the same limits, and start every method with tests. [`ImageProcessing`](https://github.com/strict-lang/Strict/tree/master/ImageProcessing) shows image loading through native plugins, changing a mutable copy and returning it, and multidimensional loops.
+[Machine Learning](MachineLearning.md) covers the newer `NeuralNetworks` and `MachineLearning` packages: perceptrons, recurrent networks, GRUs, evolutionary algorithms, classic classifiers, GPT-2 safetensors inference and Qwen3 GGUF inference.
+
+The biggest Strict program is Strict itself. The packages described in [Architecture](Architecture.md) are written in the same language, follow the same limits, and start every method with tests. [`ImageProcessing`](https://github.com/strict-lang/Strict/tree/master/ImageProcessing) shows image codecs written in Strict, changing a mutable copy and returning it, and multidimensional loops.
