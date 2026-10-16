@@ -15,6 +15,12 @@ Count(searchFor Generic) Number
 			1
 ```
 
+# See the results while you work
+
+[SCrunch in VS Code](VSCode.md) keeps the tests close to the code: ✓/✗ marks on tests, coverage dots on implementation lines, method durations and expected/actual values on failures. The Testing view groups the project by package, type and method. Save a change to test it and its dependents, then keep editing with the result in view.
+
+Line-value feedback shows what the tests used as they executed. Follow locals, assignments, loops and branch hits through a method without adding logging. Hover and **SCrunch: Show Tests for Line** connect a line to the tests behind it. Thousands of small tests with subsecond feedback are the goal for the editing loop; cached results are identified separately from fresh executions.
+
 # Writing tests
 
 * A test is a Boolean expression at the start of a method body, usually a comparison with `is`, `is not`, `>`, `<`, `is in` or `is not in`.
@@ -66,6 +72,26 @@ strict test Examples/FizzBuzz.strict lines
 ```
 
 The `lines` option builds and runs tests natively. It reports how often each source line ran, its total time including callees, and its self time excluding them. It needs the LLVM tools and has native-build overhead. VS Code exposes it as **Run with Coverage** and marks slow lines. **SCrunch: Time All Tests (without cache)** forces fresh test timings.
+
+# Values on executed lines
+
+`strict test <file> values` runs on the VM and reports source-line hit counts and captured values. The editor uses these records for execution feedback. For values that change across repeated hits, counts and summaries describe the execution rather than pretending there is one fixed value. Text and collection summaries keep the feedback readable. For [`Examples/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Fibonacci.strict):
+
+```
+Value Examples/Fibonacci.strict:line 5 hit 2 times: first = 1
+Value Examples/Fibonacci.strict:line 7 hit 11 times, each: 2, 3, 4, 2, 3, 4, 5, 6, 7, 8, ...
+Value Examples/Fibonacci.strict:line 8 hit 11 times, each: 2, 3, 5, 2, 3, 5, 8, 13, 21, 34, ...
+```
+
+A line with the same values on every hit shows its substituted calculation, like `sum = 5 + 3 = 8`; otherwise up to 10 values per hit follow `each:`. Test lines print nothing, because a passed test is true.
+
+Texts, lists, records and Errors use source-like value formatting, so an actual result can be understood alongside the test that produced it. To verify suggested or unsaved code in the same project context, pass it on standard input with `strict test <file> -`. The original file stays unchanged.
+
+For native profiling across a package, `strict test . lines` gathers tests in one build. For implementation suggestions, `strict suggest <file> <method>` checks candidates against the method's tests in one process.
+
+[![Failing area tests showing the expected and actual values beside the source](/img/screenshots/demo-03-red.jpg)](/img/screenshots/demo-03-red.jpg)
+
+A deliberately changed expression makes the failures visible beside their tests. The example was restored after the capture.
 
 # Tests run once
 

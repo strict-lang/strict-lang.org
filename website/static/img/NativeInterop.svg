@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Native C and C# interop with Strict</title>
+  <desc id="desc">Strict builds a native library for C callers and generated C# bindings, carrying records, lists and exact decimal values.</desc>
+  <rect width="960" height="540" rx="16" fill="#11212c"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <text x="56" y="73" fill="#75d6dc" font-size="18" letter-spacing="3">KEEP YOUR STACK. SHARE YOUR LOGIC.</text>
+    <text x="56" y="137" fill="#edf6fa" font-size="43" font-weight="700">Native C. Generated C#.</text>
+    <g fill="none" stroke="#6a9bac" stroke-width="3"><path d="M260 300H354M606 300H700"/><path d="m342 292 12 8-12 8m346-16 12 8-12 8"/></g>
+    <rect x="56" y="214" width="204" height="172" rx="14" fill="#182f41" stroke="#4a7f9b"/>
+    <text x="126" y="285" fill="#a8d6f0" font-size="57" font-weight="700">C</text><text x="90" y="341" fill="#afc2d1" font-size="20">Native interface</text>
+    <rect x="354" y="214" width="252" height="172" rx="14" fill="#14343d" stroke="#65c6cd" stroke-width="2"/>
+    <text x="416" y="278" fill="#a2f0e8" font-size="39" font-weight="700">Strict</text><text x="389" y="315" fill="#d2e8ea" font-size="20">Tested native library</text><text x="398" y="348" fill="#91b4be" font-family="Consolas,monospace" font-size="18">.dll / .so</text>
+    <rect x="700" y="214" width="204" height="172" rx="14" fill="#2c2443" stroke="#9a83bc"/>
+    <text x="759" y="285" fill="#cfb6f5" font-size="57" font-weight="700">C#</text><text x="735" y="341" fill="#c4b5d6" font-size="20">Generated binding</text>
+    <text x="56" y="456" fill="#d6e5ec" font-family="Consolas,monospace" font-size="23">strict build Policy.strict library</text>
+    <text x="56" y="494" fill="#93aeba" font-size="19">Records · lists · text · exact decimals</text>
+  </g>
+</svg>

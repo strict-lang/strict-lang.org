@@ -22,6 +22,10 @@ Classify Text
 	number to Text
 ```
 
+In [VS Code](VSCode.md), a type is also a small, executable explanation: SCrunch shows the results of its tests, hover explains the names, and F12 follows the definitions it uses.
+
+[![A compact temperature-conversion type with inline tests and actual values in VS Code](/img/screenshots/temperature-values.jpg)](/img/screenshots/temperature-values.jpg)
+
 # Packages
 
 Any folder that contains `.strict` files is a package, and so is any GitHub repository folder. The repository root holds the [base types](BaseTypes.md). They have special language treatment, are needed to build every package, and are available in every file without any import. Other packages, like [`Math`](https://github.com/strict-lang/Strict/tree/master/Math) or [`ImageProcessing`](https://github.com/strict-lang/Strict/tree/master/ImageProcessing), are found by name. There are no `import`, `using` or `include` statements.
@@ -153,6 +157,10 @@ mutable Colors with Length is Size.Length
 ```
 
 Parameter defaults can precede the constraint, for example `Run(frames = 0 with value >= 0)`. The compiler generates a `Validated` method for constrained types; its error location points to the member declaration that failed.
+
+# Decimal steps
+
+A `Number` can declare its decimal precision with `with Step 0.01`. Steps also apply to parameters, return values and collections; optional `Floor` or `Ceiling` selects directional rounding. Stepped values preserve exact step counts, including through generated C# decimal bindings. See [Decimals and Exact Values](Decimals.md).
 
 # Optional values with `or None`
 

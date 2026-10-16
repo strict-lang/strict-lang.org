@@ -5,6 +5,14 @@ title: Getting Started
 
 Strict is written in Strict. `strict` is the one command-line tool you need: it runs, tests, validates and builds `.strict` code, and it also builds itself. No .NET or other runtime is needed. It is `strict.exe` on Windows and `strict` on Linux.
 
+# Start in VS Code
+
+Install the platform-specific Strict extension package (`.vsix`) using **Extensions: Install from VSIX…**, then open your project folder. The package includes the native compiler and base types; an existing Strict checkout can supply the newest compiler during development. See the [extension repository](https://github.com/strict-lang/strict-vscode-client) for packaging instructions.
+
+Create `Temperature.strict` and follow the [one-minute VS Code walkthrough](VSCode.md#start-with-a-small-example). Save to see SCrunch's test marks, open the Testing view, hover over a name for details and press F12 to explore the definition. Line values let you follow the calculation from its tests through the implementation.
+
+For a native build or compiler development, use the toolchain steps below. To embed your logic in an existing application, see [C and C# interop](UsingApis.md#call-strict-from-c-and-c).
+
 # 1. Get the code
 
 ```sh
@@ -86,6 +94,9 @@ strict build Examples/Sum.strict     # run the tests, then build a native execut
 | `strict <file> [arguments]` | Compiles the file to bytecode and runs its `Run` method on the Strict VM. This is the fastest way to run code, everything stays in memory and no native code is involved. Arguments are passed to `Run` as numbers. A type without a `Run` method runs all its tests instead. | 0 |
 | `strict test <file or folder>` | Runs inline tests on the Strict VM. A folder includes its package subfolders. Prints test locations and timings, or a cached result when nothing changed. | number of failed tests |
 | `strict test <file> lines` | Builds and runs tests natively, then reports execution counts, total time and self time per source line. Requires the native toolchain. | number of failed tests, nonzero on build failure |
+| `strict test <file> values` | Runs tests on the VM and reports executed-line hit counts and recorded values for editor feedback. | number of failed tests |
+| `strict build <file> library` | Builds a shared library and its generated C# binding after tests pass. | 0 on success, nonzero on failure |
+| `strict suggest <file> <method>` | Checks candidate implementations against a method's tests. | nonzero on failure |
 | `strict format <file>` | Prints the canonical source to standard output; it does not overwrite the file. | 0 on success, nonzero on parsing failure |
 | `strict update .` | Refreshes copied packages from their `.origin` sources. Run this inside your project folder. | 0 on success |
 | `strict check <folder>` | Runs the [validators](CodeValidations.md) on every `.strict` file in the folder and its package subfolders. | number of validation issues |
@@ -117,7 +128,7 @@ If the type isn't found anywhere, compilation fails. The error names the missing
 
 Copied packages have a `.origin` file naming their source. Run `strict update .` from the project folder to refresh them; a package missing a newly used type is also refreshed automatically. A declaration like `has scene WebWars/Scene` selects a specific package when type names collide. Otherwise Strict prefers the file's own folder and reports `AmbiguousType` if it cannot choose.
 
-A folder containing `Any.strict` after the file overrides where the base types come from, for example `strict test Game.strict C:/code/Strict`. Put it before program arguments. Use paths relative to the project root: absolute paths still have known type-resolution gaps.
+A folder containing `Any.strict` after the file overrides where the base types come from, for example `strict test Game.strict C:/code/Strict`. Put it before program arguments. Paths resolve in the project context. Testing code supplied on standard input with `strict test <file> -` keeps that context without changing the file.
 
 # 7. Your first type
 
@@ -169,9 +180,9 @@ strict build Parity.strict    # creates Parity.exe, which prints 5 is odd
 
 The [Strict extension for VS Code](https://github.com/strict-lang/strict-vscode-client) is the main way to work on Strict code. It runs everything through `strict`, so it needs no .NET and no language server process:
 
-* **Syntax highlighting** for `.strict` files.
+* **Semantic syntax highlighting**, hover details, completion and **F12** go to definition for `.strict` files.
 * **SCrunch** tests every `.strict` file when the folder opens (`strict test`). Saving a file tests it again, then every file that uses its type.
-* **Test dots** in the gutter: green and red marks on tests and covered lines, and `expected … got …` after a failing test.
+* **SCrunch visualization:** ✓/✗ test marks, green/red coverage dots, method timings and `expected … got …` after a failure. Line values and hit counts show what the tests did inside the implementation.
 * **Testing view** with every type and its tested methods. `Run` methods can be started from there and show their output.
 * **Validator diagnostics** from `strict check`, with quick fixes (Alt+Enter) for formatting issues.
 * **Strict: Run File** (Ctrl+Shift+R) runs the `Run` method of the current file in a terminal.
@@ -193,4 +204,4 @@ See the [extension README](https://github.com/strict-lang/strict-vscode-client#f
 
 # Status
 
-Native dictionaries, concrete generic instances, list operators, package fetching and `.strictbinary` caching are implemented. Remaining issues include some member/parameter defaults, multiple types with the same name in one build, absolute-path resolution and complete stack-overflow diagnostics. GPU execution currently covers eligible numeric loops, not arbitrary Strict code. The [improvements list](https://github.com/strict-lang/Strict/blob/master/improvements.md) tracks the current reproductions and limitations.
+The current workflow combines live test feedback, line values, native programs and shared libraries, exact stepped decimals, package-local C code and generated C# bindings. [Real projects](Projects.md) include DeltaEngine games, SoulCraft, web-application logic, the self-hosted compiler and [Qwen3 inference](MachineLearning.md). Development continues on performance and larger workloads; the [package READMEs](https://github.com/strict-lang/Strict) record the latest measurements.

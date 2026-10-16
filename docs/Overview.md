@@ -5,7 +5,17 @@ title: Overview
 
 **Strict** is a simple programming language that humans can read and understand, and that computers can also understand, modify and write.
 
-The long-term goal is NOT to create just another programming language. Strict is meant to be the foundation for a higher-level language that computers can understand and write code in. Most programming languages are designed for humans to write code, not for computers to understand it. LLMs can be trained to repeat and imitate, which is amazing to see, but they don't really understand anything. They make ridiculous mistakes on any project bigger than a handful of files. For computers to think through millions of lines of code and evaluate them in real time (seconds), Strict has to be very fast, both when executing code and when writing it.
+# What it feels like to use
+
+Open a project in [VS Code](VSCode.md), write a few examples of what a method should do and save. SCrunch runs the tests in the background, marks the results beside the source and shows the values used on each executed line. You can try an idea and follow what happened without adding logging. Semantic highlighting, hover details, completion and F12 make the rest of the code easy to explore.
+
+The Testing view connects the project overview to each type and method. Thousands of small tests with subsecond feedback are the design goal; unchanged code reuses cached results. Native profiling and large external workloads have separate execution costs. [Try the editor walkthrough](VSCode.md#start-with-a-small-example).
+
+# What you can build
+
+[DeltaEngine games and SoulCraft](Projects.md), website and application logic alongside ASP.NET or Vite, [neural networks and Qwen3 inference](MachineLearning.md), or [native libraries for C and C#](UsingApis.md). Keep existing frameworks and use Strict for the logic you want to test and inspect. [Stepped decimals](Decimals.md) keep exact values across application boundaries.
+
+The long-term goal is a language that computers can understand, modify and write as well as humans. Short methods, explicit examples and fast execution provide the foundation. Today's projects give that goal practical workloads.
 
 Strict is written in Strict. The compiler is a set of `.strict` packages that compiles itself into a native executable. No .NET, JVM or other runtime is needed. The C# implementation that bootstrapped the language lives on the [`dotnet` branch](https://github.com/strict-lang/Strict/tree/dotnet). All source code is at [github.com/strict-lang/Strict](https://github.com/strict-lang/Strict).
 
@@ -60,25 +70,24 @@ Values never change. `list + element` gives a new list. `mutable` exists, but on
 
 ## Fast
 
-Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The current runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. `strict` builds itself in about 10 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
+Immutable values are implemented by reusing memory in place, not by copying. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The current runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. `strict` builds itself in about 14.5 seconds, most of it spent in `mlir-opt` and `clang`. See [Architecture](Architecture.md).
 
 ## Small
 
 The base library has a few dozen types: [`Boolean`](https://github.com/strict-lang/Strict/blob/master/Boolean.strict), [`Number`](https://github.com/strict-lang/Strict/blob/master/Number.strict), [`Text`](https://github.com/strict-lang/Strict/blob/master/Text.strict), [`List`](https://github.com/strict-lang/Strict/blob/master/List.strict), [`Dictionary`](https://github.com/strict-lang/Strict/blob/master/Dictionary.strict), [`Range`](https://github.com/strict-lang/Strict/blob/master/Range.strict), [`Error`](https://github.com/strict-lang/Strict/blob/master/Error.strict), [`Logger`](https://github.com/strict-lang/Strict/blob/master/Logger.strict), [`File`](https://github.com/strict-lang/Strict/blob/master/File.strict) and a handful of traits. That is pretty much all you need to write code. See [Base Types](BaseTypes.md).
 
-## Not general purpose
+## Works with your existing stack
 
-Strict is NOT a general-purpose language. If you want to build a website, a complex app, database code or a game, use external code for that. You can keep the logic in Strict and call any web API or C, C++, C#, Java or Python library. External code is a black box: computers can no longer understand it, and it doesn't follow the strict rules. See [Using APIs](UsingApis.md).
+Use established frameworks for the browser, HTTP, storage, graphics and platform services. Keep rules, algorithms and state transformations in Strict. Native C packages and generated C# bindings make that practical, from games to web applications. See [Using APIs](UsingApis.md) and [Built with Strict](Projects.md).
 
 # Current developments
 
-* **Faster feedback:** `.strictbinary` caches reuse tested bytecode until source or test-read files change; `strict test <file> lines` provides native line counts and timings.
-* **Packages and native code:** `strict update .` refreshes fetched packages, and package-local `native/` C code works on the VM and in native builds.
-* **Language improvements:** native generic dictionaries, member replacement copies, parameter constraints and `for as long as` loops are implemented. Errors propagate immediately with source stack frames when used without handling.
-* **Working workloads:** [Machine Learning](MachineLearning.md) introduces classifiers, training examples, GPT-2 and Qwen3 inference.
-* **VS Code:** completion, navigation, rename, coverage, formatting and implementations suggested from tests are available without a separate language server.
+* **A much richer editor:** SCrunch test results, source-line values, coverage and timings; semantic highlighting, hover, completion and F12 navigation.
+* **Libraries and exact values:** native C/C# interop, generated bindings and stepped decimals that stay exact as C# `decimal` parameters and results.
+* **Local inference:** Qwen3-8B Q4_K_M at 141–143 decode tokens/second on an RTX 4090 in the recorded benchmark, faster than llama.cpp on the same machine (138 tokens/second). More optimization work is underway.
+* **Real applications:** the growing DeltaEngine game collection, SoulCraft, website logic and the compiler itself are all driving development.
 
-See the [October 15 update](/blog/2026/10/15/strict-packages-parallel-loops-and-models) for the changes since self-hosting.
+See the [October 16 update](/blog/2026/10/16/strict-live-feedback-qwen3-and-interop) for the full story.
 
 # Key design decisions
 

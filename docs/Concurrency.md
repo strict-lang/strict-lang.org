@@ -21,15 +21,20 @@ A sum can add terms in a different order after optimization, so its last fractio
 
 # NVIDIA GPU execution
 
-Eligible numeric collecting loops become PTX kernels embedded in the native executable. The runtime loads the NVIDIA driver through `nvcuda.dll` on Windows or `libcuda.so.1` on Linux. Running them needs a compatible driver and GPU, but no CUDA toolkit; building them uses the LLVM toolchain.
+Eligible numeric loops become PTX kernels in the native executable. The runtime uses the installed NVIDIA driver on Windows or Linux; running the executable needs no separate CUDA toolkit. Selection retains a CPU fallback for workloads where a GPU is unavailable or not useful.
 
-By default a loop must read at least four million numbers before it uses the GPU. Smaller loops stay on the CPU to avoid launch and transfer overhead. Bodies can perform numeric arithmetic, read list elements and call supported numeric methods, including conditionals inside those methods. An inner sum can use a warp of 32 threads per result row.
+Packed Q4_K, Q6_K, Q8_0, 16-bit and 32-bit data reduce memory traffic. Transformer calculations can keep intermediate results on the device, and graph replay reduces repeated host launch work. This lets a Qwen3 step run predominantly on the GPU rather than copying each matrix result back to the CPU.
 
-* Lists of at least 64 KB can keep a device copy between launches. The cache holds at most 128 lists and releases copies when garbage collection finds the source unreachable.
-* Packed 8-, 16- and 32-bit data can stay packed on the device. Automatic selection currently keeps 8-bit rows on the CPU, where they are faster.
-* `Range` loops stay on the CPU. A conditional directly in a collecting loop body also prevents the current parallel path.
-* Without a usable GPU the program falls back to the CPU. GPU support does not make arbitrary Strict code run on the device.
+[Qwen3-8B measurements](MachineLearning.md#qwen3-8b-faster-than-llamacpp) now reach 141–143 decode tokens/second on an RTX 4090, faster than llama.cpp on the same machine. More optimization work continues on transfers, kernel fusion, attention and batching. Distributed execution and NPU/TPU backends remain longer-term directions.
 
-Set `STRICT_GPU=0` in the program's environment to keep execution on the CPU, or `STRICT_GPU=all` to send every eligible loop to the GPU for experiments. GPU execution can be slower when transfers and driver launches outweigh the calculation. Profile the actual workload instead of assuming a speedup.
+[![MlirGpu.strict in VS Code showing tests and generated GPU launch code](/img/screenshots/gpu-kernels.jpg)](/img/screenshots/gpu-kernels.jpg)
 
-See [MlirGpu](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirGpu.strict), the [current runtime model](https://github.com/strict-lang/Strict#how-it-is-built-from-low-to-high-level) and [Machine Learning](MachineLearning.md) for working examples. Distributed execution and NPU/TPU backends remain goals rather than supported execution paths.
+The compiler builds GPU launch code in Strict. [Open MlirGpu.strict](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirGpu.strict).
+
+# Measure your workload
+
+Use `strict test <file> lines` or VS Code's **Run with Coverage** to inspect execution counts and total/self time. Source-line values on the VM explain what a test did; native profiling explains where the compiled code spent time. See [Tests](Tests.md).
+
+Set `STRICT_GPU=0` in the program's environment to compare against the CPU, or `STRICT_GRAPHS=0` to disable graph replay. Use the same weights, prompt, context and sampling when comparing inference results, and keep prefill separate from decode. Faster kernels do not automatically make every small program faster.
+
+The [current runtime model](https://github.com/strict-lang/Strict#how-it-is-built-from-low-to-high-level) and [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) describe the implementation and measured workloads.

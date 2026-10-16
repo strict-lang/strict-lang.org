@@ -3,13 +3,13 @@ id: UsingApis
 title: Using APIs
 ---
 
-Strict is not a general-purpose language and doesn't try to reinvent the wheel. If a library, framework or engine already exists for what you need, like a web API, a database, a UI, a game engine, or a C, C++, C#, Java or Python library, use it. Keep the logic in Strict and call the external code for the rest.
+Use Strict for the logic you want to write, test and inspect, and keep the frameworks that already solve the rest. A game can use DeltaEngine and native graphics libraries; a website can use ASP.NET and a Vite frontend. Strict can call C implementations and can compile into a library that C or C# applications call directly. See [Built with Strict](Projects.md) for the projects using these combinations.
 
 External code is a black box. Strict can call it, but it can't understand it, so computers can no longer reason about that part (here we would be limited to LLMs), and it doesn't follow the strict rules. The more external code you use, the more powerful your program gets, but also the less of it Strict understands. The bigger practical problem is change: if an external library changes, all calls to it have to change too. Strict code calling Strict code can be fixed in a much more automated way.
 
 # How external code plugs in
 
-External code is always hidden behind a **trait**, a Strict type with method headers but no bodies. The rest of your code only sees the trait, is tested against it, and stays pure Strict.
+Strict calls external native implementations through a **trait**, a type with method headers but no bodies. A host application can also call Strict through a generated library interface. The integration boundary stays small so the logic remains easy to test in [VS Code](VSCode.md).
 
 [`ImageProcessing/ImageLoader.strict`](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/ImageLoader.strict) is such a trait:
 
@@ -35,9 +35,35 @@ Its `native/Adder.c` exports `Adder_Add`. Calls on a type pass zero as `self`; a
 * Every argument and result uses one double-sized slot. The shared [strict.h](https://github.com/strict-lang/Strict/blob/master/Compiler/strict.h) exposes helpers for Text, Numbers, packed numeric rows and `strict_fail("Name")` errors.
 * `strict build` compiles and links the C sources. `native/Windows.flags` and `native/Linux.flags` supply platform libraries and flags. Compiled objects are reused until their source, headers or flags change.
 * The VM builds and loads `native/<Folder>.dll` on Windows or `.so` on Linux. Packages copied into a project retain their `native/` folder.
-* A bodyless trait call needs an implementation. On the VM a missing one returns `TraitHasNoImplementation`; it is not an automatic bridge to an arbitrary C#, Java or Python library. Those libraries need an appropriate native adapter or external process/API boundary.
+* A bodyless trait call needs an implementation. On the VM a missing one returns `TraitHasNoImplementation`. C# hosts use the generated library binding and host-service boundary; other runtimes can use a native adapter or external process/API boundary.
 
 The base types use the native runtime for operating-system services: `File`, `Directory`, `Process` and `Logger`. See [Architecture](Architecture.md#compiler).
+
+# Call Strict from C and C#
+
+Build a tested Strict type into a shared library and generate its C# binding with one command:
+
+```sh
+strict build Policy.strict library
+```
+
+On Windows this produces `Policy.dll` and `Policy.cs`; on Linux it produces `libPolicy.so` and `Policy.cs`. Add the generated C# source to your application and deploy the native library beside it. The generated wrapper exposes the public methods, marshals arguments and results, releases returned native data and translates a Strict Error into an `InvalidOperationException`.
+
+Supported values are `Number`, `Text`, `Boolean`, `Numbers`, records and lists of records. Plain `Number` maps to `double` and `Boolean` to `bool`; a [stepped number](Decimals.md) parameter or result maps to `decimal` and keeps its exact value up to 2^51 steps (beyond that the call throws an `OverflowException` named `DecimalOverflow`). A record whose members are all `Number` or `Boolean` crosses as a C struct of doubles in member order, and a list of numbers or records as a counted block (`double[]` or `Trade[]` in C#). Stepped record fields and lists, text lists and Boolean record fields as C# `bool` are still being worked on.
+
+The exported C interface reports success or Error separately from the result. `strict_last_error()` exposes an error message and `strict_release()` releases returned native data. Use the generated binding for C# ownership and conversion details rather than copying marshalling code into application logic. This exported-library ABI is separate from the package-local `strict.h` plugin interface described above.
+
+Strict calling back into C# host services is planned. Until then, pass the values a rule needs as arguments and test the rules with explicit inputs. A decimal calculation can move into Strict while an ASP.NET host retains HTTP, storage and deployment.
+
+![Native C interface, a tested Strict library and generated C# bindings](/img/NativeInterop.svg)
+
+# A practical integration workflow
+
+1. Put the calculation or decision into a small Strict type. Write examples covering normal results, edge cases and Errors.
+2. Open it in [VS Code](VSCode.md). Use SCrunch's test marks and line values to follow the calculation as you edit.
+3. Run `strict build <file> library` and add the generated binding to the host application.
+4. Pass a snapshot of the inputs and return a result the host can act on. Declare decimal steps when precision is part of the contract.
+5. Keep reference fixtures at the boundary, so changes are checked against the behavior the host expects.
 
 # Structure based on intent
 

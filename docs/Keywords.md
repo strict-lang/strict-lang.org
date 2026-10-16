@@ -58,6 +58,10 @@ The base types in the [repository root](https://github.com/strict-lang/Strict) a
 
 `Any`, `Boolean`, `Byte`, `BytesReader`, `BytesWriter`, `Character`, `Closeable`, `Dictionary`, `Directory`, `Enum`, `Error`, `ErrorWithValue`, `File`, `Generic`, `HashCode`, `Iterator`, `Length`, `Library`, `List`, `Logger`, `Method`, `Mutable`, `Name`, `Number`, `Path`, `Process`, `ProcessResult`, `Range`, `Stacktrace`, `Text`, `TextReader`, `TextWriter`, `Type`, `Variable`
 
+# Decimal precision
+
+`Step` in a numeric constraint declares decimal precision: `has price Number with Step 0.01`. Add `Floor` or `Ceiling` for directed rounding. It is a constraint form rather than a separate decimal base type. See [Decimals](Decimals.md).
+
 # Package structure
 
 A Strict package is a folder:

@@ -20,16 +20,16 @@ function Help(props) {
 
   const supportLinks = [
     {
-      content: `Start with [Getting Started](${docUrl('GettingStarted')}), the [language guide](${docUrl(
+      content: `Try the [VS Code walkthrough](${docUrl('VSCode')}) and [Getting Started](${docUrl('GettingStarted')}), the [language guide](${docUrl(
         'Types',
       )}) and the [cheat sheet](${docUrl('EverythingNeededForKata')}).`,
       title: 'Browse Docs',
     },
     {
-      content: `Every base type starts with tests showing how to use it. Read the [source on GitHub](${repoUrl}) and the [Base Types](${docUrl(
+      content: `Explore [games and applications](${docUrl('Projects')}), [Qwen3 inference](${docUrl('MachineLearning')}) and the [source on GitHub](${repoUrl}) and the [Base Types](${docUrl(
         'BaseTypes',
       )}) overview.`,
-      title: 'Read the Source',
+      title: 'Explore Real Programs',
     },
     {
       content: `Found a bug or have a question? [Open an issue](${repoUrl}/issues), or follow the [blog](${baseUrl}blog).`,

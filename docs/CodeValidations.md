@@ -34,6 +34,7 @@ These come from [`UsageRules`](https://github.com/strict-lang/Strict/blob/master
 | `ParameterMustNotBeMutableReturnTheChangedValue` | A parameter is `mutable`. Parameters never change: change a mutable copy and return it. |
 | `VariableHidesMemberUseDifferentName` | A variable has the same name as a member. |
 | `ParameterHidesMemberUseDifferentName` | A parameter has the same name as a member. |
+| `IsTrueIsNotNeeded` | A test line ends in `is true` although its value already is a `Boolean` call, like `Parity(2).IsEven is true`. Write `Parity(2).IsEven`. Checked by [`TestChecks`](https://github.com/strict-lang/Strict/blob/master/Validators/TestChecks.strict). |
 
 # Name rules
 
@@ -67,8 +68,8 @@ Some rules are part of compiling a type rather than `check`:
 * Types must fit: assigning, comparing or passing incompatible types is an error.
 * Constants are folded, and [`Validators/ConstantCollapser`](https://github.com/strict-lang/Strict/blob/master/Validators/ConstantCollapser.strict) reduces constant subexpressions like `"5" to Number` to their value.
 
-# Planned
+# Feedback while editing
 
-* A `let` with only constant values must be `constant`. This isn't checked for list literals yet.
-* Finding duplicated code and replacing it with the existing implementation, for example a hand-written join loop with `Text.Combine`, or `Text.characters.Length` with `Text.Length`.
-* Rejecting double brackets where the arguments are turned into a list automatically: `ReverseList(1, 2, 3)` instead of `ReverseList((1, 2, 3))` when the only member is a list.
+[VS Code](VSCode.md) shows diagnostics on the affected source line, with quick fixes for formatting, unused values and naming issues. Checks also catch an incompatible return value or constructor argument (`ReturnTypeMismatch` for one element returned where a list is declared), an ambiguous name that is both a method and a type (`AmbiguousName`: write `outer.Size.Width` for the type or `value.Size.Width` for the method), a constant read through an instance instead of its type name (`ConstantNeedsTypeName`), a missing constant (`ConstantNotFound`), a dropped value and a method whose tested behavior already exists in a used type. `MethodAlreadyExists` points you toward the existing implementation.
+
+Use **Alt+Enter** for a fix, **Fix All** for routine changes and F12 to read the existing method's tests. Line-value feedback lets you check the behavior after a change, alongside the static rules.

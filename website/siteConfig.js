@@ -41,7 +41,7 @@ const highlightCode = (code, language = 'strict') => {
 
 const siteConfig = {
   title: "Strict Programming Language",
-  tagline: "Create well-written and efficient code quickly",
+  tagline: "Clean code. Native speed.",
   url: "https://strict-lang.org",
   baseUrl: '/',
   projectName: "strict-lang.org",
@@ -54,6 +54,8 @@ const siteConfig = {
   headerLinks: [
     { search: true },
     { doc: "Overview", label: "Docs" },
+    { doc: "VSCode", label: "VS Code" },
+    { doc: "Projects", label: "Projects" },
     { doc: "Types", label: "Language" },
     { doc: "Architecture", label: "Source" },
     { blog: true, label: "Blog" },
@@ -64,8 +66,8 @@ const siteConfig = {
   footerIcon: 'img/StrictHeadOnly.png',
   favicon: 'img/favicon.ico',
   colors: {
-    primaryColor: "#52A0C6",
-    secondaryColor: "#21434C"
+    primaryColor: "#073b4c",
+    secondaryColor: "#0b1720"
   },
   fonts: {
     myFont: ["Verdana", "Serif"]
@@ -73,7 +75,7 @@ const siteConfig = {
   copyright: `Copyright © ${new Date().getFullYear()} strict-lang`,
   // Only used for the theme stylesheet from cdnjs, highlighting itself happens in highlightCode
   highlight: {
-    theme: 'default',
+    theme: 'github-dark',
     version: '11.11.1',
   },
   markdownOptions: {

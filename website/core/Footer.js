@@ -32,7 +32,9 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
+            <a href={this.docUrl('VSCode')}>The VS Code Experience</a>
             <a href={this.docUrl('GettingStarted')}>Getting Started</a>
+            <a href={this.docUrl('Projects')}>Built with Strict</a>
             <a href={this.docUrl('Types')}>Language Guide</a>
             <a href={this.docUrl('EverythingNeededForKata')}>Cheat Sheet</a>
             <a href={this.docUrl('CodingStyle')}>Coding Style</a>
@@ -42,6 +44,8 @@ class Footer extends React.Component {
             <a href={this.docUrl('BaseTypes')}>Base Types</a>
             <a href={this.docUrl('Architecture')}>Architecture</a>
             <a href={this.docUrl('Examples')}>Examples</a>
+            <a href={this.docUrl('MachineLearning')}>Qwen3 and Machine Learning</a>
+            <a href={this.docUrl('UsingApis')}>C and C# Interop</a>
           </div>
           <div>
             <h5>More</h5>

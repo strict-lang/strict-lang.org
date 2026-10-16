@@ -129,6 +129,10 @@ More showcases are on the other pages: [FizzBuzz](If.md#block-if), [ArithmeticFu
 
 **Native smoke tests and probes**: [`NativeArithmetic`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeArithmetic.strict), [`NativeConditions`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeConditions.strict), [`NativeLoop`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeLoop.strict), [`NumberStats`](https://github.com/strict-lang/Strict/blob/master/Examples/NumberStats.strict), [`MemoryPressure`](https://github.com/strict-lang/Strict/blob/master/Examples/MemoryPressure.strict) (appends 20,000 numbers to stress the collector), [`DirProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/DirProbe.strict) and [`ProcessProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/ProcessProbe.strict).
 
+# Games, websites and larger programs
+
+[Built with Strict](Projects.md) covers the growing DeltaEngine game collection, SoulCraft and application logic hosted by existing web stacks. The engine port provides shared rendering, input, audio and native services; game logic stays in Strict. [C and C# interop](UsingApis.md#call-strict-from-c-and-c) lets existing applications use the same tested types.
+
 # Bigger programs
 
 [Machine Learning](MachineLearning.md) covers the newer `NeuralNetworks` and `MachineLearning` packages: perceptrons, recurrent networks, GRUs, evolutionary algorithms, classic classifiers, GPT-2 safetensors inference and Qwen3 GGUF inference.

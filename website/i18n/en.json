@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Create well-written and efficient code quickly",
+    "tagline": "Clean code. Native speed.",
     "docs": {
       "Architecture": {
         "title": "Architecture"
@@ -19,6 +19,9 @@
       },
       "Concurrency": {
         "title": "Concurrency"
+      },
+      "Decimals": {
+        "title": "Decimals and Exact Values"
       },
       "Errors": {
         "title": "Errors"
@@ -63,6 +66,9 @@
       "Overview": {
         "title": "Overview"
       },
+      "Projects": {
+        "title": "Built with Strict"
+      },
       "Statements": {
         "title": "Statements and Expressions"
       },
@@ -77,10 +83,16 @@
       },
       "Variables": {
         "title": "Members and Variables"
+      },
+      "VSCode": {
+        "title": "Writing Strict in VS Code",
+        "sidebar_label": "The VS Code Experience"
       }
     },
     "links": {
       "Docs": "Docs",
+      "VS Code": "VS Code",
+      "Projects": "Projects",
       "Language": "Language",
       "Source": "Source",
       "Blog": "Blog",

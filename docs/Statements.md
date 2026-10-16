@@ -37,7 +37,7 @@ The last line of a method is its result, so a method usually ends in an expressi
 | [`Boolean`](https://github.com/strict-lang/Strict/blob/master/Boolean.strict) | `true`, `false` |
 | [`List`](https://github.com/strict-lang/Strict/blob/master/List.strict) | `(1, 2, 3)`, `("a", "b")`, `((1, 1), (2, 2))` |
 
-All numbers are 64-bit floating point numbers. A [`Character`](https://github.com/strict-lang/Strict/blob/master/Character.strict) is a number too, and a `Text` is a list of characters.
+Plain numbers are 64-bit floating-point values. A `Number` with a declared `Step` uses [exact decimal steps](Decimals.md). A [`Character`](https://github.com/strict-lang/Strict/blob/master/Character.strict) is a number too, and a `Text` is a list of characters.
 
 # Operators
 
@@ -61,7 +61,7 @@ Arithmetic works as in mathematics: `(1 + 2) * 3 is not 1 + 2 * 3`. These rules 
 * **From loosest to tightest:** `then`/`else`, `not`, `or`, `xor`, `and`, comparisons (`is`, `is not`, `is in`, `is not in`, `<`, `>`, `<=`, `>=`), `in`, `+`/`-`, `%`, `*`/`/`, `^`, `to`.
 * **Numbers have bitwise `and`, `or` and `xor`.** Write `(12 and 10) is 8` to compare a bitwise result, because comparisons bind more tightly than `and`.
 * **A conditional used as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.
-* **Single-element brackets have a known ambiguity.** `(x)` can currently produce a list instead of grouping a bare value. Use `List(Number) + x` when you need an explicit one-element number list, and avoid redundant brackets around bare values. See the [current reproductions](https://github.com/strict-lang/Strict/blob/master/improvements.md).
+* **`(x)` is a one-element list.** `("abc").Length is 1`, and `("abc") is not "abc"`. Brackets around an operator expression group it instead: `(5 + 3) * 2 is 16`.
 
 # Lines are short
 

@@ -84,6 +84,10 @@ The compiler checks the rules for you. A variable that is never used, a `mutable
 
 `name = expression` inside a method defines a computed name, evaluated again whenever it is used rather than storing one result like `let`. A type can expose a computed method the same way: `Area = Width * Height` infers its return type. Use this when the expression should follow the current values it depends on.
 
+# See variables as they execute
+
+[SCrunch line values](VSCode.md#read-the-execution-beside-the-code) show the values used by tests on local declarations, assignments and loops, with hit counts for repeated execution. Read the calculation beside the implementation instead of adding temporary logs. The same data is available through `strict test <file> values`.
+
 # `value`
 
 `value` is the instance itself, like `this` or `self` in other languages, but you rarely need to write it. Members and methods of the instance are used directly, and inside a `for` loop `value` is the current element (see [For](For.md)). From [`Number.strict`](https://github.com/strict-lang/Strict/blob/master/Number.strict):

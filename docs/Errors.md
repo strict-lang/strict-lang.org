@@ -89,3 +89,9 @@ Strict creates some errors for you:
 * A conversion that can't work, like `10 to Character`.
 
 In native executables an `Error` is tagged inside the 64-bit value itself, so `x is Error` works for a value of any type.
+
+# Read failures in the editor and host
+
+[SCrunch](VSCode.md) shows a failing test's Error as its actual value, with source locations and execution feedback beside the code. Errors and normal text have distinct value formatting, so a text such as `"Error: Missing"` is not confused with an Error value.
+
+Exported [C/C# libraries](UsingApis.md#call-strict-from-c-and-c) report errors across the boundary; the generated C# wrapper turns them into `InvalidOperationException`. Decimal range failures use `DecimalOverflow`.

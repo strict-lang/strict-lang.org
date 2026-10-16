@@ -7,7 +7,7 @@ Strict is written in Strict. The compiler, the validators, the virtual machine a
 
 ![How Strict code becomes a program](/img/StrictPipeline.svg)
 
-Every source file is short and self-explanatory, and it starts with tests that show how to use it. This page gives a one-line summary of each type and links to its source. Folder names link to the package on GitHub.
+This is a substantial real-world Strict application: open it in [VS Code](VSCode.md), follow definitions with F12 and use the inline tests and line values to understand each stage. Every source file is short and self-explanatory, and it starts with tests that show how to use it. This page gives a one-line summary of each type and links to its source. Folder names link to the package on GitHub.
 
 ![Strict layers: VS Code and strict on top of the Strict packages](/img/StrictLayers.svg)
 
@@ -30,6 +30,10 @@ Every source file is short and self-explanatory, and it starts with tests that s
 
 Only code that is actually called is parsed, validated, tested and executed. This is what makes it possible to generate huge amounts of code and discard what isn't needed or doesn't work almost immediately.
 
+[![NativeBuild.strict in VS Code: the compiler pipeline written in Strict](/img/screenshots/native-compiler.jpg)](/img/screenshots/native-compiler.jpg)
+
+The native build pipeline, written in the same language it compiles.
+
 # Native model
 
 * Every value is one 64-bit slot. Numbers are doubles, and texts, lists and instances are pointer bits. `Error` values carry a tag in the top bits, so `x is Error` works for a value of any type.
@@ -37,7 +41,7 @@ Only code that is actually called is parsed, validated, tested and executed. Thi
 * Lists append in place as long as they are the newest version.
 * Memory is managed by a conservative mark-sweep collector with 64 KB pages, size classes and interior pointers. It collects after 16 MB or 8 times the live data. The current runtime measurements report 22 MB for 1 million VM loop iterations.
 
-The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Runtime/README.md) reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These development measurements depend on the workload and hardware. `strict` builds itself in about 10 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
+The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Runtime/README.md) reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These development measurements depend on the workload and hardware. `strict` builds itself in about 14.5 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
 
 # Expressions
 
@@ -190,7 +194,7 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 
 **Native optimizations and packages**
 
-[SIMD, packed numeric rows, CPU worker pools and NVIDIA PTX kernels](Concurrency.md) accelerate eligible numeric loops. [Neural-network and machine-learning programs](MachineLearning.md) are working workloads for these paths. Ordinary `Number` values remain doubles.
+[SIMD, packed numeric rows, CPU worker pools and NVIDIA PTX kernels](Concurrency.md) accelerate eligible numeric loops. [Neural-network and machine-learning programs](MachineLearning.md) are working workloads for these paths. Ordinary `Number` values remain doubles; [stepped decimals](Decimals.md) use exact integer step counts. GPU-resident intermediate values and graph replay support larger inference workloads.
 
 [Package-local `native/` C implementations](UsingApis.md#native-packages) link into native builds and load as shared libraries on the VM. Native builds reuse compiled C objects until sources, headers or flags change. On Windows an `App.ico` next to `App.strict` becomes the executable icon via `llvm-rc`; a changed icon is compiled again each build.
 
@@ -202,6 +206,10 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 
 **Bootstrapping.** `Compiler/Bootstrap.mlir` is `Strict.strict` compiled by itself. `Compiler/Bootstrap.cmd` (Windows) and `Compiler/bootstrap.sh` (Linux) combine it with the native runtime and build `strict.exe` (Linux: `strict`) in the repository root with just the LLVM tools, see [Getting Started](GettingStarted.md#3-bootstrap-strict).
 
+# Shared libraries
+
+`strict build <file> library` tests the exported type, emits a native shared library and generates a C# binding. The boundary carries numbers, texts, Booleans, number lists, records and lists of records; stepped parameters and results carry their decimal scale. [Using APIs](UsingApis.md#call-strict-from-c-and-c) explains the application workflow; the compiler packages handle generation and linking.
+
 # Tools
 
 The [Strict extension for Visual Studio Code](https://github.com/strict-lang/strict-vscode-client) is written in TypeScript and is the main way to work on Strict code. It has no compiler of its own. Every action is a `strict` call with the Strict folder as root:
@@ -210,10 +218,12 @@ The [Strict extension for Visual Studio Code](https://github.com/strict-lang/str
 |---------|---------|
 | Inline tests of a file (SCrunch, on open and on save) | `strict test <file> .` |
 | Validator diagnostics for the folder of a tested file | `strict check <folder> .` |
+| Executed-line values and hit counts | `strict test <file> values` |
+| Suggested implementation candidates | `strict suggest <file> <method>` |
 | Strict: Run File (Ctrl+Shift+R) | `strict <file> . [arguments]` |
 
 Each call looks up the newest `strict.exe` again, so a rebuilt `strict` is used on the next save. Agents can run the same commands to verify `.strict` changes without VS Code. See [Getting Started](GettingStarted.md#visual-studio-code) for the features and how to install it.
 
-# Open work
+# Development direction
 
-Package fetching, bytecode caching, native generic dictionaries, neural-network examples and Error stack traces are implemented. [`improvements.md`](https://github.com/strict-lang/Strict/blob/master/improvements.md) now tracks remaining defaults and resolution gaps, model formats, GPU transfers, release packaging and more complete stack-overflow diagnostics. A Strict language server remains future work; VS Code already offers completion and navigation through its own source index.
+[Real projects](Projects.md) drive the next optimizations: DeltaEngine and SoulCraft, website and application logic, neural-network training and [Qwen3 inference](MachineLearning.md). The compiler, runtime and editor evolve together so larger programs retain the short feedback loop you get from a small Strict method. Package READMEs record measurements; the [improvements list](https://github.com/strict-lang/Strict/blob/master/improvements.md) tracks development priorities.

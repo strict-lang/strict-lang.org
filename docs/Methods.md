@@ -13,6 +13,8 @@ Clamp(minimum = 0, maximum = 1) Number
 	value > maximum then maximum else value < minimum then minimum else value
 ```
 
+[VS Code](VSCode.md) shows test timings on method headers and runtime values beside the implementation. Hover over a call to read its signature and tests, or press F12 to inspect its definition.
+
 # The header
 
 `Name(parameters) ReturnType`

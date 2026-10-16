@@ -18,6 +18,8 @@ All lists are surrounded by brackets and separated by `, `. Method arguments are
 
 The type of a list is `List(Number)`, or shorter `Numbers`. Any type name ending in `s` is a list of that type: `Texts`, `Booleans`, `Characters`, `Variables`. `Numbers` on its own is an empty list of numbers, and so is `List(Number)`. A [`Text`](https://github.com/strict-lang/Strict/blob/master/Text.strict) is a list of characters, so everything below works on texts too.
 
+A single value in brackets is a list too: `("abc").Length is 1`. Brackets around an operator expression group the calculation. Lists of stepped numbers such as `has prices Numbers with Step 0.01` are planned; see [Decimals](Decimals.md).
+
 ## Using lists
 
 From the tests in [`List.strict`](https://github.com/strict-lang/Strict/blob/master/List.strict):

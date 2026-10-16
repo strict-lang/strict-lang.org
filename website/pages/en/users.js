@@ -1,53 +1,20 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 const React = require('react');
-
-const CompLibrary = require('../../core/CompLibrary.js');
-
-const Container = CompLibrary.Container;
-
-class Users extends React.Component {
-  render() {
-    const {config: siteConfig} = this.props;
-    if ((siteConfig.users || []).length === 0) {
-      return null;
-    }
-
-    const showcase = siteConfig.users.map((user) => (
-      <a href={user.infoLink} key={user.infoLink}>
-        <img src={user.image} alt={user.caption} title={user.caption} />
-      </a>
-    ));
-
-    return (
-      <div className="mainContainer">
-        <Container padding={['bottom', 'top']}>
-          <div className="showcaseSection">
-            <div className="prose">
-              <h1>Who is Using This?</h1>
-              <p>Strict is used by these people and projects</p>
-            </div>
-            <div className="logos">{showcase}</div>
-            {siteConfig.websiteRepoUrl && (
-              <React.Fragment>
-                <p>Are you using this project?</p>
-                <a
-                  href={`${siteConfig.websiteRepoUrl}/edit/master/website/siteConfig.js`}
-                  className="button">
-                  Add your company
-                </a>
-              </React.Fragment>
-            )}
-          </div>
-        </Container>
-      </div>
-    );
-  }
+const { Container, GridBlock } = require('../../core/CompLibrary.js');
+function Users(props) {
+  const baseUrl = props.config.baseUrl;
+  return (
+    <div className="mainContainer">
+      <Container padding={['bottom', 'top']}>
+        <h1>Built with Strict</h1>
+        <p>Games, web applications, neural networks and the language itself are driving development.</p>
+        <GridBlock align="left" layout="threeColumn" contents={[
+          { title: 'DeltaEngine and SoulCraft', content: '[DeltaEngine](https://deltaengine.net) is moving its ongoing work to Strict. The shared engine supports a growing game collection, with SoulCraft bringing its worlds, heroes and gameplay into Strict.' },
+          { title: 'Websites and applications', content: 'Keep ASP.NET, Vite and existing services. Use tested Strict logic through native C and generated C# bindings, with exact decimal values across the boundary. [Integration guide](/docs/UsingApis).' },
+          { title: 'Models and the compiler', content: 'From training networks to Qwen3-8B inference, the [machine-learning packages](/docs/MachineLearning) exercise native performance. The compiler, VM and validators are written in Strict too.' }
+        ]} />
+        <a className="button" href={baseUrl + 'docs/Projects'}>Explore the projects</a>
+      </Container>
+    </div>
+  );
 }
-
 module.exports = Users;

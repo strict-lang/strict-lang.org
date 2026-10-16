@@ -17,7 +17,18 @@ strict test MyKata.strict                # run all tests
 strict check .                           # validate the style rules
 ```
 
-See [Getting Started](GettingStarted.md).
+For the fastest introduction, open [Writing Strict in VS Code](VSCode.md): save a test, read its result and follow the values beside the implementation. See [Getting Started](GettingStarted.md) for installation.
+
+# Editor and useful commands
+
+| Action | Command or key |
+|--------|----------------|
+| Follow a definition | F12 |
+| Details and tests | Hover over the name |
+| Run the current file | Ctrl+Shift+R |
+| Inspect test values on executed lines | `strict test MyKata.strict values` |
+| Native execution counts and timing | `strict test MyKata.strict lines` |
+| Build for a C/C# host | `strict build MyKata.strict library` |
 
 # A type
 
@@ -44,6 +55,7 @@ If a list is the only member, its elements can be passed directly: `ReverseList(
 | `has start Number` | Member with an explicit type |
 | `has Alpha = 1` | Member with an initial value, public because it is uppercase |
 | `has Width Number with value > 0` | Member with a constraint |
+| `has price Number with Step 0.01` | Exact decimal precision, half-to-even rounding |
 | `constant Max = 255` | Constant member |
 | `mutable Colors` | Member that may change |
 | `constant zero = 0` | Variable computed from constants |

@@ -2,12 +2,15 @@
   "docs": {
     "Documentation": [
       "Overview",
+      "VSCode",
       "GettingStarted",
+      "Projects",
       "EverythingNeededForKata"
     ],
     "Language": [
       "Types",
       "Variables",
+      "Decimals",
       "Methods",
       "Tests",
       "Statements",
