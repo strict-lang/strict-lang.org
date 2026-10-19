@@ -105,6 +105,19 @@ strict build Examples/Sum.strict     # run the tests, then build a native execut
 
 Wrong usage or a missing file returns exit code 2.
 
+## Choose speed or a smaller build
+
+Native builds default to **fast**, using `-O2` for the program and its package-local C code. Add `small` to optimize both for size with `-Os`:
+
+```sh
+strict build Examples/Sum.strict small
+strict build Examples/Sum.strict windows small
+```
+
+`strict.exe` and generated `Release` builds are smaller now, with `small` offering a further reduction. The tradeoff is up to **20% slower execution on some demanding paths**; keep the default for workloads where speed matters and measure your application before choosing.
+
+Windowed `Run` programs build into a persistent `Release` folder. Existing content stays between builds; a project's `ContentBuild.strict` prepares `Release/Content`, or content is copied incrementally. GPU builds also produce `.ptx` files beside the executable: ship those files with it to retain GPU execution.
+
 [`Examples/Sum.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Sum.strict) is the smallest program that takes arguments:
 
 ```

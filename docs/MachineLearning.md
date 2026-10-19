@@ -44,15 +44,29 @@ These examples download model files on first use: GPT-2 124M uses a roughly 548 
 
 # Qwen3-8B: faster than llama.cpp
 
-Qwen3-8B Q4_K_M reaches **141–143 generated tokens/second** (7.0–7.1 ms per token) on an RTX 4090 in the October 16 development measurements, faster than llama.cpp b11658 CUDA on the same machine and day (7.25 ms, 138 tokens/second). The transformer logic is written in Strict, and each commit currently gains a few percent. The measured baseline is llama.cpp, not a separate Ollama run.
+Qwen3-8B Q4_K_M reaches **150–151 generated tokens/second** (6.6–6.7 ms per token) on an RTX 4090 in the development results reviewed October 19. The recorded llama.cpp b11658 CUDA comparison takes 7.25 ms (138 tokens/second). The transformer logic is written in Strict. The measured baseline is llama.cpp, not a separate Ollama run.
 
 | Model and weights | Strict GPU decode | llama.cpp CUDA comparison |
 |-------------------|-------------------|---------------------------|
-| Qwen3-8B Q4_K_M | 7.0–7.1 ms/token (141–143 tokens/s) | 7.25 ms/token (138 tokens/s) |
+| Qwen3-8B Q4_K_M | 6.6–6.7 ms/token (150–151 tokens/s) | 7.25 ms/token (138 tokens/s) |
 | Qwen3 0.6B Q4_K_M | 2.2–3.1 ms/token | 2.2 ms/token |
 | Qwen3-Coder-30B-A3B Q4_K_M (mixture of experts) | 5.0 ms/token (200 tokens/s) | 4.78 ms/token (209 tokens/s) |
 
-The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. These are decode measurements. Prompt processing sends all prompt tokens through each block at once (2.9 ms per token for a 10-token 8B prompt, where llama.cpp still batches better); context length, batching and startup are separate costs. The first 80 greedy tokens of the 8B match llama.cpp exactly. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the results and the benchmark reports warmup, prefill and decode separately.
+The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 200 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
+
+## Prompt processing, batches and longer context
+
+Qwen3-8B now processes prompts in chunks of up to 2,048 tokens. Tiled quantized matrix products and FlashAttention-style attention bring prefill to **0.15 ms per token at both 460 and 1,820 tokens**, and 0.17 ms at 3,720 tokens. These are the fastest of three prefills; full collections can interrupt individual runs. A 10-token prompt takes 1.0–1.2 ms/token and a 100-token prompt 0.21 ms/token. The recorded llama.cpp figures for 10, 100 and 460 tokens are 1.18, 0.175 and 0.10 ms/token.
+
+| Qwen3-8B simultaneous sequences | Aggregate decode throughput | Recorded llama.cpp comparison |
+|--------------------------------|-----------------------------|------------------------------|
+| 8 | 953 tokens/s | 727 tokens/s |
+| 16 | 1,655 tokens/s | — |
+| 32 | 2,357 tokens/s | — |
+
+These batch results combine tokens from all sequences at the same position; continuous batching with different sequence lengths is still open. They are separate from single-sequence latency.
+
+An optional **8-bit key/value cache uses 74 KB instead of 295 KB per token** for the 8B model, fitting about four times the context in the same cache memory. Quantization can change generated text. With that cache, decode takes 8.6 ms/token after 7,450 prompt tokens, 9.7 ms after 14,900 and 12.8 ms after 29,700.
 
 Build the benchmark from the repository root, then pass a local GGUF file:
 
@@ -63,13 +77,13 @@ NeuralNetworks/Qwen3Benchmark.exe path/to/Qwen3-8B-Q4_K_M.gguf 4 128
 
 On Linux run `NeuralNetworks/Qwen3Benchmark` without the `.exe` suffix. The second argument keeps the weights in their quantized form; the final argument selects the number of generated tokens.
 
-![Qwen3-8B inference pipeline in Strict at 142 tokens per second](/img/QwenInference.svg)
+![Qwen3-8B inference pipeline in Strict at 150 tokens per second](/img/QwenInference.svg)
 
 # What makes it fast
 
 Quantized matrices remain packed, numeric loops become GPU kernels, intermediate calculations stay on the device and graph replay reduces host launch overhead. CPU workers and SIMD remain useful for other workloads. Set `STRICT_GPU=0` for a CPU comparison or `STRICT_GRAPHS=0` to measure without graph replay. See [Concurrency](Concurrency.md).
 
-Development continues on memory traffic, fused operations, quantized arithmetic, attention and batching. Performance results are recorded per model and workload as the implementation changes. The earlier GPT-2 CPU benchmark reached 8.6 ms/token with 8-bit weights on an i9-13900KF; it is a different model and setup from the Qwen3 GPU results above.
+Graph replay, tiled tensor-core matrix products, fused bias operations, flash attention, batched decoding and the 8-bit cache are implemented and measured. Remaining work includes fewer small kernel launches, prefill pauses, continuous batching and memory reuse across larger workloads. Performance results are recorded per model and workload as the implementation changes. The earlier GPT-2 CPU benchmark reached 8.6 ms/token with 8-bit weights on an i9-13900KF; it is a different model and setup from the Qwen3 GPU results above.
 
 # More than inference
 

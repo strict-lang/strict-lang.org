@@ -23,6 +23,8 @@ Read the new [VS Code experience guide](/docs/VSCode) for a short walkthrough, i
 
 ## Qwen3-8B: faster than llama.cpp
 
+**October 19 update:** Qwen3-8B now reaches 150–151 decode tokens/second, with faster prompt processing, batched inference and better memory reuse. See the [latest development post](/blog/2026/10/19/faster-inference-memory-and-smaller-builds) for current measurements; the figures below describe the October 16 results.
+
 The model here is **Qwen3-8B**, the eight-billion-parameter Qwen3 model. With Q4_K_M weights on an RTX 4090, the recorded development benchmark reaches **141–143 generated tokens/second**, or **7.0–7.1 ms per token**. llama.cpp b11658 CUDA takes **7.25 ms per token** (138 tokens/second) on the same machine and day, so Strict is now ahead, and the ongoing work gains a few percent with each commit. Qwen3 0.6B takes 2.2–3.1 ms per token against 2.2 ms in the comparison.
 
 That puts Strict beyond the local-inference decode performance people associate with Ollama. The measured comparison is with llama.cpp, using the same GGUF weights and greedy sampling; it is not a separate Ollama benchmark, and decode throughput is distinct from prompt processing and batched serving.
@@ -31,7 +33,7 @@ The transformer blocks, tokenizer and generation logic are written in Strict. Qu
 
 Try the [Qwen3 benchmark and model examples](/docs/MachineLearning). The package README records the hardware, model formats and measurements so the numbers remain useful as the implementation improves.
 
-![Qwen3-8B inference in Strict at 142 tokens per second](/img/QwenInference.svg)
+![Qwen3-8B inference pipeline in Strict, showing the latest throughput](/img/QwenInference.svg)
 
 ## C, C# and exact decimals
 

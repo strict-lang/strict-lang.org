@@ -37,9 +37,13 @@ The native build pipeline, written in the same language it compiles.
 # Native model
 
 * Every value is one 64-bit slot. Numbers are doubles, and texts, lists and instances are pointer bits. `Error` values carry a tag in the top bits, so `x is Error` works for a value of any type.
-* A type with one member is that member: `Name` is its text, `Degrees` its number. Other instances are heap blocks with one slot per member.
+* A type with one member is that member: `Name` is its text, `Degrees` its number. Members declaring `value.Bits is 32` round to 32-bit precision on construction, on the VM and natively. Native `Vector2` and `Size` pack two 32-bit floats into one 64-bit slot. Other instances use heap blocks; flat layouts for larger numeric types remain in progress.
 * Lists append in place as long as they are the newest version.
-* Memory is managed by a conservative mark-sweep collector with 64 KB pages, size classes and interior pointers. It collects after 16 MB or 8 times the live data. The current runtime measurements report 22 MB for 1 million VM loop iterations.
+* Memory combines a generational conservative mark-sweep collector with deferred reference counting. Young collections scan roots and changed cards; larger dead objects and small objects holding them can be reclaimed without tracing the surviving heap. Freed blocks, including large allocations, are reused.
+
+The reference-count checks were exercised across **349 test programs and `strict.exe`**, with no counts reported too low. Reusing allocations reduced the recorded 784-64-6 MNIST training run from **834 to 520 ms**. GPU memory pressure triggers full collection before the driver starts paging heavily. See the [README memory model](https://github.com/strict-lang/Strict#how-it-is-built-from-low-to-high-level) for thresholds and diagnostic switches.
+
+Memory tuning is ongoing across the compiler, games and neural networks. Rewriting uniquely owned values in place, reclaiming small objects in bulk and flat layouts for larger numeric types remain open. Some experiments are deliberately reverted when they help one workload but slow another: freeing every small object, for example, made self-compilation slower.
 
 The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Runtime/README.md) reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These development measurements depend on the workload and hardware. `strict` builds itself in about 14.5 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
 
@@ -193,6 +197,8 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 - [`MlirEquality`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirEquality.strict): generates member-by-member equality for types and lists, used by `is`.
 
 **Native optimizations and packages**
+
+The default **fast** build uses `-O2`; `strict build <file> small` uses `-Os` for both the program and C natives. The compiler and generated `Release` builds are smaller, and `small` can shrink them further at the cost of up to 20% slower execution on demanding paths. [Getting Started](GettingStarted.md#choose-speed-or-a-smaller-build) explains the commands and release files. GPU code is emitted as companion `.ptx` files rather than embedded in the executable.
 
 [SIMD, packed numeric rows, CPU worker pools and NVIDIA PTX kernels](Concurrency.md) accelerate eligible numeric loops. [Neural-network and machine-learning programs](MachineLearning.md) are working workloads for these paths. Ordinary `Number` values remain doubles; [stepped decimals](Decimals.md) use exact integer step counts. GPU-resident intermediate values and graph replay support larger inference workloads.
 

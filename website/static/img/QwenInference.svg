@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
-  <title id="title">Qwen3-8B inference in Strict at 142 tokens per second</title>
+  <title id="title">Qwen3-8B inference in Strict at 150 tokens per second</title>
   <desc id="desc">A prompt passes through quantized transformer layers on an RTX 4090 and becomes generated tokens.</desc>
   <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#221b3f"/><stop offset="1" stop-color="#101c2a"/></linearGradient><linearGradient id="layer"><stop stop-color="#9c8aff"/><stop offset="1" stop-color="#56d5d2"/></linearGradient></defs>
   <rect width="960" height="540" rx="16" fill="url(#bg)"/>
@@ -7,14 +7,14 @@
     <text x="56" y="73" fill="#baadff" font-size="18" letter-spacing="3">LOCAL LLM INFERENCE · STRICT</text>
     <text x="56" y="140" fill="#f3f0ff" font-size="50" font-weight="700">Qwen3-8B</text>
     <text x="56" y="184" fill="#b3bed1" font-size="23">Q4_K_M weights · RTX 4090</text>
-    <text x="665" y="143" fill="#86e8d4" font-size="82" font-weight="700">142</text>
+    <text x="665" y="143" fill="#86e8d4" font-size="82" font-weight="700">150</text>
     <text x="675" y="181" fill="#b3bed1" font-size="23">tokens / second</text>
     <g fill="none" stroke="#6d76aa" stroke-width="2"><path d="M190 310H320M640 310H770"/><path d="m307 302 13 8-13 8m450-16 13 8-13 8"/></g>
     <rect x="56" y="265" width="190" height="92" rx="12" fill="#19263a" stroke="#516082"/>
     <text x="86" y="303" fill="#dee7f4" font-size="21">Your prompt</text><text x="86" y="333" fill="#91a4bc" font-size="17">tokens in</text>
     <g fill="#29264b" stroke="url(#layer)" stroke-width="2"><rect x="344" y="240" width="218" height="128" rx="12"/><rect x="364" y="258" width="218" height="128" rx="12"/><rect x="384" y="276" width="218" height="128" rx="12"/></g>
     <text x="415" y="327" fill="#e6e1ff" font-size="22">Transformer</text><text x="415" y="360" fill="#b5acd8" font-size="18">GPU kernels</text>
-    <rect x="720" y="265" width="184" height="92" rx="12" fill="#142e32" stroke="#4c9d98"/>
+    <rect x="720" y="265" width="184" height="92" rx="12" fill="#150e32" stroke="#4c9d98"/>
     <text x="751" y="303" fill="#c8f6e9" font-size="21">Next token</text><text x="751" y="333" fill="#88bcb2" font-size="17">text out</text>
     <text x="56" y="481" fill="#a9b9ce" font-size="21">Packed weights. Device-resident values. Graph replay.</text>
   </g>

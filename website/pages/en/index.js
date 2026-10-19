@@ -75,8 +75,8 @@ function Index({ config: siteConfig }) {
           <Card title="Games, websites and applications" image={img("SoulCraft.webp")} alt="SoulCraft gameplay running on the Strict port of DeltaEngine" href={doc("Projects")}>
             DeltaEngine and SoulCraft bring game logic into Strict. Keep ASP.NET, Vite and existing frameworks for the rest of your application.
           </Card>
-          <Card title="Qwen3-8B at 142 tokens/s" image={img("QwenInference.svg")} alt="Qwen3-8B transformer inference on an RTX 4090 at 142 tokens per second" href={doc("MachineLearning")}>
-            Local Q4_K_M inference on an RTX 4090 now decodes faster than llama.cpp. Transformer logic written in Strict, with more optimizations underway.
+          <Card title="Qwen3-8B at 150 tokens/s" image={img("QwenInference.svg")} alt="Qwen3-8B transformer inference on an RTX 4090 at 150 tokens per second" href={doc("MachineLearning")}>
+            Up to 2,357 tokens/s across 32 sequences; Qwen3-Coder-30B-A3B decodes at 200 tokens/s. Faster prompt processing and a smaller KV cache, with transformer logic written in Strict.
           </Card>
           <Card title="C, C# and exact decimals" image={img("NativeInterop.svg")} alt="A Strict native library connects C callers and generated C# bindings" href={doc("UsingApis")}>
             Build a native library with generated C# bindings. Share records, lists and exact decimal values with the application you already have.
@@ -95,10 +95,10 @@ function Index({ config: siteConfig }) {
             One file per type, short methods and examples beside the implementation. Immutable values and one consistent style keep code readable.
           </Card>
           <Card title="A compiler written in Strict" href={doc("Architecture")} code={snippets.compiler} source="Compiler/NativeBuild.strict">
-            The parser, type inference, validators, VM and native code generator build themselves into one executable.
+            The parser, type inference, validators, VM and native code generator build themselves. Smaller executables, with fast builds by default and an optional small mode.
           </Card>
           <Card title="Fast performance" href={doc("Concurrency")} code={snippets.gpu} source="Compiler/MlirGpuCheck.strict">
-            SIMD, CPU workers and NVIDIA GPU kernels accelerate numeric workloads. Tests and profiling guide each optimization.
+            SIMD, CPU workers and NVIDIA GPU kernels accelerate numeric workloads. Generational collection, reference counting and memory reuse are implemented; tuning continues across real projects.
           </Card>
         </div>
       </section>
@@ -107,7 +107,7 @@ function Index({ config: siteConfig }) {
         <p>Follow an algorithm through the values from its tests. <a href={doc("VSCode")}>Explore the VS Code experience →</a></p>
       </section>
       <section className="strictLatest">
-        <div className="wrapper"><p className="strictEyebrow">October 16, 2026</p><h2>Strict feels alive</h2><p>SCrunch, Qwen3-8B, exact decimals, interop and the projects driving it all.</p><a className="button" href={baseUrl + "blog/2026/10/16/strict-live-feedback-qwen3-and-interop"}>Read the development post</a></div>
+        <div className="wrapper"><p className="strictEyebrow">October 19, 2026</p><h2>Faster inference. Smaller builds.</h2><p>150 tokens/s for Qwen3-8B, batched inference, better memory reuse and a new small build option.</p><a className="button" href={baseUrl + "blog/2026/10/19/faster-inference-memory-and-smaller-builds"}>Read the development post</a></div>
       </section>
     </main>
   );
