@@ -106,3 +106,7 @@ dist
 build/
 website/yarn.lock
 website/package-lock.json
+
+# game builds from ../DeltaEngine (strict build Game.strict web), copied locally, not pushed
+website/static/games/
+Plan.md

@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Clean code. Native speed.",
+    "tagline": "Clean & Fast Anywhere",
     "docs": {
       "Architecture": {
         "title": "Architecture"
@@ -90,11 +90,13 @@
       }
     },
     "links": {
+      "Games": "Games",
+      "Playground": "Playground",
+      "SCrunch": "SCrunch",
+      "Performance": "Performance",
       "Docs": "Docs",
       "VS Code": "VS Code",
       "Projects": "Projects",
-      "Language": "Language",
-      "Source": "Source",
       "Blog": "Blog",
       "GitHub": "GitHub"
     },

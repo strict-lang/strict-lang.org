@@ -19,7 +19,7 @@ Save this as `Prices.strict`. In [VS Code](VSCode.md), the inline tests and line
 
 # Choose the precision and rounding rule
 
-`with Step 0.01` means increments of one hundredth. Steps can constrain members, parameters and return values. Lists of stepped values (`has prices Numbers with Step 0.01`) and stepped `let`/`mutable` locals are planned next.
+`with Step 0.01` means increments of one hundredth. Steps can constrain members, parameters and return values.
 
 The default rounding is half to even: `0.125` rounds to `0.12`, and `0.135` to `0.14`. Add `Floor` or `Ceiling` to choose a direction explicitly:
 
@@ -36,7 +36,7 @@ A comparison involving stepped values rounds both sides to the finest declared s
 
 Stepped values use exact integer step counts on both the VM and native backend, up to 2^51 steps. Values outside that range return `Error("DecimalOverflow")` rather than silently losing precision. Ordinary `Number` calculations retain binary floating-point behavior; declare a step when the decimal precision is part of your data's meaning.
 
-Generated [C# bindings](UsingApis.md#call-strict-from-c-and-c) carry the scale information and use `decimal` for stepped parameters and results (stepped record fields and lists are still open). Sending `12345678.12345678m` into a value with `Step 0.00000001` and returning it preserves the decimal value. You can keep an ASP.NET application's existing data model and put its tested calculation rules in Strict.
+Generated [C# bindings](UsingApis.md#call-strict-from-c-and-c) carry the scale information and use `decimal` for stepped parameters and results. Sending `12345678.12345678m` into a value with `Step 0.00000001` and returning it preserves the decimal value. You can keep an ASP.NET application's existing data model and put its tested calculation rules in Strict.
 
 # Use the tests as the specification
 

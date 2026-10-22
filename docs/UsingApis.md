@@ -49,11 +49,11 @@ strict build Policy.strict library
 
 On Windows this produces `Policy.dll` and `Policy.cs`; on Linux it produces `libPolicy.so` and `Policy.cs`. Add the generated C# source to your application and deploy the native library beside it. The generated wrapper exposes the public methods, marshals arguments and results, releases returned native data and translates a Strict Error into an `InvalidOperationException`.
 
-Supported values are `Number`, `Text`, `Boolean`, `Numbers`, records and lists of records. Plain `Number` maps to `double` and `Boolean` to `bool`; a [stepped number](Decimals.md) parameter or result maps to `decimal` and keeps its exact value up to 2^51 steps (beyond that the call throws an `OverflowException` named `DecimalOverflow`). A record whose members are all `Number` or `Boolean` crosses as a C struct of doubles in member order, and a list of numbers or records as a counted block (`double[]` or `Trade[]` in C#). Stepped record fields and lists, text lists and Boolean record fields as C# `bool` are still being worked on.
+Supported values are `Number`, `Text`, `Boolean`, `Numbers`, records and lists of records. Plain `Number` maps to `double` and `Boolean` to `bool`; a [stepped number](Decimals.md) parameter or result maps to `decimal` and keeps its exact value up to 2^51 steps (beyond that the call throws an `OverflowException` named `DecimalOverflow`). A record whose members are all `Number` or `Boolean` crosses as a C struct of doubles in member order, and a list of numbers or records as a counted block (`double[]` or `Trade[]` in C#).
 
 The exported C interface reports success or Error separately from the result. `strict_last_error()` exposes an error message and `strict_release()` releases returned native data. Use the generated binding for C# ownership and conversion details rather than copying marshalling code into application logic. This exported-library ABI is separate from the package-local `strict.h` plugin interface described above.
 
-Strict calling back into C# host services is planned. Until then, pass the values a rule needs as arguments and test the rules with explicit inputs. A decimal calculation can move into Strict while an ASP.NET host retains HTTP, storage and deployment.
+Pass the values a rule needs as arguments and test the rules with explicit inputs. A decimal calculation can move into Strict while an ASP.NET host retains HTTP, storage and deployment.
 
 ![Native C interface, a tested Strict library and generated C# bindings](/img/NativeInterop.svg)
 

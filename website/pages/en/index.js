@@ -1,24 +1,240 @@
 const React = require("react");
-const { MarkdownBlock } = require("../../core/CompLibrary.js");
-const snippets = {
-  "small": "has celsius Number\nhas logger\nToFahrenheit Number\n\tTemperatureConverter(100).ToFahrenheit is 212\n\tTemperatureConverter(0).ToFahrenheit is 32\n\tcelsius * 9 / 5 + 32",
-  "compiler": "Built(path Text, root Text) Number\n\tlet failed = Execute(logger).Test(path, root)\n\tfailed > 0 then failed else Compile(path, root)",
-  "gpu": "IsPure Boolean\n\tDoubling.IsPure\n\tMlirGpuCheck(MlirKernel.Doubler, 2).IsPure\n\tRandomizing.IsPure is false\n\tlet isSimple = MlirKernel(function, position).IsSimple and MlirLoops(function, position).IsCollecting\n\tisSimple or MlirParallel(function, position).IsParallel",
-  "quickstart": "has width Number\nhas height Number\nhas logger\nArea Number\n\tAreaCalculator(3, 4).Area is 12\n\tAreaCalculator(10, 5).Area is 50\n\twidth * height"
-};
-const codeBlock = code => "```\n" + code + "\n```";
 
-function Card({ title, image, alt, children, href, code, source }) {
+const spotlightGames = [
+  { key: "soulcraft", title: "SoulCraft", year: 2012, genre: "Action RPG", price: "Free to Play", image: "SoulCraft.webp", featured: true,
+    comingSoon: true,
+    desc: "Fight as an Angel against Demons and Humans in real-world locations, 3D heroes with custom shaders and loot.",
+    facts: ["50M downloads"],
+    stores: [["Steam", "https://store.steampowered.com/app/369700/SoulCraft/"], ["Google Play", "https://play.google.com/store/apps/details?id=de.mobilebits.soulcraftdefault"], ["App Store", "https://apps.apple.com/app/soulcraft-action-rpg/id558133054"]] },
+  { key: "arenawars", title: "Arena Wars", year: 2004, genre: "Real Time Strategy · Capture the Flag", price: "Free to Play", image: "ArenaWars.webp",
+    comingSoon: true,
+    desc: "Fast real time strategy without base building: buy units, steal the enemy flag and bring it home.",
+    facts: ["First commercial .NET game ever", "1st Place German Innovation Price 2004", "GameStar 80%+ Award", "PC Action 80%"],
+    review: ["GameStar review 09/2004 (PDF)", "https://download.gamestar.de/public/30100/30173/09_2004_081ff.pdf"],
+    stores: [["Wishlist on Steam", "https://store.steampowered.com/app/468800/Arena_Wars_Reloaded/"]] },
+  { key: "webwars", title: "WebWars", year: 1999, genre: "Real Time Strategy · Capture the Flag", price: "Free", image: "games/WebWars.jpg",
+    wip: true,
+    desc: "Work in progress: created in 2 months back in 1999, capture the flag against a computer player. Gameplay code is unfinished with plenty of bugs.", stores: [] },
+  { key: "racinggame", title: "Racing Game", year: 2006, genre: "Racing", price: "Free", image: "games/RacingGame.webp",
+    wip: true,
+    desc: "Work in progress: stress test for XNA on Xbox 360 with three courses and lap records. Physics and gameplay code are unfinished with plenty of bugs.", stores: [] }
+];
+
+const moreGames = [
+  { key: "rocketcommander", title: "Rocket Commander", year: 2005, genre: "Space Flight", image: "games/RocketCommander.webp",
+    desc: "Fly through moving asteroid fields, collect fuel and points." },
+  { key: "artifex", title: "Artifex", year: 2016, genre: "Physics Puzzle · Game Jam", image: "games/Artifex.webp",
+    desc: "Drag and rotate temple ruins to stack a tower above the line." },
+  { key: "breakout", title: "Breakout", year: 2013, genre: "Arcade", image: "games/Breakout.webp",
+    desc: "Paddle, ball and bricks with the original art and sounds." },
+  { key: "armiesofsteel", title: "Armies of Steel", year: 2005, genre: "Real Time Strategy", image: "games/ArmiesOfSteel.jpg",
+    desc: "Tank skirmish from 2005, revived in 2023." },
+  { key: "ghostwars", title: "GhostWars", year: 2013, genre: "Strategy · Game Jam", image: "games/GhostWars.webp",
+    desc: "Send ghosts between trees until you own every tree." },
+  { key: "tinybat", title: "Tiny Bat", year: 2018, genre: "Arcade · Game Jam", image: "games/TinyBat.jpg",
+    desc: "Echo through dark caves without touching the walls." },
+  { key: "elemental", title: "Elemental", year: 2020, genre: "Real Time Strategy", image: "games/Elemental.webp",
+    desc: "Fire against Earth: capture buildings that produce units." },
+  { key: "logoapp", title: "LogoApp", year: 2009, genre: "Sample", image: "games/LogoApp.webp",
+    desc: "Bouncing logos, the first sample of every engine version." }
+];
+
+const gpt2Speed = [
+  { label: "Strict, RTX 3080", value: 909, strict: true },
+  { label: "PyTorch, CUDA float16", value: 187 },
+  { label: "PyTorch, CUDA float32", value: 173 },
+  { label: "Strict, CPU threads", value: 108, strict: true },
+  { label: "PyTorch, CPU 1 thread", value: 50 },
+  { label: "PyTorch, CPU 24 threads", value: 36 }
+];
+
+const blurOneThread = [
+  { label: "Strict, 1 thread", value: 250.9, strict: true },
+  { label: "C (clang -O3)", value: 282.4 },
+  { label: "Rust (rustc -O3)", value: 475.5 },
+  { label: "C# (.NET 11)", value: 855.8 },
+  { label: "Python 3.13 with NumPy", value: 1677.8 },
+  { label: "TypeScript (Node 26)", value: 1892.3 },
+  { label: "Python 3.13", value: 264479 }
+];
+
+const blurParallel = [
+  { label: "Strict, default (cpu+gpu)", value: 7.5, strict: true },
+  { label: "Strict, no gpu", value: 26.1, strict: true },
+  { label: "C, OpenMP pragma", value: 53.0 },
+  { label: "Rust, scoped threads", value: 86.7 },
+  { label: "C#, Parallel.For", value: 122.4 }
+];
+
+const blurCode = [
+  { name: "Strict", code: `Blurred(bitmap Bitmap) Colors
+	BenchBlur.Blurred(Bitmap.Tiny)(0) is Color(4, 4, 4)
+	for bitmap.Colors
+		Neighbors(bitmap, index).Average
+Neighbors(bitmap Bitmap, pixel Number) Colors
+	BenchBlur.Neighbors(Bitmap.Tiny, 0).Length is 9
+	for Range(-Radius, Radius + 1)
+		for Range(-Radius, Radius + 1)
+			if bitmap.IsInside(pixel, value, outer)
+				bitmap.Colors(pixel + outer * bitmap.width + value)` },
+  { name: "C", code: `#pragma omp parallel for
+for (int y = 0; y < height; ++y)
+	for (int x = 0; x < width; ++x)
+	{
+		int red = 0, green = 0, blue = 0, alpha = 0, count = 0;
+		for (int dy = -4; dy <= 4; ++dy)
+			for (int dx = -4; dx <= 4; ++dx)
+				if (x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height)
+				{
+					int sourceIndex = ((y + dy) * width + x + dx) * 4;
+					red += data[sourceIndex];
+					green += data[sourceIndex + 1];
+					blue += data[sourceIndex + 2];
+					alpha += data[sourceIndex + 3];
+					++count;
+				}
+		int targetIndex = (y * width + x) * 4;
+		blurred[targetIndex] = red / count;
+		blurred[targetIndex + 1] = green / count;
+		blurred[targetIndex + 2] = blue / count;
+		blurred[targetIndex + 3] = alpha / count;
+	}` },
+  { name: "Rust", code: `for y in 0..height {
+	for x in 0..width {
+		let (mut red, mut green, mut blue, mut alpha, mut count) = (0u32, 0u32, 0u32, 0u32, 0u32);
+		for dy in -4..=4 {
+			for dx in -4..=4 {
+				if x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height {
+					let source_index = (((y + dy) * width + x + dx) * 4) as usize;
+					red += data[source_index] as u32;
+					green += data[source_index + 1] as u32;
+					blue += data[source_index + 2] as u32;
+					alpha += data[source_index + 3] as u32;
+					count += 1;
+				}
+			}
+		}
+		let target_index = ((y * width + x) * 4) as usize;
+		blurred[target_index] = (red / count) as u8;
+		blurred[target_index + 1] = (green / count) as u8;
+		blurred[target_index + 2] = (blue / count) as u8;
+		blurred[target_index + 3] = (alpha / count) as u8;
+	}
+}` },
+  { name: "C#", code: `for (var y = 0; y < height; ++y)
+	for (var x = 0; x < width; ++x)
+	{
+		int red = 0, green = 0, blue = 0, alpha = 0, count = 0;
+		for (var dy = -4; dy <= 4; ++dy)
+			for (var dx = -4; dx <= 4; ++dx)
+				if (x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height)
+				{
+					var sourceIndex = ((y + dy) * width + x + dx) * 4;
+					red += data[sourceIndex];
+					green += data[sourceIndex + 1];
+					blue += data[sourceIndex + 2];
+					alpha += data[sourceIndex + 3];
+					++count;
+				}
+		var targetIndex = (y * width + x) * 4;
+		blurred[targetIndex] = (byte)(red / count);
+		blurred[targetIndex + 1] = (byte)(green / count);
+		blurred[targetIndex + 2] = (byte)(blue / count);
+		blurred[targetIndex + 3] = (byte)(alpha / count);
+	}` },
+  { name: "TypeScript", code: `for (let y = 0; y < height; ++y)
+	for (let x = 0; x < width; ++x) {
+		let red = 0, green = 0, blue = 0, alpha = 0, count = 0;
+		for (let dy = -4; dy <= 4; ++dy)
+			for (let dx = -4; dx <= 4; ++dx)
+				if (x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height) {
+					const sourceIndex = ((y + dy) * width + x + dx) * 4;
+					red += data[sourceIndex];
+					green += data[sourceIndex + 1];
+					blue += data[sourceIndex + 2];
+					alpha += data[sourceIndex + 3];
+					++count;
+				}
+		const targetIndex = (y * width + x) * 4;
+		blurred[targetIndex] = Math.floor(red / count);
+		blurred[targetIndex + 1] = Math.floor(green / count);
+		blurred[targetIndex + 2] = Math.floor(blue / count);
+		blurred[targetIndex + 3] = Math.floor(alpha / count);
+	}` },
+  { name: "Python", code: `for y in range(height):
+	for x in range(width):
+		red = green = blue = alpha = count = 0
+		for dy in range(-4, 5):
+			for dx in range(-4, 5):
+				if 0 <= x + dx < width and 0 <= y + dy < height:
+					source_index = ((y + dy) * width + x + dx) * 4
+					red += data[source_index]
+					green += data[source_index + 1]
+					blue += data[source_index + 2]
+					alpha += data[source_index + 3]
+					count += 1
+		target_index = (y * width + x) * 4
+		blurred[target_index] = red // count
+		blurred[target_index + 1] = green // count
+		blurred[target_index + 2] = blue // count
+		blurred[target_index + 3] = alpha // count` }
+];
+
+const qwen8Speed = [
+  { label: "Strict, 32 sequences", value: 2357, strict: true },
+  { label: "Strict, 16 sequences", value: 1655, strict: true },
+  { label: "Strict, 8 sequences", value: 953, strict: true },
+  { label: "llama.cpp, 8 sequences", value: 727 },
+  { label: "Strict, 4 sequences", value: 505, strict: true },
+  { label: "llama.cpp, 4 sequences", value: 439 },
+  { label: "Strict, 1 sequence", value: 151, strict: true },
+  { label: "llama.cpp, 1 sequence", value: 138 }
+];
+
+const qwen30Speed = [
+  { label: "Strict", value: 210, strict: true },
+  { label: "llama.cpp", value: 190 },
+  { label: "GPT-6 Sol (cloud)", value: 118, muted: true },
+  { label: "Claude Opus 5.5 (cloud)", value: 95, muted: true },
+  { label: "Grok 4.7 (cloud)", value: 92, muted: true }
+];
+
+const qwen38Speed = [
+  { label: "Strict (Qwen3.8 27B)", value: 46.6, strict: true },
+  { label: "llama.cpp (Qwen3.8 27B, no drafts)", value: 43.0 },
+  { label: "Strict (Brilliance 50X)", value: 45.3, strict: true },
+  { label: "llama.cpp (Brilliance 50X)", value: 43.5 },
+  { label: "llama.cpp / Ollama (MTP drafts)", value: 74.7, muted: true }
+];
+
+function BarChart({ rows, unit, lower }) {
+  const best = lower ? Math.min(...rows.map(row => row.value)) : Math.max(...rows.map(row => row.value));
   return (
-    <article className="strictCard">
-      {image && <a className="strictCardImage" href={href}><img src={image} alt={alt} loading="lazy" width="960" height="540" /></a>}
-      <div className="strictCardBody">
-        <h3><a href={href}>{title}</a></h3>
-        <p>{children}</p>
-        {code && <div className="strictCardCode"><p className="strictSourceLabel">{source}</p><MarkdownBlock>{codeBlock(code)}</MarkdownBlock></div>}
-        <a className="strictReadMore" href={href}>Explore →</a>
-      </div>
-    </article>
+    <div className="strictBarChart">
+      {rows.map(row => (
+        <div className={"strictBarRow" + (row.muted ? " muted" : "")} key={row.label}>
+          <span className="strictBarLabel">{row.label}</span>
+          <div className="strictBarTrack">
+            <div className={"strictBarFill" + (row.strict ? " winner" : "")} style={{ width: Math.max(2, 100 * (lower ? best / row.value : row.value / best)) + "%" }}></div>
+          </div>
+          <span className={"strictBarVal" + (row.strict ? " winner" : "")}>{row.value.toLocaleString("en-US")} {unit}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CodeTabs({ name, tabs }) {
+  return (
+    <div className="strictTabs">
+      {tabs.map((tab, index) => [
+        <input type="radio" name={name} id={name + index} key={"input" + index} defaultChecked={index === 0} />,
+        <label htmlFor={name + index} key={"label" + index}>{tab.name}</label>
+      ])}
+      {tabs.map((tab, index) => (
+        <pre className={"strictTabPanel strictTabPanel" + index} key={"panel" + index}><code>{tab.code}</code></pre>
+      ))}
+    </div>
   );
 }
 
@@ -26,90 +242,231 @@ function Index({ config: siteConfig }) {
   const { baseUrl } = siteConfig;
   const doc = name => baseUrl + "docs/" + name;
   const img = name => baseUrl + "img/" + name;
+
   return (
     <main className="strictHome">
+      {/* Hero Section */}
       <section className="strictHero wrapper">
-        <img className="strictBrand" src={img("StrictBanner.png")} alt="Strict Programming Language" width="1000" height="340" />
-        <h1>Clean code. Native speed.</h1>
-        <p className="strictHeroLead">Change an expression. See tests respond. Follow the values beside your code.
-          Strict and SCrunch bring immediate feedback to VS Code, so you can stay with the idea you're working on.</p>
+        <img
+          className="strictBrand"
+          src={img("StrictBanner.png")}
+          alt="Strict Programming Language"
+          width="500"
+          height="150"
+        />
+        <h1>Clean &amp; Fast Anywhere</h1>
+        <p className="strictHeroLead">
+          Runs directly on the bare metal, generates native code, utilizes GPU kernels and runs on Windows, Linux, macOS, Android, iOS and the web. Runs 3D games locally or in browser.
+        </p>
+        <div className="strictActions">
+          <a className="button strictPrimary" href="#games">Play Games in Browser</a>
+          <a className="button strictPrimary" href="#performance">Performance</a>
+          <a className="button" href="#scrunch">VS Code SCrunch Demo</a>
+          <a className="button" href={doc("GettingStarted")}>Get Started</a>
+          <a className="button" href={siteConfig.repoUrl}>GitHub</a>
+        </div>
+      </section>
+
+      {/* Interactive Browser Demo */}
+      <section className="strictPlaygroundSection" id="playground">
+        <div className="wrapper">
+          <div className="strictSectionHeading" style={{ marginBottom: "8px" }}>
+            <p className="strictEyebrow" style={{ margin: 0 }}>Try Strict right now</p>
+          </div>
+          <div id="strictPlaygroundApp" className="strictPlaygroundContainer">
+            <div style={{ padding: "20px", textAlign: "center", color: "var(--strict-muted)" }}>
+              Loading interactive Strict evaluator...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Web Games Theater & Arcade */}
+      <section className="strictArcadeSection" id="games">
+        <div className="wrapper">
+          <div className="strictSectionHeading">
+            <p className="strictEyebrow">Games written or ported to Strict run in the browser</p>
+          </div>
+          <div className="strictArcadeSpotlight">
+            {spotlightGames.map(game => (
+              <article className={"strictSpotlightCard" + (game.featured ? " featured" : "")} key={game.key}>
+                <div className="strictCardMedia">
+                  <img src={img(game.image)} alt={game.title + " " + game.genre} loading="lazy" width="960" height="540" />
+                  <div className="strictCardBadges">
+                    <span className="strictBadge year">{game.year}</span>
+                    <span className="strictBadge f2p">{game.price}</span>
+                    {game.wip && <span className="strictBadge wip">Work in Progress</span>}
+                    {game.comingSoon && <span className="strictBadge comingSoon">Coming Soon</span>}
+                    {game.genre.split(" · ").map(genre => <span className="strictBadge genre" key={genre}>{genre}</span>)}
+                  </div>
+                </div>
+                <div className="strictSpotlightBody">
+                  <div className="strictSpotlightHeader">
+                    <h3>{game.title}</h3>
+                  </div>
+                  <p className="strictSpotlightDesc">{game.desc}</p>
+                  {game.facts && (
+                    <p className="strictSpotlightFacts">
+                      {game.facts.join(" · ")}
+                      {game.review && <span> · <a href={game.review[1]} target="_blank" rel="noopener">{game.review[0]}</a></span>}
+                    </p>
+                  )}
+                  <div className="strictCardActions">
+                    <button
+                      type="button"
+                      className={"strictPlayBtn" + (game.comingSoon ? " comingSoon" : "") + (game.wip ? " wip" : "")}
+                      data-play-game={game.key}
+                    >
+                      {game.comingSoon ? "Play in Browser (Coming Soon)" : (game.wip ? "▶ Play in Browser (Work in Progress)" : "▶ Play in Browser")}
+                    </button>
+                    <div className="strictStoreLinks">
+                      {game.stores.map(([name, url]) => (
+                        <a className="strictStoreBadge" href={url} target="_blank" rel="noopener" key={name}>{name}</a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <h3 className="strictMoreGamesTitle">More games</h3>
+          <div className="strictMoreGames">
+            {moreGames.map(game => (
+              <div className="strictMoreGameCard" key={game.key}>
+                <div className="strictCardMedia">
+                  <img src={img(game.image)} alt={game.title + " " + game.genre} loading="lazy" width="480" height="300" />
+                  <div className="strictCardBadges">
+                    <span className="strictBadge year">{game.year}</span>
+                    {game.genre.split(" · ").map(genre => <span className="strictBadge genre" key={genre}>{genre}</span>)}
+                  </div>
+                </div>
+                <div className="strictMoreGameBody">
+                  <h4>{game.title}</h4>
+                  <p title={game.desc}>{game.desc}</p>
+                  <button type="button" className="strictPlayBtn" data-play-game={game.key}>▶ Play in Browser</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SCrunch in VS Code Section */}
+      <section className="strictScrunchSection wrapper" id="scrunch">
+        <div className="strictScrunchHeader">
+          <h2>SCrunch in VS Code: See immediately what every change does.</h2>
+          <p>
+            Tests run in the background with immediate subsecond feedback. Green and red marks highlight results as you type, and runtime values appear right beside each line.
+          </p>
+        </div>
         <figure className="strictDemo">
           <video autoPlay controls muted loop playsInline preload="auto" poster={img("screenshots/scrunch-demo-poster.jpg")} width="960" height="720" aria-label="Write Fibonacci in VS Code: the tests fail first, then pass and the loop values appear beside each line">
             <source src={img("SCrunchDemo.mp4")} type="video/mp4" />
             <a href={img("SCrunchDemo.mp4")}>Watch the red-to-green test demo</a>
           </video>
-          <figcaption>Write the tests. See why they fail. Implement it and watch the values appear. Actual VS Code capture from Strict/Examples; pauses shortened.</figcaption>
+          <figcaption>Write the tests. See why they fail. Implement it and watch the values appear. Actual VS Code capture from Strict/Examples.</figcaption>
         </figure>
-        <div className="strictFlow">
-          <h2>Stay in the flow. See what every change does.</h2>
-          <p>Tests run in the background. Green and red marks show the result where you write the code; line values show how it got there.
-            Thousands of small tests with subsecond feedback are the goal behind the whole experience.</p>
-        </div>
-        <div className="strictActions">
-          <a className="button strictPrimary" href={doc("GettingStarted")}>Get Started</a>
-          <a className="button" href={doc("VSCode")}>The VS Code Experience</a>
-          <a className="button" href={siteConfig.repoUrl}>GitHub</a>
-        </div>
       </section>
 
-      <section className="strictQuickstart" id="quickstart">
-        <div className="wrapper strictExample">
-          <div>
-            <p className="strictEyebrow">Start in VS Code</p>
-            <h2>Quickstart</h2>
-            <ol>
-              <li>Open the Strict repository in VS Code with the Strict extension installed.</li>
-              <li>Open <code>Examples/AreaCalculator.strict</code> and keep the Testing view beside it.</li>
-              <li>Change <code>width * height</code> to <code>width + height</code> and save. Read the failure, restore the multiplication, and watch the tests turn green.</li>
-            </ol>
-            <p>The tests explain the method. The last line is the result. Values beside each line let you follow the calculation.</p>
-            <a href={doc("GettingStarted")}>Install Strict and get started →</a>
+      {/* Raw Performance & Automatic Parallelism */}
+      <section className="strictPerfSection" id="performance">
+        <div className="wrapper">
+          <div className="strictSectionHeading">
+            <p className="strictEyebrow">Raw Performance</p>
+            <h2>Simple code, fast results</h2>
+            <p style={{ color: "var(--strict-muted)", maxWidth: "800px" }}>
+              The same plain loops in every language. Strict optimizes them by itself and uses as many threads as make sense.
+            </p>
           </div>
-          <div className="strictCodeExample"><p className="strictSourceLabel">Examples/AreaCalculator.strict · excerpt</p><MarkdownBlock>{codeBlock(snippets.quickstart)}</MarkdownBlock></div>
+
+          <div className="strictBenchCard strictBenchWide">
+            <h3>Image Blur</h3>
+            <p className="sub">9x9 box blur of a 4096x2048 photo, milliseconds per image on one i9-13900KF (and one Nvidia RTX 3080 GPU, October 2026), the same output image in every language</p>
+            <div className="strictPerfGrid">
+              <div>
+                <h4>One thread</h4>
+                <BarChart rows={blurOneThread} unit="ms" lower />
+              </div>
+              <div>
+                <h4>All cores</h4>
+                <BarChart rows={blurParallel} unit="ms" lower />
+              </div>
+            </div>
+            <CodeTabs name="blurCode" tabs={blurCode} />
+            <p className="strictBenchNote">Highly tuned C/asm code (compiled-in window, SIMD, CUDA, etc.) could match or beat Strict with a lot of work. Strict needs none of it and even has 2 unit tests. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
+          </div>
+
+          <div className="strictPerfGrid">
+            <div className="strictBenchCard">
+              <h3>Qwen3 Models (RTX 4090)</h3>
+              <p className="sub">Generated tokens per second, 4-bit weights (Q4_K_M), all kernels written in Strict</p>
+              <div className="strictBenchGroup">
+                <h4>Qwen3-8B (Dense)</h4>
+                <BarChart rows={qwen8Speed} unit="tok/s" />
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Qwen3-Coder-30B-A3B (MoE)</h4>
+                <BarChart rows={qwen30Speed} unit="tok/s" />
+                <p className="strictBenchNote">llama.cpp b11658 on the same GPU. Hosted models for scale (Artificial Analysis, Oct 2026).</p>
+              </div>
+            </div>
+            <div className="strictBenchCard">
+              <h3>Qwen3.8 &amp; Reasoning Models (RTX 4090)</h3>
+              <p className="sub">Hybrid Gated DeltaNet with full attention and linear recurrence, 4-bit (Q4_K_M)</p>
+              <div className="strictBenchGroup">
+                <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
+                <BarChart rows={qwen38Speed} unit="tok/s" />
+                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting and prefill are being tuned.</p>
+              </div>
+              <div className="strictBenchGroup">
+                <h4>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h4>
+                <BarChart rows={gpt2Speed} unit="tok/s" />
+                <p className="strictBenchNote">GPT-2 124M, greedy decoding. PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Interop & Ecosystem */}
+          <div className="strictInteropSection">
+            <div className="strictInteropCard">
+              <h4>Direct Native Bindings</h4>
+              <p>
+                Strict calls system libraries directly: GLFW, OpenGL, WebGL, miniaudio, Box2D and input controllers without runtime bridges.
+              </p>
+            </div>
+            <div className="strictInteropCard">
+              <h4>Generated C# Bindings</h4>
+              <p>
+                Build standalone native libraries with automatically generated C# bindings to share records, collections, and fast logic with existing .NET apps.
+              </p>
+            </div>
+            <div className="strictInteropCard">
+              <h4>Use the Right Tool</h4>
+              <p>
+                Keep TypeScript, React, Vite, or ASP.NET for web UI and presentation — Strict handles the compute, game loops, math, and high-performance algorithms.
+              </p>
+            </div>
+          </div>
+
+          <div className="strictParallelCallout" style={{ marginTop: "20px" }}>
+            Strict runs in parallel automatically: loops are split over the CPU cores or sent to the GPU, without manual locks or thread pools. <a href={doc("Concurrency")}>Explore Concurrency &amp; GPU Kernels →</a>
+          </div>
         </div>
       </section>
 
-      <section className="wrapper strictShowcase">
-        <div className="strictSectionHeading"><p className="strictEyebrow">Built with Strict</p><h2>Real projects. Real performance.</h2></div>
-        <div className="strictCards">
-          <Card title="Games, websites and applications" image={img("SoulCraft.webp")} alt="SoulCraft gameplay running on the Strict port of DeltaEngine" href={doc("Projects")}>
-            DeltaEngine and SoulCraft bring game logic into Strict. Keep ASP.NET, Vite and existing frameworks for the rest of your application.
-          </Card>
-          <Card title="Qwen3-8B at 150 tokens/s" image={img("QwenInference.svg")} alt="Qwen3-8B transformer inference on an RTX 4090 at 150 tokens per second" href={doc("MachineLearning")}>
-            Up to 2,357 tokens/s across 32 sequences; Qwen3-Coder-30B-A3B decodes at 200 tokens/s. Faster prompt processing and a smaller KV cache, with transformer logic written in Strict.
-          </Card>
-          <Card title="C, C# and exact decimals" image={img("NativeInterop.svg")} alt="A Strict native library connects C callers and generated C# bindings" href={doc("UsingApis")}>
-            Build a native library with generated C# bindings. Share records, lists and exact decimal values with the application you already have.
-          </Card>
-        </div>
-        <a className="strictGameStrip" href={doc("Projects")}>
-          <img src={img("ArenaWars.webp")} alt="Arena Wars battle with blue units and bases in the current DeltaEngine port" loading="lazy" width="1280" height="720" />
-          <div><p className="strictEyebrow">DeltaEngine</p><h3>SoulCraft. Arena Wars. And more.</h3><p>A shared engine, a growing collection of games, and gameplay written in Strict.</p><span>Explore the projects →</span></div>
-        </a>
-      </section>
-
-      <section className="wrapper strictLanguageCards">
-        <div className="strictSectionHeading"><p className="strictEyebrow">Under the hood</p><h2>Small methods. Serious programs.</h2></div>
-        <div className="strictCards">
-          <Card title="A small, readable language" href={doc("Types")} code={snippets.small} source="Examples/TemperatureConverter.strict">
-            One file per type, short methods and examples beside the implementation. Immutable values and one consistent style keep code readable.
-          </Card>
-          <Card title="A compiler written in Strict" href={doc("Architecture")} code={snippets.compiler} source="Compiler/NativeBuild.strict">
-            The parser, type inference, validators, VM and native code generator build themselves. Smaller executables, with fast builds by default and an optional small mode.
-          </Card>
-          <Card title="Fast performance" href={doc("Concurrency")} code={snippets.gpu} source="Compiler/MlirGpuCheck.strict">
-            SIMD, CPU workers and NVIDIA GPU kernels accelerate numeric workloads. Generational collection, reference counting and memory reuse are implemented; tuning continues across real projects.
-          </Card>
-        </div>
-      </section>
-      <section className="wrapper strictAlgorithm">
-        <a href={doc("VSCode") + "#read-the-execution-beside-the-code"}><img src={img("screenshots/fibonacci-values.jpg")} alt="Fibonacci in VS Code showing passing tests, loop hit counts and the values of first, second and next on each iteration" loading="lazy" width="1442" height="901" /></a>
-        <p>Follow an algorithm through the values from its tests. <a href={doc("VSCode")}>Explore the VS Code experience →</a></p>
-      </section>
+      {/* Latest Development News */}
       <section className="strictLatest">
-        <div className="wrapper"><p className="strictEyebrow">October 19, 2026</p><h2>Faster inference. Smaller builds.</h2><p>150 tokens/s for Qwen3-8B, batched inference, better memory reuse and a new small build option.</p><a className="button" href={baseUrl + "blog/2026/10/19/faster-inference-memory-and-smaller-builds"}>Read the development post</a></div>
+        <div className="wrapper">
+          <p className="strictEyebrow">Latest Development</p>
+          <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210 tok/s</h2>
+          <p>
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 46.6 and 45.3 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210 tokens/second in Strict (ahead of llama.cpp at 190). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
+          </p>
+          <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
+        </div>
       </section>
     </main>
   );
 }
+
 module.exports = Index;

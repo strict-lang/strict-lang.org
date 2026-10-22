@@ -70,7 +70,7 @@ Values never change. `list + element` gives a new list. `mutable` exists, but on
 
 ## Fast
 
-The runtime reuses list storage where possible and combines generational collection with deferred reference counting; broader reuse of uniquely owned values is still being tuned. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The recorded runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. See [Architecture](Architecture.md) for memory and build details.
+The runtime reuses list storage where possible, rewrites uniquely owned values in place, and combines generational collection with deferred reference counting. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The recorded runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. See [Architecture](Architecture.md) for memory and build details.
 
 ## Small
 
@@ -84,8 +84,8 @@ Use established frameworks for the browser, HTTP, storage, graphics and platform
 
 * **A much richer editor:** SCrunch test results, source-line values, coverage and timings; semantic highlighting, hover, completion and F12 navigation.
 * **Libraries and exact values:** native C/C# interop, generated bindings and stepped decimals that stay exact as C# `decimal` parameters and results.
-* **Local inference:** Qwen3-8B Q4_K_M at 150–151 decode tokens/second on an RTX 4090, up to 2,357 aggregate tokens/second across 32 sequences, and Qwen3-Coder-30B-A3B at 200 decode tokens/second. [Measurements and conditions](MachineLearning.md) separate decode, prefill and batching.
-* **Memory and build size:** generational collection, deferred reference counting and allocation reuse are implemented. Native `Vector2` and `Size` pack two 32-bit floats into one slot. Smaller compiler and `Release` builds can shrink further with `strict build <file> small`; fast remains the default, since size optimization can cost up to 20% execution speed on demanding paths. Memory tuning continues across workloads.
+* **Local inference:** Qwen3-8B Q4_K_M at 150–151 decode tokens/second on an RTX 4090, up to 2,357 aggregate tokens/second across 32 sequences, Qwen3-Coder-30B-A3B at 210 decode tokens/second, and Qwen3.8 27B and Brilliance 50X at 46.6 and 45.3 tokens/second. [Measurements and conditions](MachineLearning.md) separate decode, prefill and batching.
+* **Memory and build size:** generational collection, deferred reference counting and allocation reuse are implemented. Native `Vector2` and `Size` pack two 32-bit floats into one slot, and types like `Vector3` and `Quaternion` use flat packed blocks. Smaller compiler and `Release` builds can shrink further with `strict build <file> small`; fast remains the default, since size optimization can cost up to 20% execution speed on demanding paths.
 * **Real applications:** the growing DeltaEngine game collection, SoulCraft, website logic and the compiler itself are all driving development.
 
 See the [October 16 update](/blog/2026/10/16/strict-live-feedback-qwen3-and-interop) for the full story.

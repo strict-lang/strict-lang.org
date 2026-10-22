@@ -37,13 +37,13 @@ The native build pipeline, written in the same language it compiles.
 # Native model
 
 * Every value is one 64-bit slot. Numbers are doubles, and texts, lists and instances are pointer bits. `Error` values carry a tag in the top bits, so `x is Error` works for a value of any type.
-* A type with one member is that member: `Name` is its text, `Degrees` its number. Members declaring `value.Bits is 32` round to 32-bit precision on construction, on the VM and natively. Native `Vector2` and `Size` pack two 32-bit floats into one 64-bit slot. Other instances use heap blocks; flat layouts for larger numeric types remain in progress.
+* A type with one member is that member: `Name` is its text, `Degrees` its number. Members declaring `value.Bits is 32` round to 32-bit precision on construction, on the VM and natively. Native `Vector2` and `Size` pack two 32-bit floats into one 64-bit slot, and types of 3 to 16 32-bit numbers like `Vector3`, `Vector4` and `Quaternion` use flat packed blocks of floats. Lists of Colors store 4 bytes per element in packed format.
 * Lists append in place as long as they are the newest version.
 * Memory combines a generational conservative mark-sweep collector with deferred reference counting. Young collections scan roots and changed cards; larger dead objects and small objects holding them can be reclaimed without tracing the surviving heap. Freed blocks, including large allocations, are reused.
 
 The reference-count checks were exercised across **349 test programs and `strict.exe`**, with no counts reported too low. Reusing allocations reduced the recorded 784-64-6 MNIST training run from **834 to 520 ms**. GPU memory pressure triggers full collection before the driver starts paging heavily. See the [README memory model](https://github.com/strict-lang/Strict#how-it-is-built-from-low-to-high-level) for thresholds and diagnostic switches.
 
-Memory tuning is ongoing across the compiler, games and neural networks. Rewriting uniquely owned values in place, reclaiming small objects in bulk and flat layouts for larger numeric types remain open. Some experiments are deliberately reverted when they help one workload but slow another: freeing every small object, for example, made self-compilation slower.
+Memory management is tuned for high throughput across the compiler, games and neural networks. Uniquely owned values are rewritten in place, dead objects are reclaimed without tracing the surviving heap, and flat layouts minimize overhead for numeric types.
 
 The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Runtime/README.md) reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These development measurements depend on the workload and hardware. `strict` builds itself in about 14.5 seconds, most of it in `mlir-opt` and `clang`. Executables are reproducible: single-threaded MLIR passes and `-Brepro` make every build byte-identical.
 

@@ -202,7 +202,7 @@ The [Strict extension for VS Code](https://github.com/strict-lang/strict-vscode-
 
 To install it, clone [strict-vscode-client](https://github.com/strict-lang/strict-vscode-client) next to the Strict repository, run `bun install` and `bun run package`, then use *Extensions: Install from VSIX…* in VS Code. The extension always uses the newest `strict.exe` it finds (in the workspace, or in a `Strict` folder next to it or next to the extension), so rebuilding `strict` is enough to update it. The `strict.root` setting forces one folder.
 
-The extension also provides completion, hover, go to definition, signature help, references, rename and call hierarchy by indexing `.strict` source files. A language server written in Strict remains future work.
+The extension also provides completion, hover, go to definition, signature help, references, rename and call hierarchy by indexing `.strict` source files.
 
 * **Timings and coverage:** test durations, slow-test reports and Run with Coverage, using `strict test <file> lines` for native execution counts and total/self timings.
 * **Implementations from tests:** ghost-text suggestions are checked against the method's tests before you accept them. Strong tests matter: a suggestion passing weak tests can still be wrong.

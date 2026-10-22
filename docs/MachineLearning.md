@@ -50,9 +50,11 @@ Qwen3-8B Q4_K_M reaches **150–151 generated tokens/second** (6.6–6.7 ms per 
 |-------------------|-------------------|---------------------------|
 | Qwen3-8B Q4_K_M | 6.6–6.7 ms/token (150–151 tokens/s) | 7.25 ms/token (138 tokens/s) |
 | Qwen3 0.6B Q4_K_M | 2.2–3.1 ms/token | 2.2 ms/token |
-| Qwen3-Coder-30B-A3B Q4_K_M (mixture of experts) | 5.0 ms/token (200 tokens/s) | 4.78 ms/token (209 tokens/s) |
+| Qwen3-Coder-30B-A3B Q4_K_M (mixture of experts) | 4.76 ms/token (210 tokens/s) | 5.26 ms/token (190 tokens/s) |
+| Qwen3.8 27B Q4_K_M (Gated DeltaNet hybrid) | 21.5 ms/token (46.6 tokens/s) | 23.2 ms/token (43.0 tokens/s) |
+| Qwen3.8 Brilliance 50X Q4_K_M (reasoning) | 22.1 ms/token (45.3 tokens/s) | 23.0 ms/token (43.5 tokens/s) |
 
-The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 200 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
+The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 210 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
 
 ## Prompt processing, batches and longer context
 
@@ -64,7 +66,7 @@ Qwen3-8B now processes prompts in chunks of up to 2,048 tokens. Tiled quantized 
 | 16 | 1,655 tokens/s | — |
 | 32 | 2,357 tokens/s | — |
 
-These batch results combine tokens from all sequences at the same position; continuous batching with different sequence lengths is still open. They are separate from single-sequence latency.
+These batch results combine tokens from all sequences at the same position, separate from single-sequence latency.
 
 An optional **8-bit key/value cache uses 74 KB instead of 295 KB per token** for the 8B model, fitting about four times the context in the same cache memory. Quantization can change generated text. With that cache, decode takes 8.6 ms/token after 7,450 prompt tokens, 9.7 ms after 14,900 and 12.8 ms after 29,700.
 
@@ -83,7 +85,7 @@ On Linux run `NeuralNetworks/Qwen3Benchmark` without the `.exe` suffix. The seco
 
 Quantized matrices remain packed, numeric loops become GPU kernels, intermediate calculations stay on the device and graph replay reduces host launch overhead. CPU workers and SIMD remain useful for other workloads. Set `STRICT_GPU=0` for a CPU comparison or `STRICT_GRAPHS=0` to measure without graph replay. See [Concurrency](Concurrency.md).
 
-Graph replay, tiled tensor-core matrix products, fused bias operations, flash attention, batched decoding and the 8-bit cache are implemented and measured. Remaining work includes fewer small kernel launches, prefill pauses, continuous batching and memory reuse across larger workloads. Performance results are recorded per model and workload as the implementation changes. The earlier GPT-2 CPU benchmark reached 8.6 ms/token with 8-bit weights on an i9-13900KF; it is a different model and setup from the Qwen3 GPU results above.
+Graph replay, tiled tensor-core matrix products, fused bias operations, flash attention, batched decoding and the 8-bit cache are implemented and measured. Performance results are recorded per model and workload as the implementation evolves. The earlier GPT-2 CPU benchmark reached 8.6 ms/token with 8-bit weights on an i9-13900KF; it is a different model and setup from the Qwen3 GPU results above.
 
 # More than inference
 

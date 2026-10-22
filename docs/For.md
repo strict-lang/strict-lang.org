@@ -81,15 +81,6 @@ Sum Number
 		index
 ```
 
-**Enums.** An enum type can be enumerated like a list of its values. Enumerating one enum value enumerates that value: a number counts up to it, and a text gives its characters.
-
-```
-for Connection
-	logger.Log(value)
-```
-
-Enumerating an enum type is not supported by the self-hosted compiler yet. Use its values directly for now, like `(Connection.Google, Connection.Microsoft)`.
-
 **Any type with a `for` method.** A type defines how it is iterated with a `for` method that returns an `Iterator`. `Range` simply returns its numbers:
 
 ```
@@ -135,17 +126,6 @@ Reverse List
 	for Range(0, Length).Reverse
 		outer.value(index)
 ```
-
-# Named loop variables
-
-The grammar also allows a name for the loop variable, which leaves `value` untouched for the outer scope:
-
-```
-for element in (1, 2, 3, 4)
-	logger.Log(element)
-```
-
-The self-hosted compiler doesn't support named loop variables yet. All code in the repository uses `value`, `index` and `outer`.
 
 # Filtering
 
@@ -325,23 +305,6 @@ for Range(0, 10)
 	if value % 2 is 0
 		value * 10
 ```
-
-# Pipelines
-
-The language design goes further: every line of a loop body can transform the value from the line before it, like a pipeline.
-
-```
-for numbers
-	to Text
-	Length * Length
-	if value > 3
-		4 + value * 3
-		to Text
-```
-
-Each number is converted to `Text`. `Length * Length` squares the length of that text, which gives a number again. If that number is above 3, it is transformed once more and converted back to `Text`. The result is a list of texts, or one concatenated `Text` if the method returns a `Text`. Some of this could be written in one line, like `(value to Text).Length * (value to Text).Length`, but that is longer and not preferred.
-
-Multi-line pipelines like this are not supported by the self-hosted compiler yet. Today each loop body ends in one expression.
 
 # Mutable variables in loops
 

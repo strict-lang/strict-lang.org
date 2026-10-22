@@ -25,7 +25,7 @@ Eligible numeric loops become PTX kernels in the native executable. The runtime 
 
 Packed Q4_K, Q6_K, Q8_0, 16-bit and 32-bit data reduce memory traffic. Transformer calculations can keep intermediate results on the device, and graph replay reduces repeated host launch work. This lets a Qwen3 step run predominantly on the GPU rather than copying each matrix result back to the CPU.
 
-[Qwen3-8B measurements](MachineLearning.md#qwen3-8b-faster-than-llamacpp) now reach 150–151 decode tokens/second on an RTX 4090, with 953 aggregate tokens/second across 8 sequences and 2,357 across 32. Tiled tensor-core matrix products, fused biases, flash attention and an optional 8-bit KV cache are implemented. Work continues on launch overhead, memory reuse and continuous batching. Distributed execution and NPU/TPU backends remain longer-term directions; the current GPU runtime targets NVIDIA.
+[Qwen3-8B measurements](MachineLearning.md#qwen3-8b-faster-than-llamacpp) now reach 150–151 decode tokens/second on an RTX 4090, with 953 aggregate tokens/second across 8 sequences and 2,357 across 32. Tiled tensor-core matrix products, fused biases, flash attention and an optional 8-bit KV cache are implemented. The native GPU runtime targets NVIDIA hardware with full CPU fallback.
 
 [![MlirGpu.strict in VS Code showing tests and generated GPU launch code](/img/screenshots/gpu-kernels.jpg)](/img/screenshots/gpu-kernels.jpg)
 

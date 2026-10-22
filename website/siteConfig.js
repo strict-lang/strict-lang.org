@@ -41,7 +41,7 @@ const highlightCode = (code, language = 'strict') => {
 
 const siteConfig = {
   title: "Strict Programming Language",
-  tagline: "Clean code. Native speed.",
+  tagline: "Clean & Fast Anywhere",
   url: "https://strict-lang.org",
   baseUrl: '/',
   projectName: "strict-lang.org",
@@ -53,11 +53,13 @@ const siteConfig = {
   },
   headerLinks: [
     { search: true },
+    { href: "/#games", label: "Games" },
+    { href: "/#playground", label: "Playground" },
+    { href: "/#scrunch", label: "SCrunch" },
+    { href: "/#performance", label: "Performance" },
     { doc: "Overview", label: "Docs" },
     { doc: "VSCode", label: "VS Code" },
     { doc: "Projects", label: "Projects" },
-    { doc: "Types", label: "Language" },
-    { doc: "Architecture", label: "Source" },
     { blog: true, label: "Blog" },
     { href: "https://github.com/strict-lang/Strict", label: "GitHub" }
   ],
@@ -81,7 +83,12 @@ const siteConfig = {
   markdownOptions: {
     highlight: highlightCode,
   },
-  scripts: ['https://buttons.github.io/buttons.js'],
+  scripts: [
+    'https://buttons.github.io/buttons.js',
+    '/js/strict-mini-eval.js',
+    '/js/strict-playground.js',
+    '/js/strict-theater.js'
+  ],
   onPageNav: 'separate',
   cleanUrl: true,
   enableUpdateBy: true,
