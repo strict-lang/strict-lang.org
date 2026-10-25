@@ -290,7 +290,7 @@ function BarChart({ rows, unit, lower }) {
           <div className="strictBarTrack">
             <div className={"strictBarFill" + (row.strict ? " winner" : "")} style={{ width: Math.max(2, 100 * (lower ? best / row.value : row.value / best)) + "%" }}></div>
           </div>
-          <span className={"strictBarVal" + (row.strict ? " winner" : "")}>{row.value.toLocaleString("en-US")} {unit}</span>
+          <span className={"strictBarVal" + (row.strict ? " winner" : "")}>{row.value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {unit}</span>
         </div>
       ))}
     </div>
@@ -474,7 +474,7 @@ function Index({ config: siteConfig }) {
               </div>
             </div>
             <CodeTabs name="blurCode" tabs={blurCode} />
-            <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193 instead of 282 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
+            <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193.30 instead of 282.40 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
           </div>
 
           <div className="strictPerfGrid">
@@ -497,7 +497,7 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
                 <BarChart rows={qwen38Speed} unit="tok/s" />
-                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73 tok/s (Ollama 74.7), prefill is being tuned.</p>
+                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73.00 tok/s (Ollama 74.70), prefill is being tuned.</p>
               </div>
             </div>
           </div>
@@ -513,15 +513,15 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Diffusion Sampling (8 steps)</h4>
                 <BarChart rows={mossSamplingSpeed} unit="s" lower />
-                <p className="strictBenchNote">With <code>--spectrum spectrum8_w3p3</code> and cached stochastic INT8 LoRA merging, Strict evaluates 5 transformer steps and forecasts 3. The latest idle-GPU batch with DMD plus four additional LoRAs averages 2.19 s per image across seven warm images (2.183–2.202 s). ComfyUI's observed warm pipeline takes 6–6.5 s; the headless sampling measurement above is separate. Merging and prediction can change image details. Times exclude startup, model loading and prompt encoding. Non-Spectrum Strict rows retain their earlier measurements; this batch measures the Spectrum path.</p>
+                <p className="strictBenchNote">With <code>--spectrum spectrum8_w3p3</code> and cached stochastic INT8 LoRA merging, Strict evaluates 5 transformer steps and forecasts 3. The latest idle-GPU batch with DMD plus four additional LoRAs averages 2.19 s per image across seven warm images (2.18–2.20 s). ComfyUI's observed warm pipeline takes 6.00–6.50 s; the headless sampling measurement above is separate. Merging and prediction can change image details. Times exclude startup, model loading and prompt encoding. Non-Spectrum Strict rows retain their earlier measurements; this batch measures the Spectrum path.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>Warm Image Time Breakdown</h4>
                 <ul>
-                  <li>Diffusion sampling: <strong>~1.703 s</strong></li>
-                  <li>VAE decode: <strong>~0.451 s</strong></li>
-                  <li>JPEG saving (quality 85): <strong>~0.017 s</strong></li>
-                  <li>Other per-image overhead: <strong>~0.019 s</strong></li>
+                  <li>Diffusion sampling: <strong>~1.70 s</strong></li>
+                  <li>VAE decode: <strong>~451.43 ms</strong></li>
+                  <li>JPEG saving (quality 85): <strong>~16.57 ms</strong></li>
+                  <li>Other per-image overhead: <strong>~19.00 ms</strong></li>
                 </ul>
                 <p className="strictBenchNote">Mean stage times from the same seven warm images; overhead is the remainder of generation time. Model and VAE stay loaded across images with <code>--count</code>. The LoRA stack is merged once and reused from cache.</p>
               </div>
@@ -568,9 +568,9 @@ function Index({ config: siteConfig }) {
       <section className="strictLatest">
         <div className="wrapper">
           <p className="strictEyebrow">Latest Development</p>
-          <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210 tok/s</h2>
+          <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</h2>
           <p>
-            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 46.6 and 45.3 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210 tokens/second in Strict (ahead of llama.cpp at 190). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 46.60 and 45.30 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
           </p>
           <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
         </div>
