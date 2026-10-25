@@ -250,8 +250,45 @@ input::placeholder { color: #acbdc8; }
 }
 .sp-editor-wrapper {
   position: relative;
+  overflow: hidden;
+}
+.sp-code-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 12px 14px;
+  border: none;
+  background: transparent !important;
+  color: #ecf5f9;
+  pointer-events: none;
+  z-index: 1;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.55;
+  tab-size: 2;
+  -moz-tab-size: 2;
+  white-space: pre;
+  word-wrap: normal;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.sp-code-highlight code {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  tab-size: inherit;
+  -moz-tab-size: inherit;
+  white-space: inherit;
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit;
 }
 #spCodeTextarea {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 100%;
   min-height: 150px;
@@ -259,18 +296,28 @@ input::placeholder { color: #acbdc8; }
   margin: 0;
   border: none;
   background: transparent;
-  color: #ecf5f9;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: #55d6be;
   font-family: inherit;
   font-size: inherit;
   line-height: 1.55;
   resize: vertical;
   tab-size: 2;
+  -moz-tab-size: 2;
   outline: none;
   white-space: pre;
+  word-wrap: normal;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 #spCodeTextarea:focus {
   outline: none;
+}
+#spCodeTextarea::selection {
+  background: rgba(85, 214, 190, 0.3);
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 .sp-gutter-values {
   padding: 12px 12px;
@@ -967,7 +1014,13 @@ input::placeholder { color: #acbdc8; }
 #blurCode4:checked ~ .strictTabPanel4 { display: block; }
 #blurCode5:checked + label { color: #e5f3f8; background: #172d38; }
 #blurCode5:checked ~ .strictTabPanel5 { display: block; }
-.strictTabPanel code { tab-size: 4; -moz-tab-size: 4; white-space: pre; }
+#blurCode6:checked + label { color: #e5f3f8; background: #172d38; }
+#blurCode6:checked ~ .strictTabPanel6 { display: block; }
+#blurCode7:checked + label { color: #e5f3f8; background: #172d38; }
+#blurCode7:checked ~ .strictTabPanel7 { display: block; }
+#blurCode8:checked + label { color: #e5f3f8; background: #172d38; }
+#blurCode8:checked ~ .strictTabPanel8 { display: block; }
+.strictTabPanel code { tab-size: 4; -moz-tab-size: 4; white-space: pre; background: transparent; }
 .strictTabs + .strictBenchNote { margin-top: 12px; }
 
 .strictBadge.wip {

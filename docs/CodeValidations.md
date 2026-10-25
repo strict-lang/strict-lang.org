@@ -61,7 +61,7 @@ These come from [`Limits`](https://github.com/strict-lang/Strict/blob/master/Val
 
 # Rules applied while compiling
 
-Some rules are part of compiling a type rather than `check`:
+Some rules are also applied while compiling a type, so `strict test` and `strict build` report them too (`check` reports the name and type rules as well):
 
 * Every method needs at least one test, see [Tests](Tests.md).
 * Every name must be known: a member, parameter, variable, `value`, `index`, `outer`, or a type of this package, the base types or a referenced package. [`Expressions/FileCheck`](https://github.com/strict-lang/Strict/blob/master/Expressions/FileCheck.strict) and [`Expressions/ResolveCheck`](https://github.com/strict-lang/Strict/blob/master/Expressions/ResolveCheck.strict) report names that can't be resolved.

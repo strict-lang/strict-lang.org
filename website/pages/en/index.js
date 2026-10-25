@@ -1,4 +1,34 @@
 const React = require("react");
+const path = require("path");
+
+let hljs;
+try {
+  const hljsPath = require.resolve("highlight.js", { paths: [process.cwd()] });
+  hljs = require(hljsPath);
+} catch (e) {
+  hljs = require("highlight.js");
+}
+
+if (!hljs.getLanguage('strict')) {
+  hljs.registerLanguage('strict', hljs => ({
+    aliases: ['str'],
+    keywords: {
+      keyword: 'has constant let mutable if else then for in is not and or xor return to from with as long',
+      literal: 'true false None',
+      built_in: 'value index outer',
+    },
+    contains: [
+      hljs.QUOTE_STRING_MODE,
+      { className: 'comment', begin: /(#|\/\/).*$/ },
+      { className: 'number', begin: /\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/, relevance: 0 },
+      {
+        className: 'title',
+        begin: /^(?!(has|constant|mutable|let|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
+      },
+      { className: 'type', begin: /\b[A-Z][A-Za-z]*\b/, relevance: 0 },
+    ],
+  }));
+}
 
 const spotlightGames = [
   { key: "soulcraft", title: "SoulCraft", year: 2012, genre: "Action RPG", price: "Free to Play", image: "SoulCraft.webp", featured: true,
@@ -48,26 +78,42 @@ const gpt2Speed = [
   { label: "PyTorch, CPU 24 threads", value: 36 }
 ];
 
+const mossTotalSpeed = [
+  { label: "Strict + Spectrum (spectrum8_w3p3)", value: 2.2, strict: true },
+  { label: "Strict (cached merged LoRA)", value: 3.4, strict: true },
+  { label: "Strict (runtime LoRA)", value: 5.3, strict: true },
+  { label: "ComfyUI (default warm pipeline)", value: 6.5 }
+];
+
+const mossSamplingSpeed = [
+  { label: "Strict + Spectrum (5 steps evaluated)", value: 1.7, strict: true },
+  { label: "Strict (8 steps, cached merged INT8)", value: 2.9, strict: true },
+  { label: "ComfyUI (8 steps, headless INT8)", value: 3.2 }
+];
+
 const blurOneThread = [
-  { label: "Strict, 1 thread", value: 250.9, strict: true },
-  { label: "C (clang -O3)", value: 282.4 },
-  { label: "Rust (rustc -O3)", value: 475.5 },
-  { label: "C# (.NET 11)", value: 855.8 },
-  { label: "Python 3.13 with NumPy", value: 1677.8 },
-  { label: "TypeScript (Node 26)", value: 1892.3 },
+  { label: "Strict, 1 thread", value: 189.5, strict: true },
+  { label: "C (clang 23 -O3)", value: 193.3 },
+  { label: "C (clang 22 -O3, Oct 21)", value: 282.4 },
+  { label: "Rust (rustc -O3)", value: 487.6 },
+  { label: "Goose (via clang)", value: 583.5 },
+  { label: "C# (.NET 11)", value: 851.3 },
+  { label: "Python 3.13 with NumPy", value: 1647.5 },
+  { label: "TypeScript (Node 26)", value: 1959.6 },
   { label: "Python 3.13", value: 264479 }
 ];
 
 const blurParallel = [
-  { label: "Strict, default (cpu+gpu)", value: 7.5, strict: true },
-  { label: "Strict, no gpu", value: 26.1, strict: true },
-  { label: "C, OpenMP pragma", value: 53.0 },
-  { label: "Rust, scoped threads", value: 86.7 },
+  { label: "Strict, default (cpu+gpu)", value: 6.6, strict: true },
+  { label: "Strict, no gpu", value: 21.0, strict: true },
+  { label: "C, OpenMP (clang 22, Oct 21)", value: 53.0 },
+  { label: "C, OpenMP (clang 23)", value: 57.6 },
+  { label: "Rust, scoped threads", value: 74.8 },
   { label: "C#, Parallel.For", value: 122.4 }
 ];
 
 const blurCode = [
-  { name: "Strict", code: `Blurred(bitmap Bitmap) Colors
+  { name: "Strict", lang: "strict", code: `Blurred(bitmap Bitmap) Colors
 	BenchBlur.Blurred(Bitmap.Tiny)(0) is Color(4, 4, 4)
 	for bitmap.Colors
 		Neighbors(bitmap, index).Average
@@ -76,8 +122,8 @@ Neighbors(bitmap Bitmap, pixel Number) Colors
 	for Range(-Radius, Radius + 1)
 		for Range(-Radius, Radius + 1)
 			if bitmap.IsInside(pixel, value, outer)
-				bitmap.Colors(pixel + outer * bitmap.width + value)` },
-  { name: "C", code: `#pragma omp parallel for
+				bitmap.Colors(pixel + outer * bitmap.Size.Width + value)` },
+  { name: "C", lang: "c", code: `#pragma omp parallel for
 for (int y = 0; y < height; ++y)
 	for (int x = 0; x < width; ++x)
 	{
@@ -99,7 +145,7 @@ for (int y = 0; y < height; ++y)
 		blurred[targetIndex + 2] = blue / count;
 		blurred[targetIndex + 3] = alpha / count;
 	}` },
-  { name: "Rust", code: `for y in 0..height {
+  { name: "Rust", lang: "rust", code: `for y in 0..height {
 	for x in 0..width {
 		let (mut red, mut green, mut blue, mut alpha, mut count) = (0u32, 0u32, 0u32, 0u32, 0u32);
 		for dy in -4..=4 {
@@ -121,7 +167,33 @@ for (int y = 0; y < height; ++y)
 		blurred[target_index + 3] = (alpha / count) as u8;
 	}
 }` },
-  { name: "C#", code: `for (var y = 0; y < height; ++y)
+  { name: "Goose", lang: "c", code: `for y in height {
+	for x in width {
+		var red = 0;
+		var green = 0;
+		var blue = 0;
+		var alpha = 0;
+		var count = 0;
+		for dy in -4..5 {
+			for dx in -4..5 {
+				if x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height {
+					let sourceIndex = ((y + dy) * width + x + dx) * 4;
+					red += data[sourceIndex];
+					green += data[sourceIndex + 1];
+					blue += data[sourceIndex + 2];
+					alpha += data[sourceIndex + 3];
+					count++;
+				}
+			}
+		}
+		let targetIndex = (y * width + x) * 4;
+		blurred[targetIndex] = (red / count) as! u8;
+		blurred[targetIndex + 1] = (green / count) as! u8;
+		blurred[targetIndex + 2] = (blue / count) as! u8;
+		blurred[targetIndex + 3] = (alpha / count) as! u8;
+	}
+}` },
+  { name: "C#", lang: "csharp", code: `for (var y = 0; y < height; ++y)
 	for (var x = 0; x < width; ++x)
 	{
 		int red = 0, green = 0, blue = 0, alpha = 0, count = 0;
@@ -142,7 +214,7 @@ for (int y = 0; y < height; ++y)
 		blurred[targetIndex + 2] = (byte)(blue / count);
 		blurred[targetIndex + 3] = (byte)(alpha / count);
 	}` },
-  { name: "TypeScript", code: `for (let y = 0; y < height; ++y)
+  { name: "TypeScript", lang: "typescript", code: `for (let y = 0; y < height; ++y)
 	for (let x = 0; x < width; ++x) {
 		let red = 0, green = 0, blue = 0, alpha = 0, count = 0;
 		for (let dy = -4; dy <= 4; ++dy)
@@ -161,7 +233,7 @@ for (int y = 0; y < height; ++y)
 		blurred[targetIndex + 2] = Math.floor(blue / count);
 		blurred[targetIndex + 3] = Math.floor(alpha / count);
 	}` },
-  { name: "Python", code: `for y in range(height):
+  { name: "Python", lang: "python", code: `for y in range(height):
 	for x in range(width):
 		red = green = blue = alpha = count = 0
 		for dy in range(-4, 5):
@@ -185,7 +257,7 @@ const qwen8Speed = [
   { label: "Strict, 16 sequences", value: 1655, strict: true },
   { label: "Strict, 8 sequences", value: 953, strict: true },
   { label: "llama.cpp, 8 sequences", value: 727 },
-  { label: "Strict, 4 sequences", value: 505, strict: true },
+  { label: "Strict, 4 sequences", value: 530, strict: true },
   { label: "llama.cpp, 4 sequences", value: 439 },
   { label: "Strict, 1 sequence", value: 151, strict: true },
   { label: "llama.cpp, 1 sequence", value: 138 }
@@ -200,11 +272,12 @@ const qwen30Speed = [
 ];
 
 const qwen38Speed = [
+  { label: "llama.cpp / Ollama (MTP drafts)", value: 74.7, muted: true },
+  { label: "Strict (MTP drafts)", value: 73.0, strict: true },
   { label: "Strict (Qwen3.8 27B)", value: 46.6, strict: true },
-  { label: "llama.cpp (Qwen3.8 27B, no drafts)", value: 43.0 },
   { label: "Strict (Brilliance 50X)", value: 45.3, strict: true },
   { label: "llama.cpp (Brilliance 50X)", value: 43.5 },
-  { label: "llama.cpp / Ollama (MTP drafts)", value: 74.7, muted: true }
+  { label: "llama.cpp (Qwen3.8 27B, no drafts)", value: 43.0 }
 ];
 
 function BarChart({ rows, unit, lower }) {
@@ -231,9 +304,17 @@ function CodeTabs({ name, tabs }) {
         <input type="radio" name={name} id={name + index} key={"input" + index} defaultChecked={index === 0} />,
         <label htmlFor={name + index} key={"label" + index}>{tab.name}</label>
       ])}
-      {tabs.map((tab, index) => (
-        <pre className={"strictTabPanel strictTabPanel" + index} key={"panel" + index}><code>{tab.code}</code></pre>
-      ))}
+      {tabs.map((tab, index) => {
+        const lang = tab.lang || (tab.name.toLowerCase() === 'strict' ? 'strict' : tab.name.toLowerCase());
+        const highlighted = hljs.getLanguage(lang)
+          ? hljs.highlight(tab.code, { language: lang }).value
+          : hljs.highlightAuto(tab.code).value;
+        return (
+          <pre className={"strictTabPanel strictTabPanel" + index} key={"panel" + index}>
+            <code className={"hljs language-" + lang} dangerouslySetInnerHTML={{ __html: highlighted }} />
+          </pre>
+        );
+      })}
     </div>
   );
 }
@@ -393,7 +474,7 @@ function Index({ config: siteConfig }) {
               </div>
             </div>
             <CodeTabs name="blurCode" tabs={blurCode} />
-            <p className="strictBenchNote">Highly tuned C/asm code (compiled-in window, SIMD, CUDA, etc.) could match or beat Strict with a lot of work. Strict needs none of it and even has 2 unit tests. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
+            <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193 instead of 282 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
           </div>
 
           <div className="strictPerfGrid">
@@ -416,10 +497,29 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
                 <BarChart rows={qwen38Speed} unit="tok/s" />
-                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting and prefill are being tuned.</p>
+                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73 tok/s (Ollama 74.7), prefill is being tuned.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
+            <div className="strictBenchCard">
+              <h3>Moss Image Generation (RTX 3080)</h3>
+              <p className="sub">720x1280 portrait, 8-step turbo with DMD LoRA, warm resident generations (seconds per image, lower is better)</p>
+              <div className="strictBenchGroup">
+                <h4>Total Generation (Sampling + VAE + Save)</h4>
+                <BarChart rows={mossTotalSpeed} unit="s" lower />
               </div>
               <div className="strictBenchGroup">
-                <h4>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h4>
+                <h4>Diffusion Sampling (8 steps)</h4>
+                <BarChart rows={mossSamplingSpeed} unit="s" lower />
+                <p className="strictBenchNote">Strict with <code>--spectrum spectrum8_w3p3</code> forecasts 3 steps to evaluate only 5 transformer steps in 1.8 s. Combined with cached stochastic INT8 LoRA merge, fast VAE decode (470 ms) and native Windows JPEG saving (18 ms), end-to-end generation reaches 2.3 s vs ComfyUI's 6.5 s.</p>
+              </div>
+            </div>
+            <div className="strictBenchCard">
+              <h3>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h3>
+              <p className="sub">GPT-2 124M, greedy decoding, generated tokens per second (higher is better)</p>
+              <div className="strictBenchGroup">
                 <BarChart rows={gpt2Speed} unit="tok/s" />
                 <p className="strictBenchNote">GPT-2 124M, greedy decoding. PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
               </div>

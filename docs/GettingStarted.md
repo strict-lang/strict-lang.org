@@ -24,15 +24,15 @@ The repository is the compiler and the standard library at the same time. Any fo
 
 # 2. Install the toolchain
 
-`strict` emits [MLIR](https://mlir.llvm.org/) and uses LLVM 22 to turn it into native executables. It needs these tools:
+`strict` emits [MLIR](https://mlir.llvm.org/) and uses LLVM to turn it into native executables (23.1.3 on Windows, 22.1.0 on Linux). It needs these tools:
 
 * `mlir-opt` and `mlir-translate` (LLVM MLIR). On Windows, use the MSYS2 ucrt64 package `mingw-w64-ucrt-x86_64-mlir`.
-* `clang` (LLVM 22).
+* `clang` of the same LLVM version, since `clang` must read the LLVM IR that `mlir-translate` writes.
 * Optional: WSL with `gcc`. On Windows this also produces a static Linux executable.
 
 You don't have to install anything by hand. When a tool is missing, `strict build` says so and starts the installation:
 
-* On Windows it opens a new window with `winget install MSYS2.MSYS2`, `pacman -S mingw-w64-ucrt-x86_64-mlir` and `winget install LLVM.LLVM`.
+* On Windows it opens a new window with `winget install MSYS2.MSYS2`, `pacman -U` of the MSYS2 MLIR and LLVM 23.1.3 packages (with the gcc 16 runtime libraries they need) and `winget install LLVM.LLVM --version 23.1.3`.
 * On Linux it downloads the LLVM 22.1.0 release archive into `Tools/`.
 
 Tools are found on the `PATH`, in `C:/msys64/ucrt64/bin`, in `C:/Program Files/LLVM/bin`, or in `Tools/LLVM-22.1.0-Linux-X64/bin`.

@@ -82,6 +82,7 @@ Square Number
         <div class="sp-editor-pane">
           <div class="sp-line-numbers" id="spLineNumbers"></div>
           <div class="sp-editor-wrapper">
+            <pre class="sp-code-highlight" id="spCodeHighlight" aria-hidden="true"><code class="hljs language-strict" id="spCodeHighlightInner"></code></pre>
             <textarea id="spCodeTextarea" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Strict Code Editor"></textarea>
           </div>
           <div class="sp-gutter-values" id="spGutterValues" aria-label="SCrunch live line values"></div>
@@ -126,15 +127,21 @@ Square Number
 
     // Textarea input
     textarea.addEventListener('input', () => {
+      updateHighlight();
+      updateLineNumbers();
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         runEvaluation();
       }, 120);
-      updateLineNumbers();
     });
 
-    // Synchronize scrolling between textarea and values/line numbers
+    // Synchronize scrolling between textarea and highlight/values/line numbers
     textarea.addEventListener('scroll', () => {
+      const highlight = document.getElementById('spCodeHighlight');
+      if (highlight) {
+        highlight.scrollTop = textarea.scrollTop;
+        highlight.scrollLeft = textarea.scrollLeft;
+      }
       const lineNums = document.getElementById('spLineNumbers');
       const gutterVals = document.getElementById('spGutterValues');
       if (lineNums) lineNums.scrollTop = textarea.scrollTop;
@@ -149,6 +156,8 @@ Square Number
         const end = textarea.selectionEnd;
         textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end);
         textarea.selectionStart = textarea.selectionEnd = start + 1;
+        updateHighlight();
+        updateLineNumbers();
         runEvaluation();
       }
     });
@@ -156,10 +165,123 @@ Square Number
     loadPreset(currentPresetKey);
   }
 
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function ensureHljsStrictRegistered() {
+    if (typeof window !== 'undefined' && window.hljs && !window.hljs.getLanguage('strict')) {
+      window.hljs.registerLanguage('strict', hljs => ({
+        aliases: ['str'],
+        keywords: {
+          keyword: 'has constant let mutable if else then for in is not and or xor return to from with as long',
+          literal: 'true false None',
+          built_in: 'value index outer',
+        },
+        contains: [
+          hljs.QUOTE_STRING_MODE,
+          { className: 'comment', begin: /(#|\/\/).*$/ },
+          { className: 'number', begin: /\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/, relevance: 0 },
+          {
+            className: 'title',
+            begin: /^(?!(has|constant|mutable|let|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
+          },
+          { className: 'type', begin: /\b[A-Z][A-Za-z]*\b/, relevance: 0 },
+        ],
+      }));
+    }
+  }
+
+  function highlightStrict(code) {
+    ensureHljsStrictRegistered();
+    if (typeof window !== 'undefined' && window.hljs && window.hljs.getLanguage && window.hljs.getLanguage('strict')) {
+      try {
+        return window.hljs.highlight(code, { language: 'strict' }).value;
+      } catch (e) {
+        // Fallback to built-in tokenizer below
+      }
+    }
+    const lines = code.split(/\r?\n/);
+    return lines.map(line => {
+      const commentMatch = line.match(/^(\s*)(#|\/\/)(.*)$/);
+      if (commentMatch) {
+        return escapeHtml(commentMatch[1]) + '<span class="hljs-comment">' + escapeHtml(commentMatch[2] + commentMatch[3]) + '</span>';
+      }
+
+      const isIndented = /^\s+/.test(line);
+      let output = '';
+
+      let firstIdentIsTitle = false;
+      if (!isIndented) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('has ') && !trimmed.startsWith('constant ') && !trimmed.startsWith('let ') && !trimmed.startsWith('mutable ')) {
+          firstIdentIsTitle = true;
+        }
+      }
+
+      const tokenRegex = /("(?:[^"\\]|\\.)*")|(\b-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|(\b(?:has|constant|let|mutable|if|else|then|for|in|is|not|and|or|xor|return|to|from|with|as|long)\b)|(\b(?:true|false|None)\b)|(\b(?:value|index|outer)\b)|(\b[A-Z][A-Za-z0-9_]*\b)|(\b[a-z_][A-Za-z0-9_]*\b)|(#.*|\/\/.*)|([^\s\w]+|\s+)/g;
+      let match;
+      let hasSeenFirstWord = false;
+
+      while ((match = tokenRegex.exec(line)) !== null) {
+        const [full, str, num, kw, lit, builtin, type, ident, comment, other] = match;
+        if (str !== undefined) {
+          output += '<span class="hljs-string">' + escapeHtml(str) + '</span>';
+        } else if (num !== undefined) {
+          output += '<span class="hljs-number">' + escapeHtml(num) + '</span>';
+        } else if (kw !== undefined) {
+          output += '<span class="hljs-keyword">' + escapeHtml(kw) + '</span>';
+        } else if (lit !== undefined) {
+          output += '<span class="hljs-literal">' + escapeHtml(lit) + '</span>';
+        } else if (builtin !== undefined) {
+          output += '<span class="hljs-built_in">' + escapeHtml(builtin) + '</span>';
+        } else if (type !== undefined) {
+          if (firstIdentIsTitle && !hasSeenFirstWord) {
+            output += '<span class="hljs-title">' + escapeHtml(type) + '</span>';
+          } else {
+            output += '<span class="hljs-type">' + escapeHtml(type) + '</span>';
+          }
+        } else if (ident !== undefined) {
+          if (firstIdentIsTitle && !hasSeenFirstWord) {
+            output += '<span class="hljs-title">' + escapeHtml(ident) + '</span>';
+          } else {
+            output += escapeHtml(ident);
+          }
+        } else if (comment !== undefined) {
+          output += '<span class="hljs-comment">' + escapeHtml(comment) + '</span>';
+        } else {
+          output += escapeHtml(other);
+        }
+        if (kw || lit || builtin || type || ident) {
+          hasSeenFirstWord = true;
+        }
+      }
+      return output;
+    }).join('\n');
+  }
+
+  function updateHighlight() {
+    const textarea = document.getElementById('spCodeTextarea');
+    const highlightInner = document.getElementById('spCodeHighlightInner');
+    if (!textarea || !highlightInner) return;
+    const code = textarea.value;
+    highlightInner.innerHTML = highlightStrict(code) + (code.endsWith('\n') ? ' ' : '');
+    const highlight = document.getElementById('spCodeHighlight');
+    if (highlight) {
+      highlight.scrollTop = textarea.scrollTop;
+      highlight.scrollLeft = textarea.scrollLeft;
+    }
+  }
+
   function loadPreset(key) {
     const textarea = document.getElementById('spCodeTextarea');
     if (!textarea || !PRESETS[key]) return;
     textarea.value = PRESETS[key].code;
+    updateHighlight();
     updateLineNumbers();
     runEvaluation();
   }

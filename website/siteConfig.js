@@ -20,6 +20,7 @@ const strictLanguage = hljs => ({
   },
   contains: [
     hljs.QUOTE_STRING_MODE,
+    { className: 'comment', begin: /(#|\/\/).*$/ },
     { className: 'number', begin: /\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/, relevance: 0 },
     {
       className: 'title',
@@ -85,6 +86,7 @@ const siteConfig = {
   },
   scripts: [
     'https://buttons.github.io/buttons.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js',
     '/js/strict-mini-eval.js',
     '/js/strict-playground.js',
     '/js/strict-theater.js'

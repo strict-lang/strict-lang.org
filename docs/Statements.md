@@ -58,7 +58,7 @@ Operators work on lists element by element: `(1, 2) * 3 is (3, 6)` and `(1, 2) *
 Arithmetic works as in mathematics: `(1 + 2) * 3 is not 1 + 2 * 3`. These rules are worth knowing:
 
 * **Comparisons bind before Boolean operators.** `a is b and c is d` means `(a is b) and (c is d)`. `value > 31 and value is not in (34, 92)` needs no brackets.
-* **From loosest to tightest:** `then`/`else`, `not`, `or`, `xor`, `and`, comparisons (`is`, `is not`, `is in`, `is not in`, `<`, `>`, `<=`, `>=`), `in`, `+`/`-`, `%`, `*`/`/`, `^`, `to`.
+* **From loosest to tightest:** `then`/`else`, `not`, `or`, `xor`, `and`, comparisons (`is`, `is not`, `is in`, `is not in`, `<`, `>`, `<=`, `>=`), `in`, `+`/`-`, `*`/`/`/`%`, `^`, `to`. `*`, `/` and `%` bind equally and go left to right: `7 % 4 * 2 is 6`, `a % b / c` is `(a % b) / c`.
 * **Numbers have bitwise `and`, `or` and `xor`.** Write `(12 and 10) is 8` to compare a bitwise result, because comparisons bind more tightly than `and`.
 * **A conditional used as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.
 * **`(x)` is a one-element list.** `("abc").Length is 1`, and `("abc") is not "abc"`. Brackets around an operator expression group it instead: `(5 + 3) * 2 is 16`.

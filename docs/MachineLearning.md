@@ -54,7 +54,7 @@ Qwen3-8B Q4_K_M reaches **150–151 generated tokens/second** (6.6–6.7 ms per 
 | Qwen3.8 27B Q4_K_M (Gated DeltaNet hybrid) | 21.5 ms/token (46.6 tokens/s) | 23.2 ms/token (43.0 tokens/s) |
 | Qwen3.8 Brilliance 50X Q4_K_M (reasoning) | 22.1 ms/token (45.3 tokens/s) | 23.0 ms/token (43.5 tokens/s) |
 
-The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 210 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
+The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. Qwen3.8 27B with MTP drafting decodes at 13.7 ms/token (73 tokens/s, Ollama 13.3 ms). MossImage diffusion at 720x1280 takes 453-463 ms per step on an RTX 3080. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 210 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
 
 ## Prompt processing, batches and longer context
 
@@ -62,6 +62,8 @@ Qwen3-8B now processes prompts in chunks of up to 2,048 tokens. Tiled quantized 
 
 | Qwen3-8B simultaneous sequences | Aggregate decode throughput | Recorded llama.cpp comparison |
 |--------------------------------|-----------------------------|------------------------------|
+| 2 | 285 tokens/s | 220 tokens/s |
+| 4 | 530 tokens/s | 439 tokens/s |
 | 8 | 953 tokens/s | 727 tokens/s |
 | 16 | 1,655 tokens/s | — |
 | 32 | 2,357 tokens/s | — |
