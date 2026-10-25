@@ -91,6 +91,19 @@ const mossSamplingSpeed = [
   { label: "ComfyUI (8 steps, headless INT8)", value: 3.2 }
 ];
 
+const h3SamplingSpeed = [
+  { label: "Strict + Spectrum (spectrum8_w1p2, 5 steps evaluated)", value: 19.3, strict: true },
+  { label: "ComfyUI (8 steps, INT8 turbo)", value: 26.7 },
+  { label: "Strict (8 steps, INT8 turbo)", value: 28.6, strict: true }
+];
+
+const h3StepSpeed = [
+  { label: "ComfyUI (INT8 turbo)", value: 3.27 },
+  { label: "Strict (INT8 turbo)", value: 3.57, strict: true },
+  { label: "ComfyUI (base INT8 + TaoMate 3-step LoRA)", value: 3.37 },
+  { label: "Strict (base INT8 + cached TaoMate merge)", value: 3.6, strict: true }
+];
+
 const blurOneThread = [
   { label: "Strict, 1 thread", value: 189.5, strict: true },
   { label: "C (clang 23 -O3)", value: 193.3 },
@@ -532,6 +545,22 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <BarChart rows={gpt2Speed} unit="tok/s" />
                 <p className="strictBenchNote">GPT-2 124M, greedy decoding. PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
+            <div className="strictBenchCard">
+              <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
+              <p className="sub">Text to video with sound, 480x832, 124 frames (5.2 s at 24 fps), warm resident sampling (seconds, lower is better)</p>
+              <div className="strictBenchGroup">
+                <h4>Diffusion Sampling (8-step turbo)</h4>
+                <BarChart rows={h3SamplingSpeed} unit="s" lower />
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Seconds per Transformer Step (14,844 tokens)</h4>
+                <BarChart rows={h3StepSpeed} unit="s" lower />
+                <p className="strictBenchNote">ComfyUI (Oct 2026 build) keeps the 21 GB INT8 model resident, Strict streams part of the weights every step and is still 9% slower per step. Spectrum forecasts 3 of the 8 steps (it changes the result). Both decode with ComfyUI's video and audio VAEs (7.4 s + 2.8 s); <code>H3Video.exe</code> takes the same options as <code>MossImage.exe</code> (prompt file, randomized prompts, <code>--count</code>, cached LoRA merges).</p>
               </div>
             </div>
           </div>
