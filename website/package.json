@@ -2,8 +2,11 @@
   "private": true,
   "scripts": {
     "examples": "docusaurus-examples",
+    "prestart": "node scripts/build-search-index.js",
     "start": "docusaurus-start",
+    "prebuild": "node scripts/build-search-index.js",
     "build": "docusaurus-build",
+    "prepublish-gh-pages": "node scripts/build-search-index.js",
     "publish-gh-pages": "docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
@@ -16,3 +19,4 @@
     "highlight.js": "^11.7.0"
   }
 }
+

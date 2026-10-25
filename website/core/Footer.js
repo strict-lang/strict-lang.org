@@ -20,26 +20,17 @@ class Footer extends React.Component {
     return (
        <footer className="nav-footer" id="footer">
         <section className="sitemap">
-          <a href={baseUrl} className="nav-home" style={{width:"160px"}}>
-            {this.props.config.footerIcon && (
-              <img
-                src={baseUrl + this.props.config.footerIcon}
-                alt={this.props.config.title}
-                width="128"
-                height="128"
-              />
-            )}
-          </a>
           <div>
             <h5>Docs</h5>
             <a href={this.docUrl('VSCode')}>The VS Code Experience</a>
             <a href={this.docUrl('GettingStarted')}>Getting Started</a>
+            <a href={this.docUrl('Platforms')}>Platforms</a>
             <a href={this.docUrl('Projects')}>Built with Strict</a>
             <a href={this.docUrl('Types')}>Language Guide</a>
             <a href={this.docUrl('EverythingNeededForKata')}>Cheat Sheet</a>
             <a href={this.docUrl('CodingStyle')}>Coding Style</a>
           </div>
-          <div>
+          <div className="strictFooterSource">
             <h5>Source</h5>
             <a href={this.docUrl('BaseTypes')}>Base Types</a>
             <a href={this.docUrl('Architecture')}>Architecture</a>
@@ -66,7 +57,9 @@ class Footer extends React.Component {
             </a>
           </div>
         </section>
-        <section className="copyright">{this.props.config.copyright}</section>
+        <section className="copyright">
+          Copyright © 2000-2026 <a href={this.props.config.authorUrl}>Benjamin Nitschke</a>
+        </section>
       </footer>
     );
   }

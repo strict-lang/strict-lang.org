@@ -11,6 +11,9 @@
       "BaseTypes": {
         "title": "Base Types"
       },
+      "Benchmarks": {
+        "title": "Benchmarks"
+      },
       "CodeValidations": {
         "title": "Code Validations"
       },
@@ -66,6 +69,9 @@
       "Overview": {
         "title": "Overview"
       },
+      "Platforms": {
+        "title": "Platforms"
+      },
       "Projects": {
         "title": "Built with Strict"
       },
@@ -91,12 +97,9 @@
     },
     "links": {
       "Games": "Games",
-      "Playground": "Playground",
-      "SCrunch": "SCrunch",
       "Performance": "Performance",
-      "Docs": "Docs",
       "VS Code": "VS Code",
-      "Projects": "Projects",
+      "Docs": "Docs",
       "Blog": "Blog",
       "GitHub": "GitHub"
     },

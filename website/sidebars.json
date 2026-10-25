@@ -4,6 +4,7 @@
       "Overview",
       "VSCode",
       "GettingStarted",
+      "Platforms",
       "Projects",
       "EverythingNeededForKata"
     ],
@@ -22,7 +23,8 @@
       "Grammar"
     ],
     "Rules": ["CodingStyle", "CodeValidations", "Naming"],
-    "Source": ["BaseTypes", "Architecture", "Examples", "MachineLearning"],
+    "Source": ["BaseTypes", "Architecture", "Examples", "MachineLearning", "Benchmarks"],
     "More": ["UsingApis", "Concurrency", "Microservices"]
   }
 }
+

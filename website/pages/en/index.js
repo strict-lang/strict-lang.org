@@ -79,29 +79,29 @@ const gpt2Speed = [
 ];
 
 const mossTotalSpeed = [
-  { label: "Strict + Spectrum (spectrum8_w3p3)", value: 2.19, strict: true },
-  { label: "Strict (merged LoRA, earlier run)", value: 3.4, strict: true },
-  { label: "Strict (runtime LoRA, earlier run)", value: 5.3, strict: true },
-  { label: "ComfyUI (reported warm pipeline)", value: 6.5 }
+  { label: "Strict (Spectrum)", value: 2.19, strict: true },
+  { label: "Strict (Merged loras)", value: 3.4, strict: true },
+  { label: "Strict (Runtime loras)", value: 5.3, strict: true },
+  { label: "ComfyUI (warm run)", value: 6.5 }
 ];
 
 const mossSamplingSpeed = [
-  { label: "Strict + Spectrum (5 steps evaluated)", value: 1.703, strict: true },
-  { label: "Strict (8 steps, earlier merged run)", value: 2.9, strict: true },
-  { label: "ComfyUI (8 steps, headless INT8)", value: 3.2 }
+  { label: "Strict + Spectrum (5 steps)", value: 1.703, strict: true },
+  { label: "Strict (8 steps, merged)", value: 2.9, strict: true },
+  { label: "ComfyUI (8 steps, INT8)", value: 3.2 }
 ];
 
 const h3SamplingSpeed = [
-  { label: "Strict + Spectrum (spectrum8_w1p2, 5 steps evaluated)", value: 19.3, strict: true },
-  { label: "ComfyUI (8 steps, INT8 turbo)", value: 26.7 },
-  { label: "Strict (8 steps, INT8 turbo)", value: 28.6, strict: true }
+  { label: "Strict (5 steps, Spectrum)", value: 19.3, strict: true },
+  { label: "ComfyUI (8 steps, INT8)", value: 26.7 },
+  { label: "Strict (8 steps, INT8)", value: 28.6, strict: true }
 ];
 
 const h3StepSpeed = [
   { label: "ComfyUI (INT8 turbo)", value: 3.27 },
   { label: "Strict (INT8 turbo)", value: 3.57, strict: true },
-  { label: "ComfyUI (base INT8 + TaoMate 3-step LoRA)", value: 3.37 },
-  { label: "Strict (base INT8 + cached TaoMate merge)", value: 3.6, strict: true }
+  { label: "ComfyUI (TaoMate 3-step)", value: 3.37 },
+  { label: "Strict (TaoMate 3-step)", value: 3.6, strict: true }
 ];
 
 const blurOneThread = [
@@ -285,13 +285,15 @@ const qwen30Speed = [
 ];
 
 const qwen38Speed = [
-  { label: "llama.cpp / Ollama (MTP drafts)", value: 74.7, muted: true },
+  { label: "llama.cpp / Ollama (MTP)", value: 74.7, muted: true },
   { label: "Strict (MTP drafts)", value: 73.0, strict: true },
   { label: "Strict (Qwen3.8 27B)", value: 46.6, strict: true },
   { label: "Strict (Brilliance 50X)", value: 45.3, strict: true },
   { label: "llama.cpp (Brilliance 50X)", value: 43.5 },
-  { label: "llama.cpp (Qwen3.8 27B, no drafts)", value: 43.0 }
+  { label: "llama.cpp (Qwen3.8 27B)", value: 43.0 }
 ];
+
+const platforms = [["Windows", "windows"], ["Linux", "linux"], ["macOS", "macos"], ["Android", "android"], ["iOS", "ios"], ["Web", "web"]];
 
 function BarChart({ rows, unit, lower }) {
   const best = lower ? Math.min(...rows.map(row => row.value)) : Math.max(...rows.map(row => row.value));
@@ -303,7 +305,7 @@ function BarChart({ rows, unit, lower }) {
           <div className="strictBarTrack">
             <div className={"strictBarFill" + (row.strict ? " winner" : "")} style={{ width: Math.max(2, 100 * (lower ? best / row.value : row.value / best)) + "%" }}></div>
           </div>
-          <span className={"strictBarVal" + (row.strict ? " winner" : "")}>{row.value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {unit}</span>
+          <span className={"strictBarVal" + (row.strict ? " winner" : "")}>{row.value.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} {unit}</span>
         </div>
       ))}
     </div>
@@ -339,37 +341,35 @@ function Index({ config: siteConfig }) {
 
   return (
     <main className="strictHome">
-      {/* Hero Section */}
-      <section className="strictHero wrapper">
-        <img
-          className="strictBrand"
-          src={img("StrictBanner.png")}
-          alt="Strict Programming Language"
-          width="500"
-          height="150"
-        />
-        <h1>Clean &amp; Fast Anywhere</h1>
-        <p className="strictHeroLead">
-          Runs directly on the bare metal, generates native code, utilizes GPU kernels and runs on Windows, Linux, macOS, Android, iOS and the web. Runs 3D games locally or in browser.
-        </p>
-        <div className="strictActions">
-          <a className="button strictPrimary" href="#games">Play Games in Browser</a>
-          <a className="button strictPrimary" href="#performance">Performance</a>
-          <a className="button" href="#scrunch">VS Code SCrunch Demo</a>
-          <a className="button" href={doc("GettingStarted")}>Get Started</a>
-          <a className="button" href={siteConfig.repoUrl}>GitHub</a>
-        </div>
-      </section>
-
-      {/* Interactive Browser Demo */}
-      <section className="strictPlaygroundSection" id="playground">
-        <div className="wrapper">
-          <div className="strictSectionHeading" style={{ marginBottom: "8px" }}>
-            <p className="strictEyebrow" style={{ margin: 0 }}>Try Strict right now</p>
+      {/* Hero Section with the interactive browser demo */}
+      <section className="strictHero">
+        <div className="wrapper strictHeroGrid">
+          <div className="strictHeroText">
+            <h1 className="strictEyebrow">Simple to read code for humans and computers alike</h1>
+            <p className="strictHeroLead">
+              Runs directly on the bare metal, generates native code and utilizes GPU kernels. Runs 3D games locally or in the browser.
+            </p>
+            <p className="strictPlatforms">
+              {platforms.map(([name, anchor]) => (
+                <a href={doc("Platforms") + "#" + anchor} key={anchor}>{name}</a>
+              ))}
+            </p>
+            <div className="strictActions">
+              <a className="button strictPrimary" href="#games">Play Games in Browser</a>
+              <a className="button strictPrimary" href="#performance">Performance</a>
+              <a className="button" href="#scrunch">VS Code SCrunch Demo</a>
+              <a className="button" href={doc("Projects")}>Projects</a>
+              <a className="button" href={doc("GettingStarted")}>Get Started</a>
+              <a className="button" href={siteConfig.repoUrl}>GitHub</a>
+            </div>
+            <br /><br />
           </div>
-          <div id="strictPlaygroundApp" className="strictPlaygroundContainer">
-            <div style={{ padding: "20px", textAlign: "center", color: "var(--strict-muted)" }}>
-              Loading interactive Strict evaluator...
+          <div className="strictHeroPlayground" id="playground">
+            <p className="strictEyebrow">Try Strict right now</p>
+            <div id="strictPlaygroundApp" className="strictPlaygroundContainer">
+              <div style={{ padding: "20px", textAlign: "center", color: "var(--strict-muted)" }}>
+                Loading interactive Strict evaluator...
+              </div>
             </div>
           </div>
         </div>
@@ -487,7 +487,7 @@ function Index({ config: siteConfig }) {
               </div>
             </div>
             <CodeTabs name="blurCode" tabs={blurCode} />
-            <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193.30 instead of 282.40 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>.</p>
+            <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193.30 instead of 282.40 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>, <a href={doc("Benchmarks") + "#image-blur"}>Benchmarks</a>.</p>
           </div>
 
           <div className="strictPerfGrid">
@@ -501,7 +501,7 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Qwen3-Coder-30B-A3B (MoE)</h4>
                 <BarChart rows={qwen30Speed} unit="tok/s" />
-                <p className="strictBenchNote">llama.cpp b11658 on the same GPU. Hosted models for scale (Artificial Analysis, Oct 2026).</p>
+                <p className="strictBenchNote">llama.cpp b11658, same GPU. Hosted models for scale (<a href="https://artificialanalysis.ai/">Oct 2026</a>). <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
               </div>
             </div>
             <div className="strictBenchCard">
@@ -512,13 +512,38 @@ function Index({ config: siteConfig }) {
                 <BarChart rows={qwen38Speed} unit="tok/s" />
                 <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73.00 tok/s (Ollama 74.70), prefill is being tuned.</p>
               </div>
+              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
             </div>
           </div>
 
           <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
+            <div className="strictBenchStack">
+              <div className="strictBenchCard">
+                <h3>MiniMax H3 Video (RTX 4090)</h3>
+                <p className="sub">Text to video with sound, 480x832, 5.2 s, seconds per video (lower is better)</p>
+                <div className="strictBenchGroup">
+                  <h4>Diffusion Sampling (8 steps)</h4>
+                  <BarChart rows={h3SamplingSpeed} unit="s" lower />
+                </div>
+                <div className="strictBenchGroup">
+                  <h4>Seconds per Step</h4>
+                  <BarChart rows={h3StepSpeed} unit="s" lower />
+                </div>
+                <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy H3Video.strict</a></p>
+              </div>
+              <div className="strictBenchCard">
+                <h3>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h3>
+                <p className="sub">GPT-2 124M, tokens per second (higher is better)</p>
+                <div className="strictBenchGroup">
+                  <BarChart rows={gpt2Speed} unit="tok/s" />
+                  <p className="strictBenchNote">PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
+                </div>
+                <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#gpt-2"}>Gpt2Benchmark.strict</a></p>
+              </div>
+            </div>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080)</h3>
-              <p className="sub">720x1280 portrait, 8-step turbo with DMD LoRA, warm resident generations (seconds per image, lower is better)</p>
+              <p className="sub">720x1280, 8-step turbo, seconds per image (lower is better)</p>
               <div className="strictBenchGroup">
                 <h4>Total Generation (Sampling + VAE + Save)</h4>
                 <BarChart rows={mossTotalSpeed} unit="s" lower />
@@ -526,42 +551,18 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Diffusion Sampling (8 steps)</h4>
                 <BarChart rows={mossSamplingSpeed} unit="s" lower />
-                <p className="strictBenchNote">With <code>--spectrum spectrum8_w3p3</code> and cached stochastic INT8 LoRA merging, Strict evaluates 5 transformer steps and forecasts 3. The latest idle-GPU batch with DMD plus four additional LoRAs averages 2.19 s per image across seven warm images (2.18–2.20 s). ComfyUI's observed warm pipeline takes 6.00–6.50 s; the headless sampling measurement above is separate. Merging and prediction can change image details. Times exclude startup, model loading and prompt encoding. Non-Spectrum Strict rows retain their earlier measurements; this batch measures the Spectrum path.</p>
+                <p className="strictBenchNote">Strict with Spectrum averages 2.19 s per image, ComfyUI 6.00–6.50 s.</p>
               </div>
               <div className="strictBenchGroup">
-                <h4>Warm Image Time Breakdown</h4>
+                <h4>Time Breakdown (for the ComfyUI node only the sampling is important)</h4>
                 <ul>
                   <li>Diffusion sampling: <strong>~1.70 s</strong></li>
                   <li>VAE decode: <strong>~451.43 ms</strong></li>
-                  <li>JPEG saving (quality 85): <strong>~16.57 ms</strong></li>
-                  <li>Other per-image overhead: <strong>~19.00 ms</strong></li>
+                  <li>JPEG saving: <strong>~16.57 ms</strong></li>
+                  <li>Other: <strong>~19.00 ms</strong></li>
                 </ul>
-                <p className="strictBenchNote">Mean stage times from the same seven warm images; overhead is the remainder of generation time. Model and VAE stay loaded across images with <code>--count</code>. The LoRA stack is merged once and reused from cache.</p>
               </div>
-            </div>
-            <div className="strictBenchCard">
-              <h3>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h3>
-              <p className="sub">GPT-2 124M, greedy decoding, generated tokens per second (higher is better)</p>
-              <div className="strictBenchGroup">
-                <BarChart rows={gpt2Speed} unit="tok/s" />
-                <p className="strictBenchNote">GPT-2 124M, greedy decoding. PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
-            <div className="strictBenchCard">
-              <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
-              <p className="sub">Text to video with sound, 480x832, 124 frames (5.2 s at 24 fps), warm resident sampling (seconds, lower is better)</p>
-              <div className="strictBenchGroup">
-                <h4>Diffusion Sampling (8-step turbo)</h4>
-                <BarChart rows={h3SamplingSpeed} unit="s" lower />
-              </div>
-              <div className="strictBenchGroup">
-                <h4>Seconds per Transformer Step (14,844 tokens)</h4>
-                <BarChart rows={h3StepSpeed} unit="s" lower />
-                <p className="strictBenchNote">ComfyUI (Oct 2026 build) keeps the 21 GB INT8 model resident, Strict streams part of the weights every step and is still 9% slower per step. Spectrum forecasts 3 of the 8 steps (it changes the result). Both decode with ComfyUI's video and audio VAEs (7.4 s + 2.8 s); <code>H3Video.exe</code> takes the same options as <code>MossImage.exe</code> (prompt file, randomized prompts, <code>--count</code>, cached LoRA merges).</p>
-              </div>
+              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a></p>
             </div>
           </div>
 
@@ -594,7 +595,7 @@ function Index({ config: siteConfig }) {
       </section>
 
       {/* Latest Development News */}
-      <section className="strictLatest">
+      <section className="strictLatest" id="latest">
         <div className="wrapper">
           <p className="strictEyebrow">Latest Development</p>
           <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</h2>
@@ -609,3 +610,4 @@ function Index({ config: siteConfig }) {
 }
 
 module.exports = Index;
+

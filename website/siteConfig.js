@@ -47,26 +47,16 @@ const siteConfig = {
   baseUrl: '/',
   projectName: "strict-lang.org",
   organizationName: "strict-lang",
-  algolia: {
-    apiKey: "7f6e29123c9235b4420f116e437ef737",
-    indexName: "strict-lang",
-    algoliaOptions: {}
-  },
   headerLinks: [
-    { search: true },
     { href: "/#games", label: "Games" },
-    { href: "/#playground", label: "Playground" },
-    { href: "/#scrunch", label: "SCrunch" },
     { href: "/#performance", label: "Performance" },
-    { doc: "Overview", label: "Docs" },
     { doc: "VSCode", label: "VS Code" },
-    { doc: "Projects", label: "Projects" },
+    { doc: "Overview", label: "Docs" },
     { blog: true, label: "Blog" },
     { href: "https://github.com/strict-lang/Strict", label: "GitHub" }
   ],
   users,
   headerIcon: 'img/StrictLogoWhite64x64.png',
-  footerIcon: 'img/StrictHeadOnly.png',
   favicon: 'img/favicon.ico',
   colors: {
     primaryColor: "#073b4c",
@@ -75,7 +65,8 @@ const siteConfig = {
   fonts: {
     myFont: ["Verdana", "Serif"]
   },
-  copyright: `Copyright © ${new Date().getFullYear()} strict-lang`,
+  copyright: 'Copyright © 2000-2026 Benjamin Nitschke',
+  authorUrl: 'https://benjaminnitschke.com',
   // Only used for the theme stylesheet from cdnjs, highlighting itself happens in highlightCode
   highlight: {
     theme: 'github-dark',
@@ -89,7 +80,9 @@ const siteConfig = {
     'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js',
     '/js/strict-mini-eval.js',
     '/js/strict-playground.js',
-    '/js/strict-theater.js'
+    '/js/strict-theater.js',
+    '/js/strict-search.js',
+    '/js/strict-nav.js'
   ],
   onPageNav: 'separate',
   cleanUrl: true,
@@ -103,3 +96,4 @@ const siteConfig = {
 };
 
 module.exports = siteConfig;
+

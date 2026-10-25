@@ -73,10 +73,6 @@ Square Number
             </button>
           `).join('')}
         </div>
-        <div class="sp-status" id="spStatusBadge">
-          <span class="sp-status-dot"></span>
-          <span class="sp-status-text">Ready</span>
-        </div>
       </div>
       <div class="sp-workspace">
         <div class="sp-editor-pane">
@@ -96,6 +92,10 @@ Square Number
         <div class="sp-actions">
           <button type="button" class="sp-reset-btn" id="spResetBtn" title="Reset to original preset code">Reset</button>
           <a class="sp-vscode-link" href="/docs/VSCode">See the full VS Code experience →</a>
+          <div class="sp-status" id="spStatusBadge">
+            <span class="sp-status-dot"></span>
+            <span class="sp-status-text">Ready</span>
+          </div>
         </div>
       </div>
     `;
