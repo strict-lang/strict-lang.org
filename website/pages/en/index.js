@@ -86,13 +86,19 @@ const mossTotalSpeed = [
 ];
 
 const mossSamplingSpeed = [
-  { label: "Strict + Spectrum (5 steps)", value: 1.703, strict: true },
+  { label: "Strict (Spectrum)", value: 1.703, strict: true },
   { label: "Strict (8 steps, merged)", value: 2.9, strict: true },
   { label: "ComfyUI (8 steps, INT8)", value: 3.2 }
 ];
 
+const h3TotalSpeed = [
+  { label: "Strict (Spectrum)", value: 29.6, strict: true },
+  { label: "ComfyUI (8 steps, INT8 turbo)", value: 37.9 },
+  { label: "Strict (8 steps, INT8 turbo)", value: 40.1, strict: true }
+];
+
 const h3SamplingSpeed = [
-  { label: "Strict (5 steps, Spectrum)", value: 19.3, strict: true },
+  { label: "Strict (Spectrum)", value: 19.3, strict: true },
   { label: "ComfyUI (8 steps, INT8)", value: 26.7 },
   { label: "Strict (8 steps, INT8)", value: 28.6, strict: true }
 ];
@@ -504,43 +510,29 @@ function Index({ config: siteConfig }) {
                 <p className="strictBenchNote">llama.cpp b11658, same GPU. Hosted models for scale (<a href="https://artificialanalysis.ai/">Oct 2026</a>). <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
               </div>
             </div>
-            <div className="strictBenchCard">
-              <h3>Qwen3.8 &amp; Reasoning Models (RTX 4090)</h3>
-              <p className="sub">Hybrid Gated DeltaNet with full attention and linear recurrence, 4-bit (Q4_K_M)</p>
-              <div className="strictBenchGroup">
-                <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
-                <BarChart rows={qwen38Speed} unit="tok/s" />
-                <p className="strictBenchNote">The newly released Qwen3.8 Brilliance 50X uses extensive thinking tokens to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73.00 tok/s (Ollama 74.70), prefill is being tuned.</p>
+            <div className="strictBenchStack">
+              <div className="strictBenchCard">
+                <h3>Qwen3.8 &amp; Reasoning Models (RTX 4090)</h3>
+                <p className="sub">Hybrid Gated DeltaNet with full attention and linear recurrence, 4-bit (Q4_K_M)</p>
+                <div className="strictBenchGroup">
+                  <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
+                  <BarChart rows={qwen38Speed} unit="tok/s" />
+                  <p className="strictBenchNote">Qwen3.8 Brilliance 50X uses extensive thinking to give it a shot against much larger models, runs out of the box. MTP drafting reaches 73.00 tok/s (Ollama 74.70).</p>
+                </div>
+                <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
               </div>
-              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
+              <div className="strictBenchCard">
+                <h3>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h3>
+                <p className="sub">GPT-2 124M, greedy decoding, generated tokens per second (higher is better)</p>
+                <div className="strictBenchGroup">
+                  <BarChart rows={gpt2Speed} unit="tok/s" />
+                  <p className="strictBenchNote">GPT-2 124M, greedy decoding. PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
-            <div className="strictBenchStack">
-              <div className="strictBenchCard">
-                <h3>MiniMax H3 Video (RTX 4090)</h3>
-                <p className="sub">Text to video with sound, 480x832, 5.2 s, seconds per video (lower is better)</p>
-                <div className="strictBenchGroup">
-                  <h4>Diffusion Sampling (8 steps)</h4>
-                  <BarChart rows={h3SamplingSpeed} unit="s" lower />
-                </div>
-                <div className="strictBenchGroup">
-                  <h4>Seconds per Step</h4>
-                  <BarChart rows={h3StepSpeed} unit="s" lower />
-                </div>
-                <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy H3Video.strict</a></p>
-              </div>
-              <div className="strictBenchCard">
-                <h3>GPT-2 Text Generation (RTX 3080 &amp; CPU)</h3>
-                <p className="sub">GPT-2 124M, tokens per second (higher is better)</p>
-                <div className="strictBenchGroup">
-                  <BarChart rows={gpt2Speed} unit="tok/s" />
-                  <p className="strictBenchNote">PyTorch 2.7 with Hugging Face transformers, best of 3 runs.</p>
-                </div>
-                <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#gpt-2"}>Gpt2Benchmark.strict</a></p>
-              </div>
-            </div>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080)</h3>
               <p className="sub">720x1280, 8-step turbo, seconds per image (lower is better)</p>
@@ -561,6 +553,24 @@ function Index({ config: siteConfig }) {
                   <li>JPEG saving: <strong>~16.57 ms</strong></li>
                   <li>Other: <strong>~19.00 ms</strong></li>
                 </ul>
+                <p className="strictBenchNote">Strict with <code>--spectrum spectrum8_w3p3</code> forecasts 3 steps to evaluate only 5 transformer steps in 1.8 s. Combined with cached stochastic INT8 LoRA merge, fast VAE decode (470 ms) and native Windows JPEG saving (18 ms), end-to-end generation reaches 2.3 s vs ComfyUI's 6.5 s.</p>
+              </div>
+            </div>            
+            <div className="strictBenchCard">
+              <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
+              <p className="sub">Text to video with sound, 480x832, 124 frames (5.2 s at 24 fps), warm resident sampling (seconds, lower is better)</p>
+              <div className="strictBenchGroup">
+                <h4>Total per Video (Sampling + Video/Audio VAE + MP4)</h4>
+                <BarChart rows={h3TotalSpeed} unit="s" lower />
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Diffusion Sampling (8-step turbo)</h4>
+                <BarChart rows={h3SamplingSpeed} unit="s" lower />
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Seconds per Transformer Step (14,844 tokens)</h4>
+                <BarChart rows={h3StepSpeed} unit="s" lower />
+                <p className="strictBenchNote">ComfyUI (Oct 2026 build) keeps the 21 GB INT8 model resident; Strict's kernels take the same time (attention 0.26 s faster, elementwise 0.26 s slower per step), but it still idles 0.5 s per step in GPU memory management, the next fix. Spectrum forecasts 3 of the 8 steps (it changes the result). Both decode with ComfyUI's video and audio VAEs (7.4 s + 2.8 s); <code>H3Video.exe</code> takes the same options as <code>MossImage.exe</code> (prompt file, randomized prompts, <code>--count</code>, cached LoRA merges).</p>
               </div>
               <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a></p>
             </div>
