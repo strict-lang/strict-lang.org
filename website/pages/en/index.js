@@ -79,14 +79,14 @@ const gpt2Speed = [
 ];
 
 const mossTotalSpeed = [
-  { label: "Strict + Spectrum (spectrum8_w3p3)", value: 2.2, strict: true },
+  { label: "Strict + Spectrum (spectrum8_w3p3)", value: 2.4, strict: true },
   { label: "Strict (cached merged LoRA)", value: 3.4, strict: true },
   { label: "Strict (runtime LoRA)", value: 5.3, strict: true },
-  { label: "ComfyUI (default warm pipeline)", value: 6.5 }
+  { label: "ComfyUI (reported warm pipeline)", value: 6.5 }
 ];
 
 const mossSamplingSpeed = [
-  { label: "Strict + Spectrum (5 steps evaluated)", value: 1.7, strict: true },
+  { label: "Strict + Spectrum (5 steps evaluated)", value: 1.8, strict: true },
   { label: "Strict (8 steps, cached merged INT8)", value: 2.9, strict: true },
   { label: "ComfyUI (8 steps, headless INT8)", value: 3.2 }
 ];
@@ -513,7 +513,17 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>Diffusion Sampling (8 steps)</h4>
                 <BarChart rows={mossSamplingSpeed} unit="s" lower />
-                <p className="strictBenchNote">Strict with <code>--spectrum spectrum8_w3p3</code> forecasts 3 steps to evaluate only 5 transformer steps in 1.8 s. Combined with cached stochastic INT8 LoRA merge, fast VAE decode (470 ms) and native Windows JPEG saving (18 ms), end-to-end generation reaches 2.3 s vs ComfyUI's 6.5 s.</p>
+                <p className="strictBenchNote">With <code>--spectrum spectrum8_w3p3</code> and cached stochastic INT8 LoRA merging, Strict evaluates 5 transformer steps and forecasts 3. Recent warm batches with DMD plus four additional LoRAs take about 2.4 s per image. ComfyUI's observed warm pipeline takes 6–6.5 s; the headless sampling measurement above is separate. Merging and prediction can change image details. Times exclude startup, model loading and prompt encoding.</p>
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Warm Image Time Breakdown</h4>
+                <ul>
+                  <li>Diffusion sampling: <strong>~1.8 s</strong></li>
+                  <li>VAE decode: <strong>~0.5 s</strong></li>
+                  <li>JPEG saving (quality 85): <strong>~0.016 s</strong></li>
+                  <li>Other per-image overhead: <strong>~0.02 s</strong></li>
+                </ul>
+                <p className="strictBenchNote">Rounded stage times; model and VAE stay loaded across images with <code>--count</code>. The LoRA stack is merged once and reused from cache.</p>
               </div>
             </div>
             <div className="strictBenchCard">
