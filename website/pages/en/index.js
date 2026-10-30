@@ -313,9 +313,9 @@ const forestFrames = [
 ];
 
 const particleTicks = [
-  ["1,000", 0.019, 0.07, 0.97],
-  ["100,000", 0.82, 0.87, 97.5],
-  ["1,000,000", 8.3, 9.5, 1068]
+  ["1,000", 0.018, 0.07, 0.97],
+  ["100,000", 0.83, 0.87, 97.5],
+  ["1,000,000", 8.0, 9.5, 1068]
 ];
 
 const platforms = [["Windows", "windows"], ["Linux", "linux"], ["macOS", "macos"], ["Android", "android"], ["iOS", "ios"], ["Web", "web"]];
