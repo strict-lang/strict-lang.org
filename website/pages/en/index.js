@@ -80,26 +80,16 @@ const gpt2Speed = [
   { label: "PyTorch, CPU 24 threads", value: 36 }
 ];
 
-const mossComfySpeed = [
-  { label: "ComfyUI + Strict Moss Sampler node", value: 5.9, strict: true },
-  { label: "ComfyUI default workflow", value: 7.5 }
-];
-
-const mossTotalSpeed = [
-  { label: "MossImage fastest2steps", value: 1.13, strict: true },
-  { label: "MossImage fastest (4 steps, Spectrum)", value: 1.52, strict: true },
-  { label: "MossImage faster (8 steps, Spectrum)", value: 1.9, strict: true },
-  { label: "MossImage fast (8 steps, Spectrum)", value: 2.17, strict: true },
-  { label: "MossImage best (8 steps)", value: 3.19, strict: true }
-];
-
-const mossSamplingSpeed = [
-  { label: "Strict fastest2steps", value: 0.79, strict: true },
-  { label: "Strict fastest (3 of 4 evaluated)", value: 1.16, strict: true },
-  { label: "Strict faster (4 of 8 evaluated)", value: 1.56, strict: true },
-  { label: "Strict fast (5 of 8 evaluated)", value: 1.83, strict: true },
-  { label: "ComfyUI (8 steps, INT8)", value: 2.8 },
-  { label: "Strict best (8 steps)", value: 2.85, strict: true }
+const mossSpeed = [
+  { label: "MossImage fastest2steps ★", value: 1.31, strict: true },
+  { label: "MossImage fastest ★★", value: 1.7, strict: true },
+  { label: "MossImage faster ★★★", value: 2.08, strict: true },
+  { label: "MossImage fast ★★★★", value: 2.35, strict: true },
+  { label: "MossImage best ★★★★★", value: 3.37, strict: true },
+  { label: "ComfyUI + Strict Moss Sampler node ★★★★★", value: 5.9, strict: true },
+  { label: "ComfyUI 8 steps ★★★★★", value: 7.5 },
+  { label: "ComfyUI 25 steps ★★★★★", value: 24 },
+  { label: "ComfyUI 50 steps ★★★★★", value: 45 }
 ];
 
 const h3ComfySpeed = [
@@ -618,21 +608,10 @@ function Index({ config: siteConfig }) {
           <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080)</h3>
-              <p className="sub">720x1280, int8 Convrot Moss with the DMD turbo LoRA, 8 steps, warm, seconds per image (lower is better)</p>
+              <p className="sub">A batch of 720x1280 images with a new prompt each, int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
-                <h4>ComfyUI Workflow, New Prompt per Image (Text Encoding, Sampling, VAE, Save)</h4>
-                <BarChart rows={mossComfySpeed} unit="s" lower />
-                <p className="strictBenchNote">The same graph, only the KSampler and VAE Decode replaced by the Strict Moss Sampler node, which runs a resident <code>MossImage.exe</code>. With an unchanged prompt ComfyUI reuses the text encoding and both take 3.2–3.3 s per image.</p>
-              </div>
-              <div className="strictBenchGroup">
-                <h4>MossImage.exe on its own, per Image in a Batch (Sampling, VAE, JPEG)</h4>
-                <BarChart rows={mossTotalSpeed} unit="s" lower />
-                <p className="strictBenchNote">No Python or ComfyUI, only the model files. A new prompt per image adds 0.18 s of text encoding. 40 images at 480p with <code>best</code> take 69–70 s from start to the last JPEG, text encoder and model loading included. Without the turbo LoRA <code>best25steps</code> takes 18.1 s per image (cfg 2).</p>
-              </div>
-              <div className="strictBenchGroup">
-                <h4>Diffusion Sampling only</h4>
-                <BarChart rows={mossSamplingSpeed} unit="s" lower />
-                <p className="strictBenchNote">Spectrum forecasts the skipped steps, which changes the result. Normal clocks, GPU otherwise idle, October 29.</p>
+                <BarChart rows={mossSpeed} unit="s" lower />
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. RTX 3080, October 29.</p>
               </div>
               <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a> (coming soon)</p>
             </div>            
