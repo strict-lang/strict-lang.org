@@ -52,7 +52,7 @@ DELTA_VSYNC=0 ./Forest.exe 300 100000
 
 # 1 million particles
 
-The DeltaEngine particle processor (`EffectSystem.Advanced`, on all cores) with 1,000 to 1,000,000 particles, each an entity with 5 components (position, velocity changed by an acceleration, rotation turned by a torque, a growing scale and a lifetime), updated every tick without rendering. The [Compare README](https://github.com/strict-lang/DeltaEngine/blob/main/Games/ParticleStress/Compare/README.md) builds the same particles in Unity as GameObjects with a MonoBehaviour per component.
+The DeltaEngine particle processor (`EffectSystem.Advanced`, on all cores) with 1,000 to 1,000,000 particles, each an entity with 5 components (position, velocity changed by an acceleration, rotation turned by a torque, a growing scale and a lifetime), updated every tick without rendering. The [Compare README](https://github.com/strict-lang/DeltaEngine/blob/main/Games/ParticleStress/Compare/README.md) builds the same particles in Unity as GameObjects with a MonoBehaviour per component, and as one of Unity's own ParticleSystems simulated natively on its job threads.
 
 ```sh
 ../Strict/strict.exe build Games/ParticleStress/ParticleStress.strict

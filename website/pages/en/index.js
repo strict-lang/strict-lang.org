@@ -313,9 +313,9 @@ const forestFrames = [
 ];
 
 const particleTicks = [
-  ["1,000", 0.044, 0.97],
-  ["100,000", 3.08, 97.5],
-  ["1,000,000", 50.6, 1068]
+  ["1,000", 0.019, 0.07, 0.97],
+  ["100,000", 0.82, 0.87, 97.5],
+  ["1,000,000", 8.3, 9.5, 1068]
 ];
 
 const platforms = [["Windows", "windows"], ["Linux", "linux"], ["macOS", "macos"], ["Android", "android"], ["iOS", "ios"], ["Web", "web"]];
@@ -535,8 +535,8 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchCard">
                 <h3>Entity Stress Test: Particles</h3>
                 <p className="sub">Every particle is an entity: position, velocity, rotation, scale and lifetime</p>
-                <ResultTable columns={["Particles", "Strict", "Unity, MonoBehaviours"]} rows={particleTicks} />
-                <p className="strictBenchNote">Strict: a new immutable list built on all cores every tick. Unity: 5 MonoBehaviour Updates per particle. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress">ParticleStress</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare">Unity scene</a>.</p>
+                <ResultTable columns={["Particles", "Strict", "Unity, ParticleSystem", "Unity, MonoBehaviours"]} rows={particleTicks} />
+                <p className="strictBenchNote">Strict: a new immutable list built on all cores every tick. Unity: its native particle system, or 5 MonoBehaviour Updates per particle. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress">ParticleStress</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare">Unity scene</a>.</p>
               </div>
             </div>
             <div className="strictBenchCard">
