@@ -75,6 +75,8 @@ input::placeholder { color: #acbdc8; }
 .strictHeroGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: center; }
 .strictHeroText h1.strictEyebrow { font-size: .78rem; line-height: 1.5; margin: 0 0 14px; }
 .strictHeroLead { font-size: 1.08rem; color: var(--strict-muted); margin: 0 0 18px; }
+.strictHeroSpeed { font-size: .95rem; color: #d6e5ed; border-left: 3px solid #55dd93; padding: 2px 0 2px 14px; margin: 0 0 22px; }
+.strictHeroSpeed strong { color: #55dd93; }
 .strictPlatforms { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
 .strictPlatforms a { padding: 3px 13px; border: 1px solid var(--strict-border); border-radius: 999px; background: var(--strict-raised); color: #d6e5ed; font-size: .85rem; }
 .strictPlatforms a:hover, .strictPlatforms a:focus { border-color: var(--strict-accent); color: var(--strict-accent); text-decoration: none; }
@@ -732,6 +734,11 @@ input::placeholder { color: #acbdc8; }
 .strictResultTable th:first-child, .strictResultTable td:first-child {
   text-align: left;
 }
+@media (min-width: 480px) {
+  .strictResultTable td {
+    white-space: nowrap;
+  }
+}
 .strictResultTable td.winner {
   color: #55dd93;
   font-weight: 700;
@@ -746,6 +753,8 @@ input::placeholder { color: #acbdc8; }
   display: block;
   width: 100%;
   height: auto;
+  flex: 1 0 auto;
+  object-fit: cover;
   border-radius: 6px;
   margin: 4px 0 10px;
 }
@@ -993,7 +1002,7 @@ input::placeholder { color: #acbdc8; }
   }
 }
 
-.strictPerfGrid + .strictPerfGrid {
+.strictPerfGrid + .strictPerfGrid, .strictPerfGrid + .strictBenchWide {
   margin-top: 22px;
 }
 .strictBenchGroup h4 {

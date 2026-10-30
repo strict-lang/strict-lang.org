@@ -413,8 +413,8 @@ function Index({ config: siteConfig }) {
         <div className="wrapper strictHeroGrid">
           <div className="strictHeroText">
             <h1 className="strictEyebrow">Simple to read code for humans and computers alike</h1>
-            <p className="strictHeroLead">
-              Runs directly on the bare metal, generates native code and utilizes GPU kernels. Runs 3D games locally or in the browser.
+            <p className="strictHeroSpeed">
+              <strong>Fastest native speed in the universe out of the box.</strong> For the amount of code you write, no language comes close: highly optimized low level code, splits loops over all cores or into GPU kernels and rewrites slow parts automatically: Games, Math, LLM, image/video generation can run faster than C, Rust, PyTorch, llama.cpp, game engines, etc.
             </p>
             <p className="strictPlatforms">
               {platforms.map(([name, anchor]) => (
@@ -519,6 +519,9 @@ function Index({ config: siteConfig }) {
           <p>
             Tests run in the background with immediate subsecond feedback. Green and red marks highlight results as you type, and runtime values appear right beside each line.
           </p>
+          <p>
+            All tests run in the Strict VM. It is not as fast as the generated native code (sometimes up to 100x slower), but fast enough to run all tests of huge projects and packages in milliseconds or seconds. Slow code is not allowed by default, slow tests have to be marked with <code>Slow(ReturnType)</code>. <a href={doc("Tests") + "#tests-must-be-fast"}>Tests must be fast →</a>
+          </p>
         </div>
         <figure className="strictDemo">
           <video autoPlay controls muted loop playsInline preload="auto" poster={img("screenshots/scrunch-demo-poster.jpg")} width="960" height="720" aria-label="Write Fibonacci in VS Code: the tests fail first, then pass and the loop values appear beside each line">
@@ -536,8 +539,32 @@ function Index({ config: siteConfig }) {
             <p className="strictEyebrow">Raw Performance</p>
             <h2>Simple code, fast results</h2>
             <p style={{ color: "var(--strict-muted)", maxWidth: "800px" }}>
-              The same plain loops in every language. Strict optimizes them by itself and uses as many threads as make sense.
+              Plain code without manual tuning. Strict optimizes it by itself and uses as many threads as make sense.
             </p>
+          </div>
+
+          <div className="strictPerfGrid">
+            <div className="strictBenchStack">
+              <div className="strictBenchCard">
+                <h3>Game Engine Stress Test: Bouncing Logos</h3>
+                <p className="sub">Every logo entity is: sprite, velocity, spin, moving, turning, bouncing, sound</p>
+                <ResultTable columns={["Logos", "Strict", "Unity 2022.3"]} rows={logoFrames} />
+                <p className="strictBenchNote">Strict: new immutable entities built on all cores, one instanced draw call. Unity: a SpriteRenderer per logo. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp">LogoApp</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp/Compare">Unity scene</a>.</p>
+              </div>
+              <div className="strictBenchCard">
+                <h3>Entity Stress Test: Particles</h3>
+                <p className="sub">Every particle is an entity: position, velocity, rotation, scale and lifetime</p>
+                <ResultTable columns={["Particles", "Strict", "Unity, MonoBehaviours"]} rows={particleTicks} />
+                <p className="strictBenchNote">Strict: a new immutable list built on all cores every tick. Unity: 5 MonoBehaviour Updates per particle. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress">ParticleStress</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare">Unity scene</a>.</p>
+              </div>
+            </div>
+            <div className="strictBenchCard">
+              <h3>3D Instancing Stress Test: Forest</h3>
+              <p className="sub">Fir trees of 192 triangles on a landscape with hills, every tree circles around its spot and turns every frame</p>
+              <img className="strictBenchImage" src={img("screenshots/Forest.webp")} alt="Low poly fir trees seen from just above the forest, rendered by the Strict Forest stress test" loading="lazy" width="960" height="540" />
+              <ResultTable columns={["Trees", "Strict", "Unity, GameObjects", "Unity, instanced"]} rows={forestFrames} />
+              <p className="strictBenchNote">Strict: one instanced draw call, 19.2 million triangles at 100,000 trees. Unity: GameObjects or RenderMeshInstanced. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest">Forest</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare">Unity scene</a>.</p>
+            </div>
           </div>
 
           <div className="strictBenchCard strictBenchWide">
@@ -555,28 +582,6 @@ function Index({ config: siteConfig }) {
             </div>
             <CodeTabs name="blurCode" tabs={blurCode} />
             <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193.30 instead of 282.40 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>, <a href={doc("Benchmarks") + "#image-blur"}>Benchmarks</a>.</p>
-          </div>
-
-          <div className="strictBenchCard strictBenchWide">
-            <h3>Game Engine Stress Test: Bouncing Logos</h3>
-            <p className="sub">Every logo is an entity with a sprite, a velocity and a spin that is moved, turned and bounced at the screen edges every frame, 1280x720 with vsync off, milliseconds per frame on one RTX 3080 and i9-13900KF (lower is better)</p>
-            <ResultTable columns={["Logos", "Strict", "Unity 2022.3"]} rows={logoFrames} />
-            <p className="strictBenchNote">Plain game code: every frame Strict builds 100,000 new immutable entities (that loop is split over the cores) and sends their 1.3 million instance numbers to the GPU in one instanced draw call. Unity draws a SpriteRenderer per logo and one script moves all of them, its sprite batching is the engine's own. Two optimization rounds took Strict from 94 to 28.9 ms per frame at 100,000 logos: sprites of one kind go out as one batch filled by a parallel loop, and with vsync off the next frame is computed while the GPU still draws the last one. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp">DeltaEngine Games/LogoApp</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp/Compare">Unity scene</a>.</p>
-          </div>
-
-          <div className="strictBenchCard strictBenchWide">
-            <h3>3D Instancing Stress Test: Forest</h3>
-            <p className="sub">Fir trees with 192 triangles each on rolling hills, every tree circles around its spot and turns every frame, 1280x720 with vsync off, milliseconds per frame on one RTX 3080 and i9-13900KF (lower is better)</p>
-            <img className="strictBenchImage" src={img("screenshots/Forest.webp")} alt="10,000 low poly fir trees seen from just above the forest, rendered by the Strict Forest stress test" loading="lazy" width="960" height="540" />
-            <ResultTable columns={["Trees", "Strict", "Unity, GameObjects", "Unity, instanced"]} rows={forestFrames} />
-            <p className="strictBenchNote">Every frame Strict computes the position, turn and size of every tree on all cores and draws all trees with one instanced draw call: 100,000 trees are 19.2 million triangles per frame and the frame time is mostly the GPU drawing them, the CPU work is hidden behind it. Unity 2022.3 renders the same hills, trees, layout, camera and shader with one script moving all trees: as GameObjects with a MeshRenderer each and GPU instancing on (Unity skips the trees outside the view), or without GameObjects through Graphics.RenderMeshInstanced from one matrix array. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest">DeltaEngine Games/Forest</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare">Unity scene</a>.</p>
-          </div>
-
-          <div className="strictBenchCard strictBenchWide">
-            <h3>Entity Stress Test: Particles</h3>
-            <p className="sub">Every particle is an entity with 5 components (position, velocity changed by an acceleration, rotation turned by a torque, a growing scale and a lifetime), all updated every tick without rendering, milliseconds per tick on one i9-13900KF (lower is better)</p>
-            <ResultTable columns={["Particles", "Strict", "Unity, MonoBehaviours"]} rows={particleTicks} />
-            <p className="strictBenchNote">Strict runs the DeltaEngine particle processor as it is (EffectSystem.Advanced): every tick it builds a new immutable list of particles on all cores and drops the dead ones. Unity 2022.3 has a GameObject per particle with each component as a MonoBehaviour with its own Update, the standard way to write it, 5 million Update calls per tick at 1 million particles. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress">DeltaEngine Games/ParticleStress</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare">Unity scene</a>.</p>
           </div>
 
           <div className="strictPerfGrid">
