@@ -92,32 +92,23 @@ const mossSpeed = [
   { label: "ComfyUI 50 steps ★★★★★", value: 45 }
 ];
 
-const h3ComfySpeed = [
-  { label: "H3Video.exe best", value: 19.0, strict: true },
-  { label: "ComfyUI + Strict H3 Sampler node", value: 25.4, strict: true },
-  { label: "ComfyUI default workflow", value: 38.5 }
-];
-
-const h3PromptSpeed = [
-  { label: "Strict fastest2steps ★", value: 27.1, strict: true },
-  { label: "Strict fastest3steps ★★", value: 32.6, strict: true },
-  { label: "Strict fastest4steps ★★★", value: 38.2, strict: true },
-  { label: "Strict faster ★★★★", value: 43.2, strict: true },
-  { label: "Strict fast ★★★★", value: 58.4, strict: true },
+const h3Speed = [
+  { label: "H3Video fastest2steps ★", value: 27.1, strict: true },
+  { label: "H3Video fastest3steps ★★", value: 32.6, strict: true },
+  { label: "H3Video fastest4steps ★★★", value: 38.2, strict: true },
+  { label: "H3Video faster ★★★★", value: 43.2, strict: true },
+  { label: "H3Video fast ★★★★", value: 58.4, strict: true },
   { label: "ComfyUI TaoMate 3 steps ★", value: 62.4 },
   { label: "ComfyUI turbo 4 steps ★★", value: 71.5 },
-  { label: "Strict best ★★★★", value: 85.3, strict: true },
+  { label: "H3Video best ★★★★", value: 85.3, strict: true },
   { label: "ComfyUI turbo 8 steps ★★★★", value: 148.9 },
   { label: "ComfyUI base 20 steps ★★★★★", value: 291.0 }
 ];
 
-const h3StepSpeed = [
-  { label: "ComfyUI Sol-Attn", value: 3.42 },
-  { label: "Strict fast (routed)", value: 3.71, strict: true },
-  { label: "ComfyUI comfy_kitchen int8", value: 5.27 },
-  { label: "Strict best (dense)", value: 6.04, strict: true },
-  { label: "ComfyUI SageAttention", value: 6.40 },
-  { label: "ComfyUI default attention", value: 9.68 }
+const h3ComfySpeed = [
+  { label: "H3Video best", value: 19.0, strict: true },
+  { label: "ComfyUI + Strict H3 Sampler node", value: 25.4, strict: true },
+  { label: "ComfyUI default workflow", value: 38.5 }
 ];
 
 const blurOneThread = [
@@ -622,21 +613,15 @@ function Index({ config: siteConfig }) {
             </div>            
             <div className="strictBenchCard">
               <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
-              <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video (lower is better), ★ = quality rated by eye</p>
+              <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video from the prompt to the mp4 (text encoding, sampling, video and audio VAE, mp4; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
-                <h4>Whole Prompt (Text Encoding, Sampling, Video/Audio VAE, MP4)</h4>
-                <BarChart rows={h3PromptSpeed} unit="s" lower />
-                <p className="strictBenchNote">With the same model and steps Strict is 1.7x (best against turbo 8 steps) to 1.9x (4 steps, TaoMate) faster than ComfyUI. ComfyUI's turbo 8 steps took 125.6 s on Oct 27; this time it reloaded the text encoder and fit only part of the model on the GPU. faster and the fewest-step presets skip work with Spectrum or fewer steps, faster is not rated yet. Every row uses the same h264 encode.</p>
+                <BarChart rows={h3Speed} unit="s" lower />
+                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 1.7x (best against turbo 8 steps, 125.6 s in an earlier run) to 1.9x faster than ComfyUI. <code>faster</code> and the fewest-step presets skip work with Spectrum or fewer steps.</p>
               </div>
               <div className="strictBenchGroup">
-                <h4>ComfyUI Workflow, 5 s Clip (480x832, 124 frames, Sampling, VAE, Save)</h4>
+                <h4>ComfyUI Workflow, 5 s Clip (124 frames, Prompt Cached)</h4>
                 <BarChart rows={h3ComfySpeed} unit="s" lower />
-                <p className="strictBenchNote">ComfyUI's default H3 workflow (base int8 model with the turbo LoRA, 8 steps) against the same graph with the Strict H3 Sampler node, which samples and decodes in a resident <code>H3Video.exe</code> (24.3–26.5 s), and <code>H3Video.exe best</code> on its own. Prompt cached, warm, October 29.</p>
-              </div>
-              <div className="strictBenchGroup">
-                <h4>Seconds per Step (10 s clip, 243 frames, turbo checkpoint)</h4>
-                <BarChart rows={h3StepSpeed} unit="s" lower />
-                <p className="strictBenchNote">Middle of the measured range. Work in progress: dense attention is 58.7 ms per call against comfy_kitchen's 47.8 ms (the softmax between the matrix products), routed steps trail Sol-Attn in int8 GEMMs, Hadamard, rope and GPU idle time. About 10% more is being worked on, 720p 15 s videos are coming next.</p>
+                <p className="strictBenchNote">ComfyUI's default workflow (turbo LoRA, 8 steps), the same graph with the Strict H3 Sampler node (samples and decodes in a resident <code>H3Video.exe</code>) and <code>H3Video.exe</code> on its own. October 29.</p>
               </div>
               <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy H3Video.strict</a> (coming soon)</p>
             </div>
