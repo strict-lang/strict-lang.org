@@ -12,6 +12,9 @@ All paths are in the [Strict repository](https://github.com/strict-lang/Strict) 
 | Image Blur | [ImageProcessing/BenchBlur.strict](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/BenchBlur.strict) | [ImageProcessing/Compare](https://github.com/strict-lang/Strict/tree/master/ImageProcessing/Compare): C, Rust, Goose, C#, TypeScript, Python, NumPy |
 | Qwen3 models | [NeuralNetworks/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) | llama.cpp, Ollama |
 | Qwen3.8 and reasoning models | [NeuralNetworks/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) | llama.cpp, Ollama |
+| Bouncing logos (game engine stress test) | [DeltaEngine Games/LogoApp](https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp/Compare) |
+| Forest (3D instancing stress test) | [DeltaEngine Games/Forest](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare) |
+| 1 million particles (entity stress test) | [DeltaEngine Games/ParticleStress](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare) |
 | GPT-2 text generation | [NeuralNetworks/Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Benchmark.strict) | PyTorch with Hugging Face transformers |
 | Moss image generation | StrictComfy `MossImage.strict`, coming soon | ComfyUI |
 | MiniMax H3 video | StrictComfy `H3Video.strict`, coming soon | ComfyUI |
@@ -26,6 +29,35 @@ ImageProcessing/BenchBlur.exe
 ```
 
 Set `STRICT_THREADS=1` for one thread or `STRICT_GPU=0` for CPU only.
+
+# Bouncing logos
+
+The DeltaEngine LogoApp with 1,000 to 100,000 logos, each an entity with a sprite, a velocity and a spin, moved, turned and bounced every frame, drawn at 1280x720 with vsync off. The [Compare README](https://github.com/strict-lang/DeltaEngine/blob/main/Games/LogoApp/Compare/README.md) builds the same scene in Unity and times both the same way.
+
+```sh
+../Strict/strict.exe build Games/LogoApp/LogoApp.strict
+cd Games/LogoApp/Release/Windows
+DELTA_VSYNC=0 ./LogoApp.exe 300 100000
+```
+
+# Forest
+
+The DeltaEngine Forest with 1,000 to 100,000 fir trees of 192 triangles on rolling hills, seen from just above the forest, every tree circles around its spot and turns every frame, drawn at 1280x720 with vsync off. The [Compare README](https://github.com/strict-lang/DeltaEngine/blob/main/Games/Forest/Compare/README.md) builds the same scene in Unity, with a GameObject per tree or with Graphics.RenderMeshInstanced, and times all of them the same way: milliseconds per frame from frame 50 on.
+
+```sh
+../Strict/strict.exe build Games/Forest/Forest.strict
+cd Games/Forest/Release/Windows
+DELTA_VSYNC=0 ./Forest.exe 300 100000
+```
+
+# 1 million particles
+
+The DeltaEngine particle processor (`EffectSystem.Advanced`, on all cores) with 1,000 to 1,000,000 particles, each an entity with 5 components (position, velocity changed by an acceleration, rotation turned by a torque, a growing scale and a lifetime), updated every tick without rendering. The [Compare README](https://github.com/strict-lang/DeltaEngine/blob/main/Games/ParticleStress/Compare/README.md) builds the same particles in Unity as GameObjects with a MonoBehaviour per component.
+
+```sh
+../Strict/strict.exe build Games/ParticleStress/ParticleStress.strict
+Games/ParticleStress/ParticleStress.exe 100 1000000
+```
 
 # Qwen3 and Qwen3.8
 

@@ -144,6 +144,17 @@
       isFreeToPlay: true,
       storeLinks: {},
       storeNote: 'Free to run in the browser.'
+    },
+    fractalzoomer: {
+      title: 'FractalZoomer',
+      year: 1997,
+      genre: 'Sample',
+      desc: 'Mandelbrot explorer reviving a 1997 DirectDraw sample: wheel or Space zooms, drag pans, 1 and 2 switch the precision. All fractal math is Strict, natively its pixel loops become GPU kernels.',
+      webPath: '/games/FractalZoomer/FractalZoomer.html',
+      isPlayableWeb: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'Free to run in the browser.'
     }
   };
 

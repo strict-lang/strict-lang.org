@@ -717,6 +717,38 @@ input::placeholder { color: #acbdc8; }
 .strictBarVal.winner {
   color: #55dd93;
 }
+.strictResultTable {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 14px;
+}
+.strictResultTable th, .strictResultTable td {
+  padding: 6px 8px;
+  text-align: right;
+  font-family: Consolas, monospace;
+  color: #c7dce6;
+}
+.strictResultTable th:first-child, .strictResultTable td:first-child {
+  text-align: left;
+}
+.strictResultTable td.winner {
+  color: #55dd93;
+  font-weight: 700;
+}
+.strictResultTable .strictFps {
+  display: block;
+  color: var(--strict-muted);
+  font-size: 0.8em;
+  font-weight: 400;
+}
+.strictBenchImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 4px 0 10px;
+}
 .strictBenchSnippet {
   background: #070e14;
   border: 1px solid #1c3645;

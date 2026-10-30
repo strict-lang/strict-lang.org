@@ -66,52 +66,72 @@ const moreGames = [
   { key: "elemental", title: "Elemental", year: 2020, genre: "Real Time Strategy", image: "games/Elemental.webp",
     desc: "Fire against Earth: capture buildings that produce units." },
   { key: "logoapp", title: "LogoApp", year: 2009, genre: "Sample", image: "games/LogoApp.webp",
-    desc: "Bouncing logos, the first sample of every engine version." }
+    desc: "Bouncing logos, the first sample of every engine version." },
+  { key: "fractalzoomer", title: "FractalZoomer", year: 1997, genre: "Sample", image: "games/FractalZoomer.webp",
+    desc: "Zoom into the Mandelbrot set, all fractal math in Strict." }
 ];
 
 const gpt2Speed = [
-  { label: "Strict, RTX 3080", value: 909, strict: true },
+  { label: "Strict, RTX 3080", value: 575, strict: true },
   { label: "PyTorch, CUDA float16", value: 187 },
   { label: "PyTorch, CUDA float32", value: 173 },
-  { label: "Strict, CPU threads", value: 108, strict: true },
+  { label: "Strict, CPU threads", value: 94, strict: true },
   { label: "PyTorch, CPU 1 thread", value: 50 },
   { label: "PyTorch, CPU 24 threads", value: 36 }
 ];
 
+const mossComfySpeed = [
+  { label: "ComfyUI + Strict Moss Sampler node", value: 5.9, strict: true },
+  { label: "ComfyUI default workflow", value: 7.5 }
+];
+
 const mossTotalSpeed = [
-  { label: "Strict (Spectrum)", value: 2.19, strict: true },
-  { label: "Strict (Merged loras)", value: 3.4, strict: true },
-  { label: "Strict (Runtime loras)", value: 5.3, strict: true },
-  { label: "ComfyUI (warm run)", value: 6.5 }
+  { label: "MossImage fastest2steps", value: 1.13, strict: true },
+  { label: "MossImage fastest (4 steps, Spectrum)", value: 1.52, strict: true },
+  { label: "MossImage faster (8 steps, Spectrum)", value: 1.9, strict: true },
+  { label: "MossImage fast (8 steps, Spectrum)", value: 2.17, strict: true },
+  { label: "MossImage best (8 steps)", value: 3.19, strict: true }
 ];
 
 const mossSamplingSpeed = [
-  { label: "Strict (Spectrum)", value: 1.703, strict: true },
-  { label: "Strict (8 steps, merged)", value: 2.9, strict: true },
-  { label: "ComfyUI (8 steps, INT8)", value: 3.2 }
+  { label: "Strict fastest2steps", value: 0.79, strict: true },
+  { label: "Strict fastest (3 of 4 evaluated)", value: 1.16, strict: true },
+  { label: "Strict faster (4 of 8 evaluated)", value: 1.56, strict: true },
+  { label: "Strict fast (5 of 8 evaluated)", value: 1.83, strict: true },
+  { label: "ComfyUI (8 steps, INT8)", value: 2.8 },
+  { label: "Strict best (8 steps)", value: 2.85, strict: true }
 ];
 
-const h3TotalSpeed = [
-  { label: "Strict (Spectrum)", value: 29.6, strict: true },
-  { label: "ComfyUI (8 steps, INT8 turbo)", value: 37.9 },
-  { label: "Strict (8 steps, INT8 turbo)", value: 40.1, strict: true }
+const h3ComfySpeed = [
+  { label: "H3Video.exe best", value: 19.0, strict: true },
+  { label: "ComfyUI + Strict H3 Sampler node", value: 25.4, strict: true },
+  { label: "ComfyUI default workflow", value: 38.5 }
 ];
 
-const h3SamplingSpeed = [
-  { label: "Strict (Spectrum)", value: 19.3, strict: true },
-  { label: "ComfyUI (8 steps, INT8)", value: 26.7 },
-  { label: "Strict (8 steps, INT8)", value: 28.6, strict: true }
+const h3PromptSpeed = [
+  { label: "Strict fastest2steps ★", value: 27.1, strict: true },
+  { label: "Strict fastest3steps ★★", value: 32.6, strict: true },
+  { label: "Strict fastest4steps ★★★", value: 38.2, strict: true },
+  { label: "Strict faster ★★★★", value: 43.2, strict: true },
+  { label: "Strict fast ★★★★", value: 58.4, strict: true },
+  { label: "ComfyUI TaoMate 3 steps ★", value: 62.4 },
+  { label: "ComfyUI turbo 4 steps ★★", value: 71.5 },
+  { label: "Strict best ★★★★", value: 85.3, strict: true },
+  { label: "ComfyUI turbo 8 steps ★★★★", value: 148.9 },
+  { label: "ComfyUI base 20 steps ★★★★★", value: 291.0 }
 ];
 
 const h3StepSpeed = [
-  { label: "ComfyUI (INT8 turbo)", value: 3.27 },
-  { label: "Strict (INT8 turbo)", value: 3.57, strict: true },
-  { label: "ComfyUI (TaoMate 3-step)", value: 3.37 },
-  { label: "Strict (TaoMate 3-step)", value: 3.6, strict: true }
+  { label: "ComfyUI Sol-Attn", value: 3.42 },
+  { label: "Strict fast (routed)", value: 3.71, strict: true },
+  { label: "ComfyUI comfy_kitchen int8", value: 5.27 },
+  { label: "Strict best (dense)", value: 6.04, strict: true },
+  { label: "ComfyUI SageAttention", value: 6.40 },
+  { label: "ComfyUI default attention", value: 9.68 }
 ];
 
 const blurOneThread = [
-  { label: "Strict, 1 thread", value: 189.5, strict: true },
+  { label: "Strict, 1 thread", value: 192.2, strict: true },
   { label: "C (clang 23 -O3)", value: 193.3 },
   { label: "C (clang 22 -O3, Oct 21)", value: 282.4 },
   { label: "Rust (rustc -O3)", value: 487.6 },
@@ -123,8 +143,8 @@ const blurOneThread = [
 ];
 
 const blurParallel = [
-  { label: "Strict, default (cpu+gpu)", value: 6.6, strict: true },
-  { label: "Strict, no gpu", value: 21.0, strict: true },
+  { label: "Strict, default (cpu+gpu)", value: 7.8, strict: true },
+  { label: "Strict, no gpu", value: 22.4, strict: true },
   { label: "C, OpenMP (clang 22, Oct 21)", value: 53.0 },
   { label: "C, OpenMP (clang 23)", value: 57.6 },
   { label: "Rust, scoped threads", value: 74.8 },
@@ -299,6 +319,24 @@ const qwen38Speed = [
   { label: "llama.cpp (Qwen3.8 27B)", value: 43.0 }
 ];
 
+const logoFrames = [
+  ["1,000", 0.47, 1.13],
+  ["10,000", 1.97, 6.05],
+  ["100,000", 28.9, 75.8]
+];
+
+const forestFrames = [
+  ["1,000", 0.2, 0.4, 0.28],
+  ["10,000", 0.73, 2.85, 2.06],
+  ["100,000", 6.68, 31.6, 20.3]
+];
+
+const particleTicks = [
+  ["1,000", 0.044, 0.97],
+  ["100,000", 3.08, 97.5],
+  ["1,000,000", 50.6, 1068]
+];
+
 const platforms = [["Windows", "windows"], ["Linux", "linux"], ["macOS", "macos"], ["Android", "android"], ["iOS", "ios"], ["Web", "web"]];
 
 function BarChart({ rows, unit, lower }) {
@@ -315,6 +353,29 @@ function BarChart({ rows, unit, lower }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function ResultTable({ columns, rows }) {
+  return (
+    <table className="strictResultTable">
+      <thead>
+        <tr>{columns.map(column => <th key={column}>{column}</th>)}</tr>
+      </thead>
+      <tbody>
+        {rows.map(([label, ...milliseconds]) => (
+          <tr key={label}>
+            <td>{label}</td>
+            {milliseconds.map((value, index) => (
+              <td className={index === 0 ? "winner" : ""} key={columns[index + 1]}>
+                {value.toLocaleString("en-US", { maximumFractionDigits: value < 0.1 ? 3 : 2 })} ms
+                <span className="strictFps">{(1000 / value).toLocaleString("en-US", { maximumFractionDigits: value > 100 ? 1 : 0 })} fps</span>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -496,6 +557,28 @@ function Index({ config: siteConfig }) {
             <p className="strictBenchNote">C keeps getting faster too: clang 23 runs the same plain C loop in 193.30 instead of 282.40 ms with clang 22, Strict is on par on one thread; with all cores and the GPU Strict is far ahead without any code change and even has 2 unit tests. Goose keeps a bounds check on every pixel read it cannot prove and runs on one thread. Sources: <a href={siteConfig.repoUrl + "/tree/master/ImageProcessing/Compare"}>ImageProcessing/Compare</a>, <a href={doc("Benchmarks") + "#image-blur"}>Benchmarks</a>.</p>
           </div>
 
+          <div className="strictBenchCard strictBenchWide">
+            <h3>Game Engine Stress Test: Bouncing Logos</h3>
+            <p className="sub">Every logo is an entity with a sprite, a velocity and a spin that is moved, turned and bounced at the screen edges every frame, 1280x720 with vsync off, milliseconds per frame on one RTX 3080 and i9-13900KF (lower is better)</p>
+            <ResultTable columns={["Logos", "Strict", "Unity 2022.3"]} rows={logoFrames} />
+            <p className="strictBenchNote">Plain game code: every frame Strict builds 100,000 new immutable entities (that loop is split over the cores) and sends their 1.3 million instance numbers to the GPU in one instanced draw call. Unity draws a SpriteRenderer per logo and one script moves all of them, its sprite batching is the engine's own. Two optimization rounds took Strict from 94 to 28.9 ms per frame at 100,000 logos: sprites of one kind go out as one batch filled by a parallel loop, and with vsync off the next frame is computed while the GPU still draws the last one. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp">DeltaEngine Games/LogoApp</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp/Compare">Unity scene</a>.</p>
+          </div>
+
+          <div className="strictBenchCard strictBenchWide">
+            <h3>3D Instancing Stress Test: Forest</h3>
+            <p className="sub">Fir trees with 192 triangles each on rolling hills, every tree circles around its spot and turns every frame, 1280x720 with vsync off, milliseconds per frame on one RTX 3080 and i9-13900KF (lower is better)</p>
+            <img className="strictBenchImage" src={img("screenshots/Forest.webp")} alt="10,000 low poly fir trees seen from just above the forest, rendered by the Strict Forest stress test" loading="lazy" width="960" height="540" />
+            <ResultTable columns={["Trees", "Strict", "Unity, GameObjects", "Unity, instanced"]} rows={forestFrames} />
+            <p className="strictBenchNote">Every frame Strict computes the position, turn and size of every tree on all cores and draws all trees with one instanced draw call: 100,000 trees are 19.2 million triangles per frame and the frame time is mostly the GPU drawing them, the CPU work is hidden behind it. Unity 2022.3 renders the same hills, trees, layout, camera and shader with one script moving all trees: as GameObjects with a MeshRenderer each and GPU instancing on (Unity skips the trees outside the view), or without GameObjects through Graphics.RenderMeshInstanced from one matrix array. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest">DeltaEngine Games/Forest</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare">Unity scene</a>.</p>
+          </div>
+
+          <div className="strictBenchCard strictBenchWide">
+            <h3>Entity Stress Test: Particles</h3>
+            <p className="sub">Every particle is an entity with 5 components (position, velocity changed by an acceleration, rotation turned by a torque, a growing scale and a lifetime), all updated every tick without rendering, milliseconds per tick on one i9-13900KF (lower is better)</p>
+            <ResultTable columns={["Particles", "Strict", "Unity, MonoBehaviours"]} rows={particleTicks} />
+            <p className="strictBenchNote">Strict runs the DeltaEngine particle processor as it is (EffectSystem.Advanced): every tick it builds a new immutable list of particles on all cores and drops the dead ones. Unity 2022.3 has a GameObject per particle with each component as a MonoBehaviour with its own Update, the standard way to write it, 5 million Update calls per tick at 1 million particles. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress">DeltaEngine Games/ParticleStress</a> and its <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare">Unity scene</a>.</p>
+          </div>
+
           <div className="strictPerfGrid">
             <div className="strictBenchCard">
               <h3>Qwen3 Models (RTX 4090)</h3>
@@ -535,44 +618,43 @@ function Index({ config: siteConfig }) {
           <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080)</h3>
-              <p className="sub">720x1280, 8-step turbo, seconds per image (lower is better)</p>
+              <p className="sub">720x1280, int8 Convrot Moss with the DMD turbo LoRA, 8 steps, warm, seconds per image (lower is better)</p>
               <div className="strictBenchGroup">
-                <h4>Total Generation (Sampling + VAE + Save)</h4>
+                <h4>ComfyUI Workflow, New Prompt per Image (Text Encoding, Sampling, VAE, Save)</h4>
+                <BarChart rows={mossComfySpeed} unit="s" lower />
+                <p className="strictBenchNote">The same graph, only the KSampler and VAE Decode replaced by the Strict Moss Sampler node, which runs a resident <code>MossImage.exe</code>. With an unchanged prompt ComfyUI reuses the text encoding and both take 3.2–3.3 s per image.</p>
+              </div>
+              <div className="strictBenchGroup">
+                <h4>MossImage.exe on its own, per Image in a Batch (Sampling, VAE, JPEG)</h4>
                 <BarChart rows={mossTotalSpeed} unit="s" lower />
+                <p className="strictBenchNote">No Python or ComfyUI, only the model files. A new prompt per image adds 0.18 s of text encoding. 40 images at 480p with <code>best</code> take 69–70 s from start to the last JPEG, text encoder and model loading included. Without the turbo LoRA <code>best25steps</code> takes 18.1 s per image (cfg 2).</p>
               </div>
               <div className="strictBenchGroup">
-                <h4>Diffusion Sampling (8 steps)</h4>
+                <h4>Diffusion Sampling only</h4>
                 <BarChart rows={mossSamplingSpeed} unit="s" lower />
-                <p className="strictBenchNote">Strict with Spectrum averages 2.19 s per image, ComfyUI 6.00–6.50 s.</p>
+                <p className="strictBenchNote">Spectrum forecasts the skipped steps, which changes the result. Normal clocks, GPU otherwise idle, October 29.</p>
               </div>
-              <div className="strictBenchGroup">
-                <h4>Time Breakdown (for the ComfyUI node only the sampling is important)</h4>
-                <ul>
-                  <li>Diffusion sampling: <strong>~1.70 s</strong></li>
-                  <li>VAE decode: <strong>~451.43 ms</strong></li>
-                  <li>JPEG saving: <strong>~16.57 ms</strong></li>
-                  <li>Other: <strong>~19.00 ms</strong></li>
-                </ul>
-                <p className="strictBenchNote">Strict with <code>--spectrum spectrum8_w3p3</code> forecasts 3 steps to evaluate only 5 transformer steps in 1.8 s. Combined with cached stochastic INT8 LoRA merge, fast VAE decode (470 ms) and native Windows JPEG saving (18 ms), end-to-end generation reaches 2.3 s vs ComfyUI's 6.5 s.</p>
-              </div>
+              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a> (coming soon)</p>
             </div>            
             <div className="strictBenchCard">
               <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
-              <p className="sub">Text to video with sound, 480x832, 124 frames (5.2 s at 24 fps), warm resident sampling (seconds, lower is better)</p>
+              <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video (lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
-                <h4>Total per Video (Sampling + Video/Audio VAE + MP4)</h4>
-                <BarChart rows={h3TotalSpeed} unit="s" lower />
+                <h4>Whole Prompt (Text Encoding, Sampling, Video/Audio VAE, MP4)</h4>
+                <BarChart rows={h3PromptSpeed} unit="s" lower />
+                <p className="strictBenchNote">With the same model and steps Strict is 1.7x (best against turbo 8 steps) to 1.9x (4 steps, TaoMate) faster than ComfyUI. ComfyUI's turbo 8 steps took 125.6 s on Oct 27; this time it reloaded the text encoder and fit only part of the model on the GPU. faster and the fewest-step presets skip work with Spectrum or fewer steps, faster is not rated yet. Every row uses the same h264 encode.</p>
               </div>
               <div className="strictBenchGroup">
-                <h4>Diffusion Sampling (8-step turbo)</h4>
-                <BarChart rows={h3SamplingSpeed} unit="s" lower />
+                <h4>ComfyUI Workflow, 5 s Clip (480x832, 124 frames, Sampling, VAE, Save)</h4>
+                <BarChart rows={h3ComfySpeed} unit="s" lower />
+                <p className="strictBenchNote">ComfyUI's default H3 workflow (base int8 model with the turbo LoRA, 8 steps) against the same graph with the Strict H3 Sampler node, which samples and decodes in a resident <code>H3Video.exe</code> (24.3–26.5 s), and <code>H3Video.exe best</code> on its own. Prompt cached, warm, October 29.</p>
               </div>
               <div className="strictBenchGroup">
-                <h4>Seconds per Transformer Step (14,844 tokens)</h4>
+                <h4>Seconds per Step (10 s clip, 243 frames, turbo checkpoint)</h4>
                 <BarChart rows={h3StepSpeed} unit="s" lower />
-                <p className="strictBenchNote">ComfyUI (Oct 2026 build) keeps the 21 GB INT8 model resident; Strict's kernels take the same time (attention 0.26 s faster, elementwise 0.26 s slower per step), but it still idles 0.5 s per step in GPU memory management, the next fix. Spectrum forecasts 3 of the 8 steps (it changes the result). Both decode with ComfyUI's video and audio VAEs (7.4 s + 2.8 s); <code>H3Video.exe</code> takes the same options as <code>MossImage.exe</code> (prompt file, randomized prompts, <code>--count</code>, cached LoRA merges).</p>
+                <p className="strictBenchNote">Middle of the measured range. Work in progress: dense attention is 58.7 ms per call against comfy_kitchen's 47.8 ms (the softmax between the matrix products), routed steps trail Sol-Attn in int8 GEMMs, Hadamard, rope and GPU idle time. About 10% more is being worked on, 720p 15 s videos are coming next.</p>
               </div>
-              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a></p>
+              <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy H3Video.strict</a> (coming soon)</p>
             </div>
           </div>
 
