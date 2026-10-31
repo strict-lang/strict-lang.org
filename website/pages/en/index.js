@@ -92,6 +92,15 @@ const mossSpeed = [
   { label: "ComfyUI 50 steps ★★★★★", value: 45 }
 ];
 
+const mossSpeed4090 = [
+  { label: "MossImage fastest2steps ★", value: 0.69, strict: true },
+  { label: "MossImage fastest ★★", value: 0.82, strict: true },
+  { label: "MossImage faster ★★★", value: 0.95, strict: true },
+  { label: "MossImage fast ★★★★", value: 1.05, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.43, strict: true },
+  { label: "ComfyUI 8 steps ★★★★★", value: 3.2 }
+];
+
 const h3Speed = [
   { label: "H3Video fastest2steps ★", value: 27.1, strict: true },
   { label: "H3Video fastest3steps ★★", value: 32.6, strict: true },
@@ -603,11 +612,16 @@ function Index({ config: siteConfig }) {
 
           <div className="strictPerfGrid" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
-              <h3>Moss Image Generation (RTX 3080)</h3>
+              <h3>Moss Image Generation (RTX 3080 and RTX 4090)</h3>
               <p className="sub">A batch of 720x1280 images with a new prompt each, int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
                 <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. RTX 3080, October 29.</p>
+              </div>
+              <div className="strictBenchGroup">
+                <h4>RTX 4090</h4>
+                <BarChart rows={mossSpeed4090} unit="s" lower />
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. October 31.</p>
               </div>
               <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#moss-image-and-minimax-h3-video"}>StrictComfy MossImage.strict</a> (coming soon)</p>
             </div>            
