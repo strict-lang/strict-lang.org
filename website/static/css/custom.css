@@ -918,12 +918,6 @@ input::placeholder { color: #acbdc8; }
   background: #000;
   overflow: hidden;
 }
-#stmFrame {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-}
 .stm-loading {
   position: absolute;
   inset: 0;
@@ -935,17 +929,6 @@ input::placeholder { color: #acbdc8; }
   gap: 16px;
   color: #9cb3bf;
   z-index: 1;
-}
-.stm-spinner {
-  width: 44px;
-  height: 44px;
-  border: 4px solid #162c3a;
-  border-top-color: var(--strict-accent);
-  border-radius: 50%;
-  animation: stmSpin 0.9s linear infinite;
-}
-@keyframes stmSpin {
-  to { transform: rotate(360deg); }
 }
 
 .stm-footer {

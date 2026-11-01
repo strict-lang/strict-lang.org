@@ -1,7 +1,6 @@
 /**
  * Strict Web Games Theater
- * Manages launching games in an embedded modal player, handling WebGL/WASM lifecycles,
- * audio unlocking, keyboard event sandboxing, store links, and fullscreen toggling.
+ * Playable games open as their own page, the others show their store links in a modal.
  */
 (function () {
   'use strict';
@@ -180,16 +179,13 @@
             <span class="stm-badge f2p">Free to Play</span>
           </div>
           <div class="stm-controls">
-            <button type="button" class="stm-btn" id="stmFullscreenBtn" title="Toggle Fullscreen">⛶ Fullscreen</button>
             <button type="button" class="stm-btn close" id="stmCloseBtn" title="Close Theater (Esc)">✕</button>
           </div>
         </div>
         <div class="stm-body">
           <div class="stm-loading" id="stmLoading">
-            <div class="stm-spinner"></div>
             <p id="stmLoadingMsg">Loading WebAssembly & Game Assets...</p>
           </div>
-          <iframe id="stmFrame" title="Strict Game View" allow="autoplay; fullscreen; gamepad"></iframe>
         </div>
         <div class="stm-footer" id="stmFooter">
           <div class="stm-store-note" id="stmStoreNote"></div>
@@ -203,7 +199,6 @@
     // Event listeners
     modalEl.querySelector('.stm-backdrop').addEventListener('click', closeTheater);
     document.getElementById('stmCloseBtn').addEventListener('click', closeTheater);
-    document.getElementById('stmFullscreenBtn').addEventListener('click', toggleFullscreen);
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) {
@@ -213,12 +208,16 @@
   }
 
   function launchGame(gameKey) {
-    createTheaterModal();
     const game = GAME_DATA[gameKey];
     if (!game) return;
+    // Playable games open as their own page: all of the screen, a fullscreen button and the back button to return.
+    if (game.isPlayableWeb && !game.isComingSoon) {
+      location.href = game.webPath;
+      return;
+    }
+    createTheaterModal();
 
     const titleEl = document.getElementById('stmGameTitle');
-    const frameEl = document.getElementById('stmFrame');
     const loadingEl = document.getElementById('stmLoading');
     const storeNoteEl = document.getElementById('stmStoreNote');
     const storeLinksEl = document.getElementById('stmStoreLinks');
@@ -239,70 +238,25 @@
     }
     storeLinksEl.innerHTML = linksHtml;
 
-    // Handle games that are coming soon
-    const spinner = loadingEl.querySelector('.stm-spinner');
-    if (game.isComingSoon || !game.isPlayableWeb) {
-      loadingEl.style.display = 'flex';
-      if (spinner) spinner.style.display = 'none';
-      loadingEl.querySelector('#stmLoadingMsg').innerHTML = `
-        <div style="text-align:center;padding:20px;max-width:540px;">
-          <h3 style="color:#ffd166;font-size:1.45rem;margin:0 0 12px;">${game.title} — Web Version Coming Soon</h3>
-          <p style="color:#c5d8e2;line-height:1.6;font-size:0.95rem;margin:0 0 16px;">
-            The standalone web release is currently being finalized with the latest DeltaEngine optimizations.<br><br>
-            In the meantime, you can play the full game on Steam or mobile stores using the links below!
-          </p>
-        </div>
-      `;
-      frameEl.src = 'about:blank';
-      modalEl.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      return;
-    }
-
-    if (spinner) spinner.style.display = '';
-
-    // Show loading indicator
+    // Games without a web build show their store links
     loadingEl.style.display = 'flex';
-    loadingEl.querySelector('#stmLoadingMsg').textContent = `Loading ${game.title} (WebAssembly & WebGL)...`;
-
-    // Set frame source
-    frameEl.onload = () => {
-      loadingEl.style.display = 'none';
-      try {
-        frameEl.contentWindow.focus();
-      } catch (e) {
-        // cross-origin protection if hosted on another port/domain
-      }
-    };
-
-    // If game has a built web path, load it; otherwise show demo placeholder
-    frameEl.src = game.webPath;
-
+    loadingEl.querySelector('#stmLoadingMsg').innerHTML = `
+      <div style="text-align:center;padding:20px;max-width:540px;">
+        <h3 style="color:#ffd166;font-size:1.45rem;margin:0 0 12px;">${game.title} — Web Version Coming Soon</h3>
+        <p style="color:#c5d8e2;line-height:1.6;font-size:0.95rem;margin:0 0 16px;">
+          The standalone web release is currently being finalized with the latest DeltaEngine optimizations.<br><br>
+          In the meantime, you can play the full game on Steam or mobile stores using the links below!
+        </p>
+      </div>
+    `;
     modalEl.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
 
   function closeTheater() {
     if (!modalEl) return;
-    const frameEl = document.getElementById('stmFrame');
-    if (frameEl) {
-      frameEl.src = 'about:blank'; // Destroy canvas, audio, and wasm memory
-    }
     modalEl.classList.add('hidden');
     document.body.style.overflow = '';
-  }
-
-  function toggleFullscreen() {
-    const frameWrapper = document.querySelector('.stm-body');
-    if (!frameWrapper) return;
-
-    if (!document.fullscreenElement) {
-      frameWrapper.requestFullscreen().catch(err => {
-        console.warn('Fullscreen error:', err);
-      });
-    } else {
-      document.exitFullscreen();
-    }
   }
 
   function setupArcadeButtons() {
