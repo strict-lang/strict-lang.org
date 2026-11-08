@@ -57,11 +57,71 @@ Test failed: Squares(1, 2, 3).Squared is (1, 4, 9) in Squared at Kata/Squares.st
 1 tests failed in Kata/Squares.strict
 ```
 
-The exit code is the number of failed tests, so it plugs straight into any build script or CI.
+The exit code is the number of failed tests, so it plugs straight into any build script or CI. After the tests pass, `strict test` also runs [mutation testing](#mutation-testing) on the methods of the file, so passing tests alone are not enough: they also have to notice when the code changes. `strict test <file> unit` runs only the tests.
 
 `strict build` runs the same tests before it builds anything, and a failing test stops the build. For a type without a `Run` method, `strict build Character.strict` compiles the tests natively into `Character.test.exe`. Its exit code is the number of failed tests too, this is how the native code generator is tested.
 
 The [VS Code extension](GettingStarted.md#visual-studio-code) runs `strict test` for every file when a folder opens and again on every save, and shows the results as green and red dots next to the tests.
+
+# Mutation testing
+
+A test that passes says little if it would also pass with different code. Mutation testing checks exactly that: it changes the code a tiny bit (a mutant) and runs the tests again. If a test fails, the mutant is killed and everything is fine. If all tests still pass, the mutant survived, and either the tests miss a case or the changed code was never needed in the first place.
+
+Every `strict test` of a file or folder does this automatically once the normal tests passed. Each method written in the file gets these mutants:
+
+| Mutant | Example |
+|--------|---------|
+| A comparison is always true or always false, removing one side of a branch | `if total > 100` becomes `if true` |
+| The result is replaced by its default | `0`, `""` or `false` instead of the computed value |
+| A reassignment is dropped | `sum = sum + value` does nothing |
+| A call or a list `Add` is dropped | `issues.Add(issue)` is removed |
+| `+` and `-` or `*` and `/` are swapped | `total / 10` becomes `total * 10` |
+| A text is emptied | `"Fizz"` becomes `""` |
+
+A survivor is a `MutationSurvived` error with the line, what was changed and the method source, and it fails the run like a failing test:
+
+```
+Shop/Shop.strict:line 4: MutationSurvived: Discount: replaced the comparison > with true kept passing all tests, improve the tests!
+  2: Discount Number
+  3: 	Shop(200).Discount is 20
+> 4: 	if total > 100
+  5: 		return total / 10
+  6: 	0
+```
+
+The only test uses a total above 100, so a `Discount` that always takes the first branch passes just as well. Adding `Shop(50).Discount is 0` kills the mutant. Most survivors are like this: a corner case nobody tested, a boundary value, a list that was never empty. Others show code that does nothing: a check that an earlier line already covers, an empty-list shortcut that gives the same result as the loop, a `Substring` length that is clamped anyway. Then the right fix is to remove the code, not to add a test.
+
+## Why it is fast enough to run on every test
+
+Mutants are not new source files. Strict compiles a method once into bytecode and swaps a single instruction right before execution, so a mutant needs no parsing, validation or compilation. All mutated methods of a file get their next mutant together in one round, each judged only by the tests of its own type on a fresh VM machine, so a file needs as many rounds as its most mutated method has mutants. A file with more than 16 rounds hands them to up to 16 worker processes, and folder runs test their files in parallel anyway. A mutant that loops forever stops after 100,000 steps per frame or ten times the file's normal test time.
+
+Since unit tests take milliseconds, thousands of tests per second run on the VM. A full run over the Strict repository alone executes several million mutation tests, the projects using Strict many more. The vast majority of mutants make a test line fail somewhere, which proves the change is bad. The few that survive point at badly tested code, missed corner cases, actual bugs or unused code. The Math package takes 0.7 s without and 2.4 s with mutation testing.
+
+## Caching and skipping
+
+Mutation testing makes a fresh test run longer, and nobody wants to wait minutes for tests. So results are cached: the test result is part of the `.strictbinary` written for each type, the mutation result is kept in `obj/Name.mutations`, and both stay valid until the source of the type changes. [VS Code](VSCode.md) only tests what the change you are currently making affects, so results still come back in under a millisecond, whole repositories retest in a few seconds in the background, and the view is always up to date. In the editor every test has run many times over already.
+
+When you don't want to wait for mutants on the command line:
+
+| Command | Tests | Mutation testing |
+|---------|-------|------------------|
+| `strict test <type or package>` | unit tests, cached | yes, for changed types |
+| `strict test <type or package> unit` | unit tests, cached | no |
+| `strict test <package folder> full` | everything again: `obj/` caches removed, Slow and CI tests included | all mutants |
+| `strict build <file>` | unit tests, Slow ones skipped | no |
+| `strict build <file> fast` | none | no |
+
+`strict build <file> fast` is the quickest build possible: no tests, no GPU kernels (GPU loops run on the CPU) and no `Release` folder. It is great for quick iterations and small tools, not for a complex game or app or anything that needs its GPU kernels. Running LLMs or diffusion models with billions of parameters on the CPU is no fun.
+
+## What is not mutated
+
+Mutation testing only makes sense for code whose tests can see the change. These methods are skipped and reported:
+
+* Base package types (the runtime and the compiler replace most of them) and `Slow` methods in folder runs.
+* Methods whose tests read files, fail with a failing body (native, hosted), or take over 1 s (0.1 s in folder runs), and methods that reach file, process, socket or GPU input.
+* Values that only reach Error details, log output or loop counts.
+
+Mutation runs can't write or delete files, open sockets or run tools, so a mutant can't damage anything. Methods are compiled without loop peeling and hoisting for mutation runs, so each mutant is exactly one source edit. Folder runs skip files whose tests take over 100 ms, an explicit file run, CI and `strict test <folder> full` mutate all of them. `unit` and the test steps of `strict build` and `strict check` skip mutation testing.
 
 # Folder tests, caches and profiling
 
@@ -102,3 +162,5 @@ The tests also tell the compiler what a method is supposed to do. That's what le
 # Tests must be fast
 
 Every test should run in a few milliseconds. Slow or external things like files, the network or processes belong behind a trait or a type that can be replaced in tests. [`Process.strict`](https://github.com/strict-lang/Strict/blob/master/Process.strict) and [`Directory.strict`](https://github.com/strict-lang/Strict/blob/master/Directory.strict) are examples: their bodies are implemented by the native runtime, and the code using them is tested with values instead.
+
+Fast tests are also what makes [mutation testing](#mutation-testing) possible: every mutant runs the tests of its type again, so a 1 ms test runs thousands of times per file. A unit test may take 100 ms at most (`TestDurationMustNotExceedHundredMilliseconds`), mark integration tests with `Slow(ReturnType)`.

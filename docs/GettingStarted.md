@@ -92,9 +92,11 @@ strict build Examples/Sum.strict     # run the tests, then build a native execut
 | Command | What it does | Exit code |
 |---------|--------------|-----------|
 | `strict <file> [arguments]` | Compiles the file to bytecode and runs its `Run` method on the Strict VM. This is the fastest way to run code, everything stays in memory and no native code is involved. Arguments are passed to `Run` as numbers. A type without a `Run` method runs all its tests instead. | 0 |
-| `strict test <file or folder>` | Runs inline tests on the Strict VM. A folder includes its package subfolders. Prints test locations and timings, or a cached result when nothing changed. | number of failed tests |
+| `strict test <file or folder>` | Runs inline tests on the Strict VM, then [mutation testing](Tests.md#mutation-testing) of the tested methods. A folder includes its package subfolders. Prints test locations and timings, or a cached result when nothing changed. | number of failed tests |
 | `strict test <file> lines` | Builds and runs tests natively, then reports execution counts, total time and self time per source line. Requires the native toolchain. | number of failed tests, nonzero on build failure |
 | `strict test <file> values` | Runs tests on the VM and reports executed-line hit counts and recorded values for editor feedback. | number of failed tests |
+| `strict test <file or folder> unit` | Runs only the tests, without mutation testing. `strict test <folder> full` removes the `obj/` caches and retests everything, Slow and CI tests and all mutants included. | number of failed tests |
+| `strict build <file> fast` | Quickest build possible for iterating and small tools: skips all tests, compiles no GPU kernels (GPU loops run on the CPU), no `Release` folder. Not for games or anything needing its GPU kernels. | nonzero on build failure |
 | `strict build <file> library` | Builds a shared library and its generated C# binding after tests pass. | 0 on success, nonzero on failure |
 | `strict suggest <file> <method>` | Checks candidate implementations against a method's tests. | nonzero on failure |
 | `strict format <file>` | Prints the canonical source to standard output; it does not overwrite the file. | 0 on success, nonzero on parsing failure |

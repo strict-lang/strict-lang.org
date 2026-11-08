@@ -16,8 +16,8 @@ All paths are in the [Strict repository](https://github.com/strict-lang/Strict) 
 | Forest (3D instancing stress test) | [DeltaEngine Games/Forest](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare) |
 | 1 million particles (entity stress test) | [DeltaEngine Games/ParticleStress](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare) |
 | GPT-2 text generation | [NeuralNetworks/Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Benchmark.strict) | PyTorch with Hugging Face transformers |
-| Moss image generation | StrictComfy `MossImage.strict`, coming soon | ComfyUI |
-| MiniMax H3 video | StrictComfy `H3Video.strict`, coming soon | ComfyUI |
+| Moss image generation | [StrictComfy MossImage.strict](https://github.com/strict-lang/StrictComfy/blob/main/MossImage.strict), [MossWeb.strict](https://github.com/strict-lang/StrictComfy/blob/main/MossWeb.strict) | ComfyUI |
+| MiniMax H3 video | [StrictComfy H3Video.strict](https://github.com/strict-lang/StrictComfy/blob/main/H3Video.strict) | ComfyUI |
 
 # Image Blur
 
@@ -59,6 +59,26 @@ The DeltaEngine particle processor (`EffectSystem.Advanced`, on all cores) with 
 Games/ParticleStress/ParticleStress.exe 100 1000000
 ```
 
+# FractalZoomer
+
+Milliseconds for one finished image at all iterations (the Time shown in the right panel at rest), Image Scale 100%, a 1280x720 window, one Nvidia RTX 3080, Chrome 156 with WebGPU, November 2026. The web version computes 855x615 pixels, the Windows exe 933x573 (both about 0.53 megapixels). Too few iterations for a view give an all black image, so a link or zoom straight into a deep view doubles the max iterations until the image shows detail: 100 grew to 12,800 at 1e20x and to 51,200 at 1e30x by itself.
+
+| View | Iterations | Web (WebGPU, f32) | Windows exe (CUDA) | Other web viewer | Other web viewer |
+| --- | --- | --- | --- | --- | --- |
+| [Start](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.5&y=0&z=1&i=100&s=1) | 100 | 12.9 ms | 6.6 ms | | |
+| [Needle Chasm, 1e8x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-1.7706660190054566&y=-0.016332605287125934&z=100000000&i=1700&s=1) | 1,700 | 23.0 ms | 24.8 ms | | |
+| [Seahorse Valley, 1e20x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=100000000000000000000&i=12800&s=1) | 12,800 | 673.9 ms | 185.2 ms | | |
+| [Seahorse Valley, 1e30x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=1000000000000000000000000000000&i=51200&s=1) | 51,200 | 407.5 ms | 562.5 ms | | |
+
+The web times stay the same over 4 readings, the exe times are the average of 3 runs. The web version keeps 60 fps while zooming continuously (2.7-11 ms per image at Image Scale 200%, down to 2.6e18x). The Windows exe opens the same views from the link in the `STRICT_LINK` environment variable:
+
+```sh
+../Strict/strict.exe build Games/FractalZoomer/FractalZoomer.strict
+cd Games/FractalZoomer/Release/Windows
+STRICT_LINK="x=-0.5&y=0&z=1&i=100&s=1" ./FractalZoomer.exe 120
+cat artifacts/FractalZoomer.txt
+```
+
 # Qwen3 and Qwen3.8
 
 The model code is in [Qwen3.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3.strict) and [Qwen3Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Block.strict), the GGUF reader in `Gguf.strict`. [Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) reports prefill and decode speed, [Qwen3Text.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Text.strict) generates text. The baseline is llama.cpp (b11658, CUDA) on the same GGUF files and GPU.
@@ -79,4 +99,12 @@ strict build NeuralNetworks/Gpt2Benchmark.strict
 
 # Moss image and MiniMax H3 video
 
-Both run through StrictComfy, which loads the same model files and LoRAs as ComfyUI and runs the diffusion in Strict. The source and instructions are coming soon.
+Both run through [StrictComfy](https://github.com/strict-lang/StrictComfy), which loads the same model files and LoRAs as ComfyUI and runs the whole pipeline in Strict: text encoder, diffusion model, sampler and decoders. The releases of `MossImage` and `H3Video` for Windows and Linux are in its `Release` folder, built with:
+
+```sh
+strict build MossImage.strict windows
+strict build H3Video.strict linux
+strict build MossWeb.strict web
+```
+
+The Moss charts are batches of 720x1280 images of the default prompt (`MossImage --count 50`), the H3 charts a 12 s clip from the prompt to the saved mp4. ComfyUI runs its default workflows on the same GPU, model files and LoRAs. The Strict Moss Sampler node only replaces ComfyUI's sampling, so its gain grows with the image size: on the RTX 3080 per image 6.5 s against 4.5–4.8 s at 720p and 13.7 s against about 7 s at 1088p, while at 480p and below ComfyUI's own overhead (prompt encoding, passing models and conditioning, preparing the GPU per run, decoding) hides most of it. The H3 node measurements on the RTX 4090 are still to come. What the presets do, which GPUs are supported and how the browser version works is in [Moss Image Generation](MossImage.md) and [MiniMax H3 Video Generation](H3Video.md); MossWeb runs at [strict-lang.org/moss/MossWeb.html](https://strict-lang.org/moss/MossWeb.html).

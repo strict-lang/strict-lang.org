@@ -58,11 +58,13 @@ There is no fluff: no curly brackets, semicolons, empty lines, comments, access 
 
 ## Strict
 
-There is exactly one way to do things. The compiler rejects anything that doesn't follow the rules: unused members or variables, `mutable` values that never change, lines that are too long, too many methods, wrong indentation, and more. There are no warnings, only errors. See [Code Validations](CodeValidations.md) and [Coding Style](CodingStyle.md).
+There is exactly one way to do things. The compiler rejects anything that doesn't follow the rules: unused members or variables, `mutable` values that never change, magic numbers that should be named constants, computations that don't change inside a loop, lines that are too long, too many methods, wrong indentation, and more. There are no warnings, only errors. See [Code Validations](CodeValidations.md) and [Coding Style](CodingStyle.md).
 
 ## Tested
 
 Tests are not optional, they are part of the method. Every method starts with test lines that show how to use it. This is why the base library doubles as the documentation of the language: open [`Number.strict`](https://github.com/strict-lang/Strict/blob/master/Number.strict) or [`List.strict`](https://github.com/strict-lang/Strict/blob/master/List.strict) and you see exactly what each method does. In [VS Code](GettingStarted.md#visual-studio-code), SCrunch runs the tests of a file and of every file that uses it each time you save. See [Tests](Tests.md).
+
+Passing tests are not enough. After they pass, `strict test` runs [mutation testing](Tests.md#mutation-testing) automatically: every method is changed in tiny ways (a comparison always true, `+` instead of `-`, a call dropped, the result replaced by `0`) and the tests run again. If a change goes unnoticed, the run fails with `MutationSurvived`: either a case is not tested, or the code makes no difference and can go. Mutants swap a single bytecode instruction right before execution, so several million mutation tests on the Strict repository cost seconds, not hours. Results are cached per type, VS Code only retests what a change affects, `strict test <package> unit` skips mutation testing and `full` runs everything.
 
 ## Immutable and functional
 
@@ -82,6 +84,7 @@ Use established frameworks for the browser, HTTP, storage, graphics and platform
 
 # Current developments
 
+* **Mutation testing on every test run:** each method is mutated and tested again after its tests pass, survivors fail the run. Over 6,400 surviving mutants across the Strict packages were fixed with better tests or by removing code that made no difference, see the [November 5 update](/blog/2026/11/05/mutation-testing-for-every-test).
 * **A much richer editor:** SCrunch test results, source-line values, coverage and timings; semantic highlighting, hover, completion and F12 navigation.
 * **Libraries and exact values:** native C/C# interop, generated bindings and stepped decimals that stay exact as C# `decimal` parameters and results.
 * **Local inference:** Qwen3-8B Q4_K_M at 150–151 decode tokens/second on an RTX 4090, up to 2,357 aggregate tokens/second across 32 sequences, Qwen3-Coder-30B-A3B at 210 decode tokens/second, and Qwen3.8 27B and Brilliance 50X at 46.6 and 45.3 tokens/second. [Measurements and conditions](MachineLearning.md) separate decode, prefill and batching.
@@ -95,7 +98,7 @@ See the [October 16 update](/blog/2026/10/16/strict-live-feedback-qwen3-and-inte
 1. **Immutable expression tree.** Static analysis only, no runtime state sneaks in.
 2. **Validation before execution.** Catch the trivial stuff early, let the VM handle the hard parts.
 3. **The VM is king.** Only the virtual machine or the native executable sees real values and side effects. Everything before it is compilation.
-4. **One-time tests.** Tests live where the code lives, run once, then disappear from the bytecode.
+4. **One-time tests.** Tests live where the code lives, run once, then disappear from the bytecode. Mutation testing makes sure they actually check what the code does.
 5. **Strict rules first, then hardware speed.** The first priority is clean, strict rules with exactly one way to solve each problem. The second is performance and parallelism as close to the hardware as possible (CPU, GPU, NPU, TPU, CUDA, distributed over the network).
 
 # Why this matters

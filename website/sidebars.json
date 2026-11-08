@@ -23,7 +23,7 @@
       "Grammar"
     ],
     "Rules": ["CodingStyle", "CodeValidations", "Naming"],
-    "Source": ["BaseTypes", "Architecture", "Examples", "MachineLearning", "Benchmarks"],
+    "Source": ["BaseTypes", "Architecture", "Examples", "MachineLearning", "MossImage", "H3Video", "Benchmarks"],
     "More": ["UsingApis", "Concurrency", "Microservices"]
   }
 }

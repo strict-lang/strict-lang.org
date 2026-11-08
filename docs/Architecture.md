@@ -15,9 +15,9 @@ This is a substantial real-world Strict application: open it in [VS Code](VSCode
 |---------|----------------|
 | [root types](BaseTypes.md) | `Number`, `Text`, `List`, `Dictionary`, `Error`, `File`, ... define the language and are its documentation, [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) is the `strict` command |
 | [`Expressions`](#expressions) | Tokenizer, syntax tree, statements, header tokens, type shapes, known types, and type inference over all packages |
-| [`Validators`](#validators) | Unused and never-changed variables, names, constant folding, limits (`ValidateCheck` behind `strict check`) |
+| [`Validators`](#validators) | Unused and never-changed variables, names, magic numbers, loop rules, constant folding, limits (`ValidateCheck` behind `strict check`) |
 | [`Bytecode`](#bytecode) | Compiles a type into register-based instructions (`FileCompiler`), inlines constants, removes tests, links used types, writes `.strictbinary` |
-| [`Runtime`](#runtime) | The Strict VM that runs those instructions (`Execute` behind `strict <file>` and `strict test`) |
+| [`Runtime`](#runtime) | The Strict VM that runs those instructions (`Execute` behind `strict <file>` and `strict test`) and mutation testing |
 | [`Compiler`](#compiler) | `NativeBuild` behind `strict build`: instructions to MLIR, the native runtime (texts, lists, files, processes, collector), then `mlir-opt`, `mlir-translate` and `clang` |
 | [VS Code extension](#tools) | Edit, test, check and run `.strict` files, all through `strict` |
 
@@ -89,6 +89,9 @@ The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Run
 - [`UsageRules`](https://github.com/strict-lang/Strict/blob/master/Validators/UsageRules.strict): per-method rules for unused variables and parameters, names that hide members, `mutable` values that never change and `mutable` parameters.
 - [`Limits`](https://github.com/strict-lang/Strict/blob/master/Validators/Limits.strict): line length, nesting, tab indentation, method length, and method and member counts.
 - [`Names`](https://github.com/strict-lang/Strict/blob/master/Validators/Names.strict): rejects keywords as names, names starting with `List`, and constants named like a type or a method.
+- [`LoopBodies`](https://github.com/strict-lang/Strict/blob/master/Validators/LoopBodies.strict) and [`LoopBody`](https://github.com/strict-lang/Strict/blob/master/Validators/LoopBody.strict): values that don't change in a loop, branches on its first or last iteration and invariant computations that belong before it.
+- [`MagicNumbers`](https://github.com/strict-lang/Strict/blob/master/Validators/MagicNumbers.strict): numbers in method bodies that must be named constants.
+- [`DroppedResults`](https://github.com/strict-lang/Strict/blob/master/Validators/DroppedResults.strict): lines whose only call returns a plain value that nobody uses.
 - [`ConstantCollapser`](https://github.com/strict-lang/Strict/blob/master/Validators/ConstantCollapser.strict): folds constant subexpressions (arithmetic, text concatenation, `and`/`or`, `to` conversions).
 - [`ValidationIssue`](https://github.com/strict-lang/Strict/blob/master/Validators/ValidationIssue.strict): one issue (rule, target, message), printed as `RuleName: target`.
 
@@ -156,6 +159,8 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 - [`Resolver`](https://github.com/strict-lang/Strict/blob/master/Runtime/Resolver.strict): resolves names to slots before execution.
 - [`VmValue`](https://github.com/strict-lang/Strict/blob/master/Runtime/VmValue.strict): the universal runtime value (kind, number, text, items) with factories and text formatting.
 - [`Invocation`](https://github.com/strict-lang/Strict/blob/master/Runtime/Invocation.strict): decodes an invoke instruction into type, method, return type, parameters, arguments and instance.
+- [`Mutation`](https://github.com/strict-lang/Strict/blob/master/Runtime/Mutation.strict), [`MutationKinds`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationKinds.strict) and [`MutationFlow`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationFlow.strict): make the mutants of a method from its bytecode (comparisons always true or false, results replaced by defaults, dropped assignments and calls, swapped operators, emptied texts) and skip instructions whose values only reach errors, logs or loop counts.
+- [`Mutants`](https://github.com/strict-lang/Strict/blob/master/Runtime/Mutants.strict): runs every mutant alone on a fresh machine against the tests of its type, in rounds and up to 16 worker processes, and reports survivors as `MutationSurvived` with the method source. [`MutationCache`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationCache.strict) keeps the result in `obj/Name.mutations` until the source changes. See [mutation testing](Tests.md#mutation-testing).
 - [`ErrorCheck`](https://github.com/strict-lang/Strict/blob/master/Runtime/ErrorCheck.strict): detects unhandled Error values and propagates them with source stack frames.
 - [`Looping`](https://github.com/strict-lang/Strict/blob/master/Runtime/Looping.strict): loop begin and end, keeping the `index` and `value` state for numbers, ranges, lists and texts.
 - [`Operations`](https://github.com/strict-lang/Strict/blob/master/Runtime/Operations.strict): arithmetic and comparisons, including text and list concatenation and removing list elements.

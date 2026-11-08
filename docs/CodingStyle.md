@@ -5,7 +5,7 @@ title: Coding Style
 
 In most languages a coding style is a guideline. In Strict it is the language. Code that violates the rules doesn't compile, and there are no warnings, only errors. You can still write useless or senseless code, but not unclean code in the sense of [Clean Code](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882), and the result always looks the same, no matter if a human or a computer wrote it.
 
-[TDD](https://en.wikipedia.org/wiki/Test-driven_development) and clean code are the basis of Strict. Strict looks most like Python, but it is much shorter and more compact. There are no curly brackets, no semicolons and no empty lines, comments don't exist, and methods are only a few lines long.
+[TDD](https://en.wikipedia.org/wiki/Test-driven_development) and clean code are the basis of Strict. Every method starts with its tests, and [mutation testing](Tests.md#mutation-testing) checks after every test run that each comparison, operation, call and value of the method is needed and tested: code that no test misses when it changes fails the run. Strict looks most like Python, but it is much shorter and more compact. There are no curly brackets, no semicolons and no empty lines, comments don't exist, and methods are only a few lines long.
 
 # Limits
 
@@ -39,7 +39,9 @@ There is exactly one way to format Strict code:
 * **Members don't repeat their type** when the name already says it: `has number`, not `has number Number`.
 * **`constant`** for values computed only from constants, **`let`** for everything else that doesn't change, **`mutable`** only when a value really changes, like a loop counter.
 * **Values never change.** `list + element` gives a new list, and a `mutable` variable can only be reassigned to such a new value. Never change an old version of a list. A list is either fixed, or growing and then only its latest version is used.
-* **Tests are Boolean comparisons** at the start of every method. `is true` is never written.
+* **Tests are Boolean comparisons** at the start of every method. `is true` is never written. Test with distinguishing values: `Square(3) is 9` instead of `Square(1) is 1` or `Square(0) is 0`, where many wrong implementations give the same result.
+* **No magic numbers.** A number other than a single digit, `10`, `0.5` or a power of ten is a named `constant` (`NumberMustBeNamedConstant`). Tests and constant lines may use any number.
+* **Loops only contain what changes.** A computation, guard or first/last iteration check that doesn't depend on the loop goes before or after it, see [Code Validations](CodeValidations.md#numbers-loops-and-results).
 * **Other packages are written as `Package/Type`** only in declarations: members, parameters and return types. Method bodies use the plain type name.
 * **Comparisons bind before Boolean operators.** `a is b and c is d` needs no extra brackets, see [precedence](Statements.md#precedence).
 * **A conditional as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.

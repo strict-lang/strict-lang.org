@@ -148,12 +148,34 @@
       title: 'FractalZoomer',
       year: 1997,
       genre: 'Sample',
-      desc: 'Mandelbrot explorer reviving a 1997 DirectDraw sample: wheel or Space zooms, drag pans, 1 and 2 switch the precision. All fractal math is Strict, natively its pixel loops become GPU kernels.',
+      desc: 'Mandelbrot and Julia explorer reviving a 1997 DirectDraw sample: drag pans, wheel or pinch zooms down to 1e35x. All fractal math is Strict, its pixel loops become WebGPU compute shaders in the browser and GPU kernels natively.',
       webPath: '/games/FractalZoomer/FractalZoomer.html',
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
       storeNote: 'Free to run in the browser.'
+    },
+    forest: {
+      title: 'Forest',
+      year: 2026,
+      genre: 'Sample',
+      desc: '3D instancing stress test: 10,000 low poly fir trees on rolling hills circle around their spot and turn every frame, all drawn with one instanced draw call.',
+      webPath: '/games/Forest/Forest.html',
+      isPlayableWeb: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'Free to run in the browser.'
+    },
+    bentris: {
+      title: 'BenTris',
+      year: 1996,
+      genre: 'Puzzle',
+      desc: 'Work in progress: the oldest game here, written as a teenager, last released in 1996. Falling blocks with the recovered DOS graphics, more of the original (levels, editors, weapons, music) still has to be restored.',
+      webPath: '/games/BenTris/BenTris.html',
+      isPlayableWeb: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'Work in progress: more of the original still has to be restored.'
     }
   };
 

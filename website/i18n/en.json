@@ -44,6 +44,9 @@
       "Grammar": {
         "title": "Grammar"
       },
+      "H3Video": {
+        "title": "MiniMax H3 Video Generation"
+      },
       "If": {
         "title": "If"
       },
@@ -62,6 +65,9 @@
       },
       "Microservices": {
         "title": "Microservices"
+      },
+      "MossImage": {
+        "title": "Moss Image Generation"
       },
       "Naming": {
         "title": "Naming"

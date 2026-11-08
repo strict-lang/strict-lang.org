@@ -82,7 +82,13 @@ const siteConfig = {
     '/js/strict-playground.js',
     '/js/strict-theater.js',
     '/js/strict-search.js',
-    '/js/strict-nav.js'
+    '/js/strict-nav.js',
+    // Cookieless visitor counter, no consent banner needed. Skips localhost by itself.
+    {
+      src: 'https://gc.zgo.at/count.js',
+      async: true,
+      'data-goatcounter': 'https://strict-lang.goatcounter.com/count'
+    }
   ],
   onPageNav: 'separate',
   cleanUrl: true,

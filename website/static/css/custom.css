@@ -71,16 +71,20 @@ input::placeholder { color: #acbdc8; }
 .post .assetCaption { color: var(--strict-muted); font-size: .9rem; }
 .post video { width: 100%; border: 1px solid var(--strict-border); border-radius: 8px; }
 .strictHome .wrapper { max-width: 1180px; }
+.strictHome [id] { scroll-margin-top: 60px; }
 .strictHero { background: var(--strict-panel); border-bottom: 1px solid var(--strict-border); padding: 36px 0 40px; }
 .strictHeroGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: center; }
 .strictHeroText h1.strictEyebrow { font-size: .78rem; line-height: 1.5; margin: 0 0 14px; }
 .strictHeroLead { font-size: 1.08rem; color: var(--strict-muted); margin: 0 0 18px; }
 .strictHeroSpeed { font-size: .95rem; color: #d6e5ed; border-left: 3px solid #55dd93; padding: 2px 0 2px 14px; margin: 0 0 22px; }
 .strictHeroSpeed strong { color: #55dd93; }
+.strictHeroBenchmarks { font-size: .9rem; color: #d6e5ed; margin: -10px 0 22px; padding-left: 34px; }
+.strictHeroBenchmarks li { margin: 2px 0; }
 .strictPlatforms { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
 .strictPlatforms a { padding: 3px 13px; border: 1px solid var(--strict-border); border-radius: 999px; background: var(--strict-raised); color: #d6e5ed; font-size: .85rem; }
 .strictPlatforms a:hover, .strictPlatforms a:focus { border-color: var(--strict-accent); color: var(--strict-accent); text-decoration: none; }
-.strictHero .strictActions { justify-content: flex-start; }
+.strictHero .strictActions { justify-content: flex-start; gap: 10px; }
+.strictHero .strictActions .button { padding: 10px 15px; }
 .strictHeroPlayground .strictEyebrow { margin-bottom: 8px; }
 .strictHeroPlayground .strictPlaygroundContainer { margin-top: 0; }
 .strictHeroTeaser { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.9rem; color: var(--strict-accent); }
@@ -149,6 +153,8 @@ input::placeholder { color: #acbdc8; }
   .fixedHeaderContainer header .headerTitleWithLogo { font-size: 1rem; }
   .strictHero { padding: 26px 0 30px; }
   .strictHeroLead { font-size: 1rem; }
+  .strictHero .strictActions { gap: 8px; }
+  .strictHero .strictActions .button { padding: 7px 11px; font-size: .82rem; }
   .strictFlow h2 { font-size: 1.4rem; }
   .strictDemo figcaption { font-size: .75rem; }
   .strictCards, .strictExample, .strictGameStrip { grid-template-columns: 1fr; }
@@ -469,6 +475,7 @@ input::placeholder { color: #acbdc8; }
   aspect-ratio: 16 / 9;
   background: #000;
   overflow: hidden;
+  cursor: pointer;
 }
 .strictCardMedia img {
   width: 100%;
@@ -1063,6 +1070,13 @@ input::placeholder { color: #acbdc8; }
 #blurCode7:checked ~ .strictTabPanel7 { display: block; }
 #blurCode8:checked + label { color: #e5f3f8; background: #172d38; }
 #blurCode8:checked ~ .strictTabPanel8 { display: block; }
+#leibnizCode0:checked + label, #leibnizCode1:checked + label, #leibnizCode2:checked + label, #leibnizCode3:checked + label,
+#leibnizCode4:checked + label, #leibnizCode5:checked + label, #leibnizCode6:checked + label, #leibnizCode7:checked + label { color: #e5f3f8; background: #172d38; }
+#leibnizCode0:checked ~ .strictTabPanel0, #leibnizCode1:checked ~ .strictTabPanel1, #leibnizCode2:checked ~ .strictTabPanel2,
+#leibnizCode3:checked ~ .strictTabPanel3, #leibnizCode4:checked ~ .strictTabPanel4, #leibnizCode5:checked ~ .strictTabPanel5,
+#leibnizCode6:checked ~ .strictTabPanel6, #leibnizCode7:checked ~ .strictTabPanel7 { display: block; }
+#leibniz .strictTabs { margin-top: 0; }
+#leibniz .strictTabPanel { max-height: 680px; overflow: auto; }
 .strictTabPanel code { tab-size: 4; -moz-tab-size: 4; white-space: pre; background: transparent; }
 .strictTabs + .strictBenchNote { margin-top: 12px; }
 
