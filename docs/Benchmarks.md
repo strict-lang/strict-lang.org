@@ -61,14 +61,14 @@ Games/ParticleStress/ParticleStress.exe 100 1000000
 
 # FractalZoomer
 
-Milliseconds for one finished image at all iterations (the Time shown in the right panel at rest), Image Scale 100%, a 1280x720 window, one Nvidia RTX 3080, Chrome 156 with WebGPU, November 2026. The web version computes 855x615 pixels, the Windows exe 933x573 (both about 0.53 megapixels). Too few iterations for a view give an all black image, so a link or zoom straight into a deep view doubles the max iterations until the image shows detail: 100 grew to 12,800 at 1e20x and to 51,200 at 1e30x by itself.
+Milliseconds for one finished image at all iterations (the Time shown in the right panel at rest), Image Scale 100%, a 1280x720 window, one Nvidia RTX 3080, Chrome 156 with WebGPU, November 2026. The web version computes 855x615 pixels, the Windows exe 933x573 (both about 0.53 megapixels). Too few iterations for a view give an all black image, so a link or zoom straight into a deep view raises the max iterations by 50% until the image shows detail: 100 grew to 8,675 at 1e20x and to 29,280 at 1e30x by itself.
 
 | View | Iterations | Web (WebGPU, f32) | Windows exe (CUDA) | Other web viewer | Other web viewer |
 | --- | --- | --- | --- | --- | --- |
-| [Start](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.5&y=0&z=1&i=100&s=1) | 100 | 12.9 ms | 6.6 ms | | |
-| [Needle Chasm, 1e8x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-1.7706660190054566&y=-0.016332605287125934&z=100000000&i=1700&s=1) | 1,700 | 23.0 ms | 24.8 ms | | |
-| [Seahorse Valley, 1e20x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=100000000000000000000&i=12800&s=1) | 12,800 | 673.9 ms | 185.2 ms | | |
-| [Seahorse Valley, 1e30x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=1000000000000000000000000000000&i=51200&s=1) | 51,200 | 407.5 ms | 562.5 ms | | |
+| [Start](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.5&y=0&z=1&i=100&s=1) | 100 | 11.7 ms | 7.8 ms | | |
+| [Needle Chasm, 1e8x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-1.7706660190054566&y=-0.016332605287125934&z=100000000&i=1700&s=1) | 1,700 | 25.4 ms | 25.6 ms | | |
+| [Seahorse Valley, 1e20x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=100000000000000000000&i=8675&s=1) | 8,675 | 615.7 ms | 184.4 ms | | |
+| [Seahorse Valley, 1e30x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=1000000000000000000000000000000&i=29280&s=1) | 29,280 | 303.5 ms | 591.3 ms | | |
 
 The web times stay the same over 4 readings, the exe times are the average of 3 runs. The web version keeps 60 fps while zooming continuously (2.7-11 ms per image at Image Scale 200%, down to 2.6e18x). The Windows exe opens the same views from the link in the `STRICT_LINK` environment variable:
 
