@@ -32,15 +32,15 @@ A 12 s clip (480x832, 294 frames) with sound on the RTX 4090, the whole prompt f
 | ComfyUI, turbo 8-step checkpoint | 8 | 148.9 s | 2.0x | ★★★★ |
 | ComfyUI, turbo checkpoint with 4 steps | 4 | 71.5 s | 4.1x | ★★ |
 | ComfyUI, base model with the TaoMate 3-step LoRA | 3 | 62.4 s | 4.7x | ★ |
-| `H3Video` `best` | 8 | 61.2 s | 4.8x | ★★★★ |
-| `H3Video` `fast` | 8 | 44.0 s | 6.6x | ★★★★ |
-| `H3Video` `faster` | 8 | 33.8 s | 8.6x | ★★★★ |
-| `H3Video` `fastest` | 4 | 32.9 s | 8.8x | ★★★ |
-| `H3Video` `fastest2steps` (TaoMate) | 2 | 26.9 s | 10.8x | ★ |
+| `H3Video` `best` | 8 | 55.8 s | 5.2x | ★★★★ |
+| `H3Video` `fast` | 8 | 45.9 s | 6.3x | ★★★★ |
+| `H3Video` `faster` | 8 | 33.0 s | 8.8x | ★★★★ |
+| `H3Video` `fastest` | 4 | 31.9 s | 9.1x | ★★★ |
+| `H3Video` `fastest2steps` (TaoMate) | 2 | 24.7 s | 11.8x | ★ |
 
-With the same model and steps `H3Video` is 2.2x (`fastest` against ComfyUI's 4 turbo steps) to 2.4x (`best` against 8 turbo steps) faster. Per step of a 10 s clip with the turbo checkpoint, ComfyUI's default attention takes 9.6–9.7 s, SageAttention 6.4 s, comfy_kitchen int8 5.2 s and Sol-Attn 3.3–3.5 s; Strict's `best` takes 6.0–6.1 s and `fast` 3.7 s.
+With the same model and steps `H3Video` is 2.2x (`fastest` against ComfyUI's 4 turbo steps) to 2.7x (`best` against 8 turbo steps) faster. Per step of a 10 s clip with the turbo checkpoint, ComfyUI's default attention takes 9.6–9.7 s, SageAttention 6.4 s, comfy_kitchen int8 5.2 s and Sol-Attn 3.3–3.5 s; Strict's `best` takes 6.0–6.1 s and `fast` 3.7 s.
 
-Inside a ComfyUI workflow (5 s clip, 124 frames, prompt cached) ComfyUI's default workflow takes 38.5 s, the same graph with the Strict H3 Sampler node 25.4 s and `H3Video` on its own 19.0 s. The node is faster, the command line with many videos per run is the fastest.
+Inside a ComfyUI workflow (5 s clip, 124 frames, prompt cached) ComfyUI's default workflow takes 38.5 s, the same graph with the Strict H3 Sampler node 25.4 s and `H3Video` on its own 17.8 s. The node is faster, the command line with many videos per run is the fastest.
 
 Per video on the RTX 4090 (480x832, warm), sampling and the finished video:
 

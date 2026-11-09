@@ -103,23 +103,22 @@ const mossSpeed = [
 ];
 
 const mossSpeed4090 = [
-  { label: "MossImage fastest2steps ★", value: 0.37, strict: true },
-  { label: "MossImage fastest ★★", value: 0.50, strict: true },
-  { label: "MossImage faster ★★★", value: 0.63, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.39, strict: true },
+  { label: "MossImage fastest ★★", value: 0.51, strict: true },
+  { label: "MossImage faster ★★★", value: 0.65, strict: true },
   { label: "MossImage fast ★★★★", value: 0.75, strict: true },
-  { label: "MossImage best ★★★★★", value: 1.2, strict: true },
-  { label: "MossWeb fastest2steps 480p ★", value: 1.3, strict: true },
-  { label: "MossWeb fastest 480p ★", value: 2.2, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.11, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 1.7, strict: true },
+  { label: "MossWeb fastest 480p ★", value: 2.7, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 3.2 }
 ];
 
 const h3Speed = [
-  { label: "H3Video fastest2steps ★", value: 26.9, strict: true },
-  { label: "H3Video fastest3steps ★★", value: 31.9, strict: true },
-  { label: "H3Video fastest4steps ★★★", value: 32.9, strict: true },
-  { label: "H3Video faster ★★★★", value: 33.8, strict: true },
-  { label: "H3Video fast ★★★★", value: 44.0, strict: true },
-  { label: "H3Video best ★★★★", value: 61.2, strict: true },
+  { label: "H3Video fastest2steps ★", value: 24.7, strict: true },
+  { label: "H3Video fastest4steps ★★★", value: 31.9, strict: true },
+  { label: "H3Video faster ★★★★", value: 33.0, strict: true },
+  { label: "H3Video fast ★★★★", value: 45.9, strict: true },
+  { label: "H3Video best ★★★★", value: 55.8, strict: true },
   { label: "ComfyUI TaoMate 3 steps ★", value: 62.4 },
   { label: "ComfyUI turbo 4 steps ★★", value: 71.5 },
   { label: "ComfyUI turbo 8 steps ★★★★", value: 148.9 },
@@ -127,7 +126,7 @@ const h3Speed = [
 ];
 
 const h3ComfySpeed = [
-  { label: "H3Video best", value: 19.0, strict: true },
+  { label: "H3Video best", value: 17.8, strict: true },
   { label: "ComfyUI + Strict H3 Sampler node", value: 25.4, strict: true },
   { label: "ComfyUI default workflow", value: 38.5 }
 ];
@@ -400,7 +399,7 @@ const qwen30Speed = [
 const qwen38Speed = [
   { label: "Strict (MTP drafts)", value: 76.4, strict: true },
   { label: "llama.cpp / Ollama (MTP)", value: 74.7, muted: true },
-  { label: "Strict (Qwen3.8 27B)", value: 46.6, strict: true },
+  { label: "Strict (Qwen3.8 27B)", value: 49.8, strict: true },
   { label: "Strict (Brilliance 50X)", value: 45.3, strict: true },
   { label: "llama.cpp (Brilliance 50X)", value: 43.5 },
   { label: "llama.cpp (Qwen3.8 27B)", value: 43.0 }
@@ -747,7 +746,7 @@ function Index({ config: siteConfig }) {
           <div className="strictPerfGrid" id="generation" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080 and RTX 4090)</h3>
-              <p className="sub">A batch of 720x1280 images of the default prompt (50 on the RTX 3080, 100 on the RTX 4090), int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
+              <p className="sub">A batch of 720x1280 images of the default prompt (50 on the RTX 3080, 10 on the RTX 4090), int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
                 <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. The node's gain grows with the size: single images take 6.5 s with ComfyUI against 4.5–4.8 s with the node at 720p, 13.7 s against about 7 s at 1088p; at 480p and below ComfyUI's own overhead dominates. MossWeb is the same Strict code in Chrome on WebGPU with the int4 4-step model (one star less for int4), seconds per image without loading the models or encoding the prompt; 480p is the better choice on the web. <a href={baseUrl + "moss/MossWeb.html"}>Try MossWeb</a>: Chrome, Edge and Firefox with WebGPU, 4 GB of GPU memory or more; on a Galaxy S25 Ultra a 160p image takes about 13 s, 240p about 22 s. RTX 3080, MossImage November 8, ComfyUI October 29, MossWeb November 3, its fastest2steps November 9.</p>
@@ -755,7 +754,7 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
                 <BarChart rows={mossSpeed4090} unit="s" lower />
-                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 9 s there. November 9.</p>
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 3.5 s there. November 9.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>            
@@ -764,12 +763,12 @@ function Index({ config: siteConfig }) {
               <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video from the prompt to the mp4 (text encoding, sampling, video and audio VAE, mp4; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={h3Speed} unit="s" lower />
-                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 2.2x (fastest against turbo 4 steps) to 2.4x (best against turbo 8 steps) faster than ComfyUI. Strict side November 6. <code>faster</code> and the fewest-step presets skip work with Spectrum or fewer steps.</p>
+                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 2.2x (fastest against turbo 4 steps) to 2.7x (best against turbo 8 steps) faster than ComfyUI. Strict side November 9. <code>faster</code> and the fewest-step presets skip work with Spectrum or fewer steps.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>ComfyUI Workflow, 5 s Clip (124 frames, Prompt Cached)</h4>
                 <BarChart rows={h3ComfySpeed} unit="s" lower />
-                <p className="strictBenchNote">ComfyUI's default workflow (turbo LoRA, 8 steps), the same graph with the Strict H3 Sampler node (samples and decodes in a resident <code>H3Video.exe</code>) and <code>H3Video.exe</code> on its own. October 29.</p>
+                <p className="strictBenchNote">ComfyUI's default workflow (turbo LoRA, 8 steps), the same graph with the Strict H3 Sampler node (samples and decodes in a resident <code>H3Video.exe</code>) and <code>H3Video.exe</code> on its own. H3Video November 9, the others October 29.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("H3Video")}>MiniMax H3 Video Generation</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>
@@ -813,7 +812,7 @@ function Index({ config: siteConfig }) {
           </p>
           <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</h2>
           <p>
-            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 46.60 and 45.30 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 49.80 and 45.30 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
           </p>
           <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
         </div>

@@ -27,15 +27,15 @@ Each stage needs different model files on the GPU. ComfyUI runs these stages as 
 
 # Performance
 
-Average seconds per 720x1280 image of the default prompt in a batch (50 images on the RTX 3080, 100 on the RTX 4090), from the prompt to the saved image, int8 Convrot Moss, warm:
+Average seconds per 720x1280 image of the default prompt in a batch (50 images on the RTX 3080, 10 on the RTX 4090), from the prompt to the saved image, int8 Convrot Moss, warm:
 
 | Quality preset | Steps | RTX 3080 | RTX 4090 |
 |---|---|---:|---:|
-| `fastest2steps` | 2 (4-step LoRA) | 1.12 s | 0.37 s |
-| `fastest` | 4, 1 forecast by Spectrum | 1.33 s | 0.50 s |
-| `faster` | 8, 4 forecast | 1.75 s | 0.63 s |
+| `fastest2steps` | 2 (4-step LoRA) | 1.12 s | 0.39 s |
+| `fastest` | 4, 1 forecast by Spectrum | 1.33 s | 0.51 s |
+| `faster` | 8, 4 forecast | 1.75 s | 0.65 s |
 | `fast` | 8, 3 forecast | 1.91 s | 0.75 s |
-| `best` (default) | 8 (DMD turbo LoRA) | 2.91 s | 1.2 s |
+| `best` (default) | 8 (DMD turbo LoRA) | 2.91 s | 1.11 s |
 | ComfyUI with the Strict Moss Sampler node | 8 | 5.9 s | |
 | ComfyUI default workflow (turbo LoRA) | 8 | 7.5 s | 3.2 s |
 
@@ -79,7 +79,7 @@ Seconds per image in Chrome on the RTX 3080, without loading the models or encod
 | 480p (480x848) | 4.4 s | 7.4 s |
 | 720p (720x1280) | 13.7 s | 22.6 s |
 
-On an RTX 4090 a 480p image takes about 2.2 s with `fastest` and 1.3 s with `fastest2steps` (3.3 s on the RTX 3080). A new prompt adds the encoding: GPUs with 8 GB or more keep Moss on the GPU while encoding and GPUs with 16 GB or more also keep the text encoder, the page tells them apart by the GPU's name. On the RTX 4090 a new prompt with `fastest` takes about 6.5 s in total.
+On an RTX 4090 a 480p image takes about 2.7 s with `fastest` and 1.7 s with `fastest2steps` (3.3 s on the RTX 3080). A new prompt adds the encoding: GPUs with 8 GB or more keep Moss on the GPU while encoding and GPUs with 16 GB or more also keep the text encoder, the page tells them apart by the GPU's name. On the RTX 4090 a new prompt with `fastest` takes about 6.2 s in total.
 
 The page is tested in Chrome, Edge and Firefox on the desktop and in Chrome on Android, all with WebGPU enabled; the GPU needs 4 GB of memory or more. WebGPU limits the speed: for really fast image generation use the desktop version.
 
