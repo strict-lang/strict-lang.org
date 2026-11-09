@@ -91,6 +91,7 @@ const mossSpeed = [
   { label: "MossImage faster ★★★", value: 1.75, strict: true },
   { label: "MossImage fast ★★★★", value: 1.91, strict: true },
   { label: "MossImage best ★★★★★", value: 2.91, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 3.3, strict: true },
   { label: "MossWeb fastest 480p ★", value: 4.4, strict: true },
   { label: "ComfyUI + Strict node ★★★★★", value: 5.9, strict: true },
   { label: "MossWeb fast 480p ★★★", value: 7.4, strict: true },
@@ -102,11 +103,13 @@ const mossSpeed = [
 ];
 
 const mossSpeed4090 = [
-  { label: "MossImage fastest2steps ★", value: 0.60, strict: true },
-  { label: "MossImage fastest ★★", value: 0.62, strict: true },
-  { label: "MossImage faster ★★★", value: 0.86, strict: true },
-  { label: "MossImage fast ★★★★", value: 0.88, strict: true },
-  { label: "MossImage best ★★★★★", value: 1.24, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.37, strict: true },
+  { label: "MossImage fastest ★★", value: 0.50, strict: true },
+  { label: "MossImage faster ★★★", value: 0.63, strict: true },
+  { label: "MossImage fast ★★★★", value: 0.75, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.2, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 1.3, strict: true },
+  { label: "MossWeb fastest 480p ★", value: 2.2, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 3.2 }
 ];
 
@@ -747,12 +750,12 @@ function Index({ config: siteConfig }) {
               <p className="sub">A batch of 720x1280 images of the default prompt (50 on the RTX 3080, 100 on the RTX 4090), int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. The node's gain grows with the size: single images take 6.5 s with ComfyUI against 4.5–4.8 s with the node at 720p, 13.7 s against about 7 s at 1088p; at 480p and below ComfyUI's own overhead dominates. MossWeb is the same Strict code in Chrome on WebGPU with the int4 4-step model (one star less for int4), seconds per image without loading the models or encoding the prompt; 480p is the better choice on the web. <a href={baseUrl + "moss/MossWeb.html"}>Try MossWeb</a>: Chrome, Edge and Firefox with WebGPU, 4 GB of GPU memory or more; on a Galaxy S25 Ultra a 160p image takes about 13 s, 240p about 22 s. RTX 3080, MossImage November 8, ComfyUI October 29, MossWeb November 3.</p>
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. The node's gain grows with the size: single images take 6.5 s with ComfyUI against 4.5–4.8 s with the node at 720p, 13.7 s against about 7 s at 1088p; at 480p and below ComfyUI's own overhead dominates. MossWeb is the same Strict code in Chrome on WebGPU with the int4 4-step model (one star less for int4), seconds per image without loading the models or encoding the prompt; 480p is the better choice on the web. <a href={baseUrl + "moss/MossWeb.html"}>Try MossWeb</a>: Chrome, Edge and Firefox with WebGPU, 4 GB of GPU memory or more; on a Galaxy S25 Ultra a 160p image takes about 13 s, 240p about 22 s. RTX 3080, MossImage November 8, ComfyUI October 29, MossWeb November 3, its fastest2steps November 9.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
                 <BarChart rows={mossSpeed4090} unit="s" lower />
-                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. November 8.</p>
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 9 s there. November 9.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>            
