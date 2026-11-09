@@ -9,7 +9,7 @@ There are three ways to use it:
 
 - **`MossImage.exe`** (Windows) and **`MossImage`** (Linux): a command line program that only needs the model files, no Python and no ComfyUI. This is the fastest way to generate images with Moss.
 - **Strict Moss Sampler**: a ComfyUI node that replaces the KSampler in a Moss workflow and samples with a resident `MossImage` process.
-- **[MossWeb](https://strict-lang.org/moss/MossWeb.html)**: the same Strict code running in your browser on WebGPU, nothing to install, works even on mobile. It is about 5 times slower and worse quality (int4 only, 4 step turbo lora) than MossImage executable and way worse for bigger images because of the 4gb limit in browsers and WebGPU, but still fun to use as you need nothing to install and can still run Moss locally. 100% private and stays in your browser cache. Any lora can be added on top, ComfyUI workflow import is posssible, completely uncensored, everything runs on your hardware.
+- **[MossWeb](https://strict-lang.org/moss/MossWeb.html)**: the same Strict code running in your browser on WebGPU, nothing to install, works even on mobile. It is about 2 times slower and worse quality (int4 only, 4 step turbo lora) than MossImage executable and way worse for bigger images because of the 4gb limit in browsers and WebGPU, but still fun to use as you need nothing to install and can still run Moss locally. 100% private and stays in your browser cache. Any lora can be added on top, ComfyUI workflow import is posssible, completely uncensored, everything runs on your hardware.
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 600px"><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample1.jpg" alt="Moss example 1" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample2.jpg" alt="Moss example 2" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample3.jpg" alt="Moss example 3" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample4.jpg" alt="Moss example 4" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample5.jpg" alt="Moss example 5" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample6.jpg" alt="Moss example 6" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample7.jpg" alt="Moss example 7" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample8.jpg" alt="Moss example 8" style="width: 100%; display: block; border-radius: 6px"></a><a href="https://strict-lang.org/moss/MossWeb.html"><img src="https://strict-lang.org/moss/MossWebExample9.jpg" alt="Moss example 9" style="width: 100%; display: block; border-radius: 6px"></a></div>
 
@@ -31,11 +31,11 @@ Average seconds per 720x1280 image of the default prompt in a batch (50 images o
 
 | Quality preset | Steps | RTX 3080 | RTX 4090 |
 |---|---|---:|---:|
-| `fastest2steps` | 2 (4-step LoRA) | 1.12 s | 0.60 s |
-| `fastest` | 4, 1 forecast by Spectrum | 1.33 s | 0.62 s |
-| `faster` | 8, 4 forecast | 1.75 s | 0.86 s |
-| `fast` | 8, 3 forecast | 1.91 s | 0.88 s |
-| `best` (default) | 8 (DMD turbo LoRA) | 2.91 s | 1.24 s |
+| `fastest2steps` | 2 (4-step LoRA) | 1.12 s | 0.37 s |
+| `fastest` | 4, 1 forecast by Spectrum | 1.33 s | 0.50 s |
+| `faster` | 8, 4 forecast | 1.75 s | 0.63 s |
+| `fast` | 8, 3 forecast | 1.91 s | 0.75 s |
+| `best` (default) | 8 (DMD turbo LoRA) | 2.91 s | 1.2 s |
 | ComfyUI with the Strict Moss Sampler node | 8 | 5.9 s | |
 | ComfyUI default workflow (turbo LoRA) | 8 | 7.5 s | 3.2 s |
 
@@ -78,6 +78,8 @@ Seconds per image in Chrome on the RTX 3080, without loading the models or encod
 |---|---:|---:|
 | 480p (480x848) | 4.4 s | 7.4 s |
 | 720p (720x1280) | 13.7 s | 22.6 s |
+
+On an RTX 4090 a 480p image takes about 2.2 s with `fastest` and 1.3 s with `fastest2steps` (3.3 s on the RTX 3080). A new prompt adds the encoding: GPUs with 8 GB or more keep Moss on the GPU while encoding and GPUs with 16 GB or more also keep the text encoder, the page tells them apart by the GPU's name. On the RTX 4090 a new prompt with `fastest` takes about 6.5 s in total.
 
 The page is tested in Chrome, Edge and Firefox on the desktop and in Chrome on Android, all with WebGPU enabled; the GPU needs 4 GB of memory or more. WebGPU limits the speed: for really fast image generation use the desktop version.
 
