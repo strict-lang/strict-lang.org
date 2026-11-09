@@ -44,7 +44,7 @@ const spotlightGames = [
     stores: [["Wishlist on Steam", "https://store.steampowered.com/app/468800/Arena_Wars_Reloaded/"]] },
   { key: "fractalzoomer", title: "FractalZoomer", year: 1997, genre: "Sample", price: "Free", image: "games/FractalZoomer.webp",
     desc: "Real time Mandelbrot and Julia explorer down to 1e35x zoom, all fractal math in Strict, running as WebGPU compute shaders in the browser.",
-    facts: ["13 ms per half megapixel image in the browser", "60 fps while zooming", "deep views find their iterations by themselves"],
+    facts: ["12 ms per half megapixel image in the browser", "60 fps while zooming", "deep views find their iterations by themselves"],
     review: ["Benchmarks and details", "/docs/Benchmarks#fractalzoomer"], stores: [] },
   { key: "webwars", title: "WebWars", year: 1999, genre: "Real Time Strategy · Capture the Flag", price: "Free", image: "games/WebWars.jpg",
     wip: true,
