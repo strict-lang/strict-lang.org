@@ -97,6 +97,8 @@ Mutants are not new source files. Strict compiles a method once into bytecode an
 
 Since unit tests take milliseconds, thousands of tests per second run on the VM. A full run over the Strict repository alone executes several million mutation tests, the projects using Strict many more. The vast majority of mutants make a test line fail somewhere, which proves the change is bad. The few that survive point at badly tested code, missed corner cases, actual bugs or unused code. The Math package takes 0.7 s without and 2.4 s with mutation testing.
 
+Everything is tested, all the time. Every single .strict method has multiple tests, so every line runs many times, and mutation testing tries every possible change hundreds of times more. All of this runs far faster than other languages ever could, because the whole language is designed around this concept.
+
 ## Caching and skipping
 
 Mutation testing makes a fresh test run longer, and nobody wants to wait minutes for tests. So results are cached: the test result is part of the `.strictbinary` written for each type, the mutation result is kept in `obj/Name.mutations`, and both stay valid until the source of the type changes. [VS Code](VSCode.md) only tests what the change you are currently making affects, so results still come back in under a millisecond, whole repositories retest in a few seconds in the background, and the view is always up to date. In the editor every test has run many times over already.
@@ -160,6 +162,8 @@ Tests run when the code is compiled, not every time a method is called. Code tha
 The tests also tell the compiler what a method is supposed to do. That's what lets Strict check, replace or even generate code later. For example, it can replace a method with an existing, equivalent one from the base library.
 
 # Tests must be fast
+
+All tests run in the Strict VM. It is not as fast as the generated native code (sometimes up to 100x slower), but fast enough to run all tests of huge projects and packages in milliseconds or seconds.
 
 Every test should run in a few milliseconds. Slow or external things like files, the network or processes belong behind a trait or a type that can be replaced in tests. [`Process.strict`](https://github.com/strict-lang/Strict/blob/master/Process.strict) and [`Directory.strict`](https://github.com/strict-lang/Strict/blob/master/Directory.strict) are examples: their bodies are implemented by the native runtime, and the code using them is tested with values instead.
 

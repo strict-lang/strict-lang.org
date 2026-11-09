@@ -65,10 +65,10 @@ Milliseconds for one finished image at all iterations (the Time shown in the rig
 
 | View | Iterations | Web (WebGPU, f32) | Windows exe (CUDA) | Other web viewer | Other web viewer |
 | --- | --- | --- | --- | --- | --- |
-| [Start](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.5&y=0&z=1&i=100&s=1) | 100 | 11.7 ms | 7.8 ms | | |
-| [Needle Chasm, 1e8x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-1.7706660190054566&y=-0.016332605287125934&z=100000000&i=1700&s=1) | 1,700 | 25.4 ms | 25.6 ms | | |
-| [Seahorse Valley, 1e20x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=100000000000000000000&i=8675&s=1) | 8,675 | 615.7 ms | 184.4 ms | | |
-| [Seahorse Valley, 1e30x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=1000000000000000000000000000000&i=29280&s=1) | 29,280 | 303.5 ms | 591.3 ms | | |
+| [Start](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.5&y=0&z=1&i=100&s=1) | 100 | 12.5 ms | 6.8 ms | | |
+| [Needle Chasm, 1e8x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-1.7706660190054566&y=-0.016332605287125934&z=100000000&i=1700&s=1) | 1,700 | 25.4 ms | 25.8 ms | | |
+| [Seahorse Valley, 1e20x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=100000000000000000000&i=8675&s=1) | 8,675 | 100.2 ms | 147.2 ms | | |
+| [Seahorse Valley, 1e30x](https://strict-lang.org/games/FractalZoomer/FractalZoomer.html?x=-0.743643887037158704752191506114774&y=0.131825904205311970493132056385139&z=1000000000000000000000000000000&i=29280&s=1) | 29,280 | 296.3 ms | 517.9 ms | | |
 
 The web times stay the same over 4 readings, the exe times are the average of 3 runs. The web version keeps 60 fps while zooming continuously (2.7-11 ms per image at Image Scale 200%, down to 2.6e18x). The Windows exe opens the same views from the link in the `STRICT_LINK` environment variable:
 

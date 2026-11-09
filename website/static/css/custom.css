@@ -73,7 +73,7 @@ input::placeholder { color: #acbdc8; }
 .strictHome .wrapper { max-width: 1180px; }
 .strictHome [id] { scroll-margin-top: 60px; }
 .strictHero { background: var(--strict-panel); border-bottom: 1px solid var(--strict-border); padding: 36px 0 40px; }
-.strictHeroGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: center; }
+.strictHeroGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: start; }
 .strictHeroText h1.strictEyebrow { font-size: .78rem; line-height: 1.5; margin: 0 0 14px; }
 .strictHeroLead { font-size: 1.08rem; color: var(--strict-muted); margin: 0 0 18px; }
 .strictHeroSpeed { font-size: .95rem; color: #d6e5ed; border-left: 3px solid #55dd93; padding: 2px 0 2px 14px; margin: 0 0 22px; }
@@ -83,9 +83,9 @@ input::placeholder { color: #acbdc8; }
 .strictPlatforms { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
 .strictPlatforms a { padding: 3px 13px; border: 1px solid var(--strict-border); border-radius: 999px; background: var(--strict-raised); color: #d6e5ed; font-size: .85rem; }
 .strictPlatforms a:hover, .strictPlatforms a:focus { border-color: var(--strict-accent); color: var(--strict-accent); text-decoration: none; }
-.strictHero .strictActions { justify-content: flex-start; gap: 10px; }
-.strictHero .strictActions .button { padding: 10px 15px; }
-.strictHeroPlayground .strictEyebrow { margin-bottom: 8px; }
+.strictHero .strictActions { justify-content: flex-start; gap: 10px; margin-top: 16px; }
+.strictHero .strictActions .button { padding: 10px 12px; }
+.strictHeroPlayground .strictEyebrow { margin-bottom: 12px; }
 .strictHeroPlayground .strictPlaygroundContainer { margin-top: 0; }
 .strictHeroTeaser { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.9rem; color: var(--strict-accent); }
 .strictDemo { margin: 0 auto; max-width: 960px; }
@@ -135,6 +135,9 @@ input::placeholder { color: #acbdc8; }
 .strictAlgorithm p { color: var(--strict-muted); font-size: .92rem; }
 .strictLatest { background: #102b37; border-top: 1px solid var(--strict-border); padding: 40px 16px; text-align: center; }
 .strictLatest h2 { font-size: 2rem; }
+.strictLatest .strictEyebrow + h2 { margin-top: 0; }
+.strictLatest h2 a { color: inherit; }
+.strictLatest h2 a:hover, .strictLatest h2 a:focus { color: var(--strict-accent); }
 @media (min-width: 1024px) {
   .strictHero .sp-editor-pane { grid-template-columns: 40px minmax(0, 1fr) auto; }
   .strictHero .sp-gutter-values { max-width: 170px; padding: 12px 10px; }

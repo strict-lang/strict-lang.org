@@ -500,33 +500,21 @@ function Index({ config: siteConfig }) {
           <div className="strictHeroText">
             <h1 className="strictEyebrow">Simple to read code for humans and computers alike</h1>
             <p className="strictHeroSpeed">
-              <strong>Fastest native speed in the universe out of the box.</strong> For the amount of code you write, no language comes close: highly optimized low level code, splits loops over all cores or into GPU kernels and rewrites slow parts automatically: Games, Math, LLM, image/video generation can run faster than C, Rust, PyTorch, llama.cpp, game engines, etc.
+              <strong>Fastest native speed in the universe out of the box.</strong> Cost: fewer features, unproven, still volatile. For the amount of code you write, no language comes close: highly optimized low level code, splits loops over all cores or into GPU kernels and rewrites slow parts automatically: Games, Math, LLM, image/video generation can run faster than C, Rust, PyTorch, llama.cpp, game engines, etc.
             </p>
             <ul className="strictHeroBenchmarks">
               <li><a href="#llm">LLM</a>: 10% faster than llama.cpp</li>
-              <li><a href="#generation">Image generation</a>: Moss 3-5x faster</li>
-              <li><a href="#generation">Video generation</a>: 2-3x faster</li>
+              <li><a href="#generation">Moss image generation</a>: 3-5x faster (<a href={baseUrl + "moss/MossWeb.html"}>try it locally in your browser</a>)</li>
+              <li><a href="#generation">H3 video generation</a>: 2-3x faster</li>
               <li><a href="#leibniz">Leibniz benchmark</a>: 4x faster</li>
               <li><a href="#performance">Game Engine</a>: 2-10x faster</li>
-              <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: fastest fractal zoomer in the web, 60 fps while zooming (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it</a>)</li>
+              <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: 10x faster than anything else (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it locally in your browser</a>)</li>
             </ul>
             <p className="strictPlatforms">
               {platforms.map(([name, anchor]) => (
                 <a href={doc("Platforms") + "#" + anchor} key={anchor}>{name}</a>
               ))}
             </p>
-            <div className="strictActions">
-              <a className="button strictPrimary" href="#games" title="Play games in the browser">Play Games</a>
-              <a className="button strictPrimary" href={baseUrl + "moss/MossWeb.html"} title="Generate images with Moss on your own GPU, in the browser">Moss in the Browser</a>
-              <a className="button strictPrimary" href="#performance">Performance</a>
-              <a className="button" href="#llm" title="LLM inference benchmarks">LLM</a>
-              <a className="button" href="#generation" title="Image and video generation benchmarks">Image/Video</a>
-              <a className="button" href="#scrunch" title="SCrunch in VS Code">SCrunch Demo</a>
-              <a className="button" href={doc("Projects")}>Projects</a>
-              <a className="button" href={doc("GettingStarted")}>Get Started</a>
-              <a className="button" href={siteConfig.repoUrl}>GitHub</a>
-            </div>
-            <br /><br />
           </div>
           <div className="strictHeroPlayground" id="playground">
             <p className="strictEyebrow">Try Strict right now</p>
@@ -534,6 +522,14 @@ function Index({ config: siteConfig }) {
               <div style={{ padding: "20px", textAlign: "center", color: "var(--strict-muted)" }}>
                 Loading interactive Strict evaluator...
               </div>
+            </div>
+            <div className="strictActions">
+              <a className="button strictPrimary" href="#performance">Performance</a>
+              <a className="button" href="#llm" title="LLM inference benchmarks">LLM</a>
+              <a className="button" href="#scrunch" title="SCrunch in VS Code">VS Code</a>
+              <a className="button" href={doc("Projects")}>Projects</a>
+              <a className="button" href={doc("GettingStarted")}>Get Started</a>
+              <a className="button" href={siteConfig.repoUrl}>GitHub</a>
             </div>
           </div>
         </div>
@@ -614,22 +610,7 @@ function Index({ config: siteConfig }) {
         <div className="strictScrunchHeader">
           <h2>SCrunch in VS Code: See immediately what every change does.</h2>
           <p>
-            Tests run in the background with immediate subsecond feedback. Green and red marks highlight results as you type, and runtime values appear right beside each line.
-          </p>
-          <p>
-            All tests run in the Strict VM. It is not as fast as the generated native code (sometimes up to 100x slower), but fast enough to run all tests of huge projects and packages in milliseconds or seconds. Slow code is not allowed by default, slow tests have to be marked with <code>Slow(ReturnType)</code>. <a href={doc("Tests") + "#tests-must-be-fast"}>Tests must be fast →</a>
-          </p>
-          <p>
-            <strong>Mutation testing on every run.</strong> Once the tests pass, Strict changes each method in tiny ways (a comparison always true, <code>+</code> swapped with <code>-</code>, a call dropped, the result replaced by <code>0</code>) and runs the tests again. A change no test notices fails the run: either a case is untested or the code makes no difference and can go. Mutants swap one bytecode instruction right before execution, so a full run over the Strict repository executes several million mutation tests. Results are cached per type and VS Code only retests what your change affects, so feedback stays sub millisecond; <code>strict test &lt;package&gt; unit</code> skips mutants, <code>full</code> runs everything. <a href={doc("Tests") + "#mutation-testing"}>Mutation testing →</a>
-          </p>
-          <p>
-            <strong>Everything is tested, all the time.</strong> Every single .strict method has multiple tests, so every line runs many times, and mutation testing tries every possible change hundreds of times more. All of this runs far faster than other languages ever could, because the whole language is designed around this concept.
-          </p>
-          <p>
-            <strong>Safe code from LLMs and agents.</strong> It is extremely easy and safe to let LLMs and agents write .strict code, because everything they write has to follow the Strict rules, limits and guardrails: no duplicate code, everything must be tested, every method starts with its tests, no surviving mutants, no errors and no warnings. Each of these fails the build, so an LLM or a human has to rewrite the code before it is even allowed to build.
-          </p>
-          <p>
-            <strong>A language that keeps moving.</strong> The flip side: when a new feature, a design change or a new limit comes in, all code on top has to change as well. Strict does not stay the same, it is very flexible and currently changes all the time. You can pin a specific version for benchmarks or if you don't want to update.
+            Tests run in the background with subsecond feedback. Green and red marks show results as you type.
           </p>
         </div>
         <figure className="strictDemo">
@@ -637,7 +618,9 @@ function Index({ config: siteConfig }) {
             <source src={img("SCrunchDemo.mp4")} type="video/mp4" />
             <a href={img("SCrunchDemo.mp4")}>Watch the red-to-green test demo</a>
           </video>
-          <figcaption>Write the tests. See why they fail. Implement it and watch the values appear. Actual VS Code capture from Strict/Examples.</figcaption>
+          <figcaption>
+            Everything is always <a href={doc("Tests")}>tested</a> and <a href={doc("Tests") + "#mutation-testing"}>mutation tested</a>, only possible because it is so fast. See failures and values instantly. VS Code capture.
+          </figcaption>
         </figure>
       </section>
 
@@ -646,7 +629,6 @@ function Index({ config: siteConfig }) {
         <div className="wrapper">
           <div className="strictSectionHeading">
             <p className="strictEyebrow">Raw Performance</p>
-            <h2>Simple code, fast results</h2>
             <p style={{ color: "var(--strict-muted)", maxWidth: "800px" }}>
               Plain code without manual tuning. Strict optimizes it by itself and uses as many threads as make sense.
             </p>
@@ -806,11 +788,11 @@ function Index({ config: siteConfig }) {
       <section className="strictLatest" id="latest">
         <div className="wrapper">
           <p className="strictEyebrow">Latest Development</p>
-          <h2>Mutation Testing for Every Test: Over 6,400 Survivors Fixed in a Day</h2>
+          <h2><a href={baseUrl + "blog/2026/11/05/mutation-testing-for-every-test"}>Mutation Testing for Every Test: Over 6,400 Survivors Fixed in a Day</a></h2>
           <p>
             <code>strict test</code> now mutates every tested method after its tests pass and fails on any change the tests don't notice. Running it over all Strict packages uncovered thousands of untested corner cases and checks that made no difference; close to 160 commits since 1 am today fixed over 6,400 of them, removed dead code like an unused parser with 26 node types, and turned repeated patterns into new rules for magic numbers and loops. <a href={baseUrl + "blog/2026/11/05/mutation-testing-for-every-test"}>Read the story →</a>
           </p>
-          <h2>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</h2>
+          <h2><a href={doc("MachineLearning") + "#qwen3-8b-faster-than-llamacpp"}>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</a></h2>
           <p>
             Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 49.80 and 45.30 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
           </p>

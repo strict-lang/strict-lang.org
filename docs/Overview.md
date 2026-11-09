@@ -82,6 +82,14 @@ The base library has a few dozen types: [`Boolean`](https://github.com/strict-la
 
 Use established frameworks for the browser, HTTP, storage, graphics and platform services. Keep rules, algorithms and state transformations in Strict. Native C packages and generated C# bindings make that practical, from games to web applications. See [Using APIs](UsingApis.md) and [Built with Strict](Projects.md).
 
+## Safe code from LLMs and agents
+
+It is extremely easy and safe to let LLMs and agents write .strict code, because everything they write has to follow the Strict rules, limits and guardrails: no duplicate code, everything must be tested, every method starts with its tests, no surviving mutants, no errors and no warnings. Each of these fails the build, so an LLM or a human has to rewrite the code before it is even allowed to build.
+
+## A language that keeps moving
+
+The flip side: when a new feature, a design change or a new limit comes in, all code on top has to change as well. Strict does not stay the same, it is very flexible and currently changes all the time. You can pin a specific version for benchmarks or if you don't want to update.
+
 # Current developments
 
 * **Mutation testing on every test run:** each method is mutated and tested again after its tests pass, survivors fail the run. Over 6,400 surviving mutants across the Strict packages were fixed with better tests or by removing code that made no difference, see the [November 5 update](/blog/2026/11/05/mutation-testing-for-every-test).
