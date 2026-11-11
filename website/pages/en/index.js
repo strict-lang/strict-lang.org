@@ -114,11 +114,11 @@ const mossSpeed4090 = [
 ];
 
 const h3Speed = [
-  { label: "H3Video fastest2steps ★", value: 24.7, strict: true },
-  { label: "H3Video fastest4steps ★★★", value: 31.9, strict: true },
-  { label: "H3Video faster ★★★★", value: 33.0, strict: true },
-  { label: "H3Video fast ★★★★", value: 45.9, strict: true },
-  { label: "H3Video best ★★★★", value: 55.8, strict: true },
+  { label: "H3Video fastest2steps ★", value: 23.3, strict: true },
+  { label: "H3Video fastest4steps ★★★", value: 29.1, strict: true },
+  { label: "H3Video faster ★★★★", value: 30.9, strict: true },
+  { label: "H3Video fast ★★★★", value: 43.9, strict: true },
+  { label: "H3Video best ★★★★", value: 74.6, strict: true },
   { label: "ComfyUI TaoMate 3 steps ★", value: 62.4 },
   { label: "ComfyUI turbo 4 steps ★★", value: 71.5 },
   { label: "ComfyUI turbo 8 steps ★★★★", value: 148.9 },
@@ -129,6 +129,20 @@ const h3ComfySpeed = [
   { label: "H3Video best", value: 17.8, strict: true },
   { label: "ComfyUI + Strict H3 Sampler node", value: 25.4, strict: true },
   { label: "ComfyUI default workflow", value: 38.5 }
+];
+
+const h3ImageSpeed = [
+  { label: "H3Image 1024x1024", value: 4.9, strict: true },
+  { label: "H3Image 2048x2048", value: 7.0, strict: true },
+  { label: "H3Image 4096x4096", value: 21.0, strict: true },
+  { label: "ComfyUI 1024x1024", value: 23 },
+  { label: "ComfyUI 2048x2048", value: 30 },
+  { label: "ComfyUI 4096x4096", value: 35 }
+];
+
+const h3ImageEditSpeed = [
+  { label: "H3Image, same image and instruction", value: 9.0, strict: true },
+  { label: "H3Image, new image and instruction", value: 16.4, strict: true }
 ];
 
 const blurOneThread = [
@@ -505,7 +519,7 @@ function Index({ config: siteConfig }) {
             <ul className="strictHeroBenchmarks">
               <li><a href="#llm">LLM</a>: 10% faster than llama.cpp</li>
               <li><a href="#generation">Moss image generation</a>: 3-5x faster (<a href={baseUrl + "moss/MossWeb.html"}>try it locally in your browser</a>)</li>
-              <li><a href="#generation">H3 video generation</a>: 2-3x faster</li>
+              <li><a href="#generation">H3 video generation</a>: 2-3x faster, <a href="#generation">H3 image generation</a>: 4-5x faster</li>
               <li><a href="#leibniz">Leibniz benchmark</a>: 4x faster</li>
               <li><a href="#performance">Game Engine</a>: 2-10x faster</li>
               <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: 10x faster than anything else (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it locally in your browser</a>)</li>
@@ -745,7 +759,7 @@ function Index({ config: siteConfig }) {
               <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video from the prompt to the mp4 (text encoding, sampling, video and audio VAE, mp4; lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={h3Speed} unit="s" lower />
-                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 2.2x (fastest against turbo 4 steps) to 2.7x (best against turbo 8 steps) faster than ComfyUI. Strict side November 9. <code>faster</code> and the fewest-step presets skip work with Spectrum or fewer steps.</p>
+                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 2.5x (fastest4steps against turbo 4 steps) to 2.0x (best against turbo 8 steps) faster than ComfyUI. Since November 10 <code>best</code> runs every block of every step for the best quality (with the block skipping of the other presets it takes 56.9 s). <code>fast</code>, <code>faster</code> and the fewest-step presets skip work with routed attention, block skipping, Spectrum or fewer steps. Strict side November 12, ComfyUI October 28.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>ComfyUI Workflow, 5 s Clip (124 frames, Prompt Cached)</h4>
@@ -753,6 +767,20 @@ function Index({ config: siteConfig }) {
                 <p className="strictBenchNote">ComfyUI's default workflow (turbo LoRA, 8 steps), the same graph with the Strict H3 Sampler node (samples and decodes in a resident <code>H3Video.exe</code>) and <code>H3Video.exe</code> on its own. H3Video November 9, the others October 29.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("H3Video")}>MiniMax H3 Video Generation</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
+            </div>
+            <div className="strictBenchCard">
+              <h3>MiniMax H3 Image Generation (RTX 4090)</h3>
+              <p className="sub">Text to image with the 6 distilled steps of ComfyUI's H3 Image template, warm, a new prompt every run, seconds from the prompt to the saved image (text encoding, sampling, VAE decode, save; lower is better)</p>
+              <div className="strictBenchGroup">
+                <BarChart rows={h3ImageSpeed} unit="s" lower />
+                <p className="strictBenchNote"><code>H3Image.exe</code> keeps the 32B text encoder, H3 Image and its VAE loaded in a backend and is 4.7x (1024x1024) and 4.3x (2048x2048) faster than ComfyUI's H3 Image template on the same GPU and model files; at 4096x4096 the sampling dominates and it is 1.7x faster. Another seed of the same prompt takes 1.6 s at 1024x1024 and 4.2 s at 2048x2048, the first run of a backend about 35 s. The VAE decodes with 8 bit weights (56 dB against 32 bit, 2.5 s down to 0.6 s at 2048x2048). Strict side November 12, ComfyUI November 11.</p>
+              </div>
+              <div className="strictBenchGroup">
+                <h4>Image Editing, 2048x2048</h4>
+                <BarChart rows={h3ImageEditSpeed} unit="s" lower />
+                <p className="strictBenchNote">An edit encodes the image with the vision part of the text encoder and with the VAE; the backend keeps both and the encoded image, so editing the same image again with another seed or instruction skips that work. November 12.</p>
+              </div>
+              <p className="strictBenchNote">Source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a> (<code>H3Image.exe</code>, also in StrictGen)</p>
             </div>
           </div>
 
