@@ -144,11 +144,6 @@ const h3ImageSpeed = [
   { label: "ComfyUI 16 MP", value: 27.2 }
 ];
 
-const h3ImageEditSpeed = [
-  { label: "H3Image, same image and instruction", value: 9.0, strict: true },
-  { label: "H3Image, new image and instruction", value: 16.4, strict: true }
-];
-
 const blurOneThread = [
   { label: "Strict, 1 thread", value: 181.1, strict: true },
   { label: "C (clang 23 -O3)", value: 193.3 },
@@ -323,6 +318,12 @@ const leibnizSpeed = [
   { label: "Python (PyPy)", value: 1376.22 },
   { label: "Lua", value: 10032.03 },
   { label: "Python", value: 49899.23 }
+];
+
+const leibnizOfficial = [
+  { label: "Strict", value: 163, strict: true },
+  { label: "Swift", value: 293 },
+  { label: "C", value: 319 }
 ];
 
 const leibnizCode = [
@@ -522,11 +523,11 @@ function Index({ config: siteConfig }) {
             </p>
             <ul className="strictHeroBenchmarks">
               <li><a href="#llm">LLM</a>: 10% faster than llama.cpp</li>
-              <li><a href="#generation">Moss image generation</a>: 3-5x faster (<a href={baseUrl + "moss/MossWeb.html"}>try it locally in your browser</a>)</li>
-              <li><a href="#generation">H3 video generation</a>: 2-3x faster, <a href="#generation">H3 image generation</a>: 1.3-1.9x faster</li>
-              <li><a href="#leibniz">Leibniz benchmark</a>: 4x faster</li>
-              <li><a href="#performance">Game Engine</a>: 2-10x faster</li>
-              <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: 10x faster than anything else (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it locally in your browser</a>)</li>
+              <li><a href="#generation">Moss image generation</a>: 3-4x faster than ComfyUI (<a href={baseUrl + "moss/MossWeb.html"}>try it locally in your browser</a>)</li>
+              <li><a href="#generation">H3 video generation</a>: 2x faster, <a href="#generation">H3 image generation</a>: 2-4x faster</li>
+              <li><a href="#leibniz">Leibniz benchmark</a>: 2x faster than C on official AMD EPYC, 4x on i9-13900KF</li>
+              <li><a href="#performance">Game Engine</a>: some rendering benchmarks 2-10x faster than Unity</li>
+              <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: more than 10x faster than others (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it locally in your browser</a>)</li>
             </ul>
             <p className="strictPlatforms">
               {platforms.map(([name, anchor]) => (
@@ -702,6 +703,11 @@ function Index({ config: siteConfig }) {
               </div>
               <div>
                 <CodeTabs name="leibnizCode" tabs={leibnizCode} />
+                <div className="strictBenchGroup">
+                  <h4>Official runner (AMD EPYC, one thread)</h4>
+                  <BarChart rows={leibnizOfficial} unit="ms" lower />
+                  <p className="strictBenchNote">The benchmark's owner ran Strict next to Swift and C on the same runner, median of a <a href="https://github.com/niklas-heer/speed-comparison/actions/runs/42804250396">billion-round check</a>, all single-threaded. The published numbers follow with the next full run. An earlier published run had Rust (SIMD) at 141.31 ms and C (clang, relaxed math) at 146.07 ms: languages using the same tricks by hand stay close, Strict does it automatically. November 2026.</p>
+                </div>
               </div>
             </div>
             <p className="strictBenchNote">Three lines of plain Strict, no intrinsics, unrolling or threads: the compiler vectorizes the loop and splits it over all cores. A GPU version works too, but its startup cost doesn't pay off for a 10 ms job. Sources: <a href={siteConfig.repoUrl + "/blob/master/Examples/Leibniz.strict"}>Leibniz.strict</a>, <a href="https://github.com/niklas-heer/speed-comparison/tree/master/src">speed-comparison</a>.</p>
@@ -746,10 +752,10 @@ function Index({ config: siteConfig }) {
           <div className="strictPerfGrid" id="generation" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080 and RTX 4090)</h3>
-              <p className="sub">A batch of 720x1280 images of the default prompt (50 on the RTX 3080, 10 on the RTX 4090), int8 Convrot Moss, warm, average seconds per image from the prompt to the saved image (text encoding, sampling, VAE, save; lower is better), ★ = quality rated by eye</p>
+              <p className="sub">720x1280 images of the default prompt in batches, warm, seconds per image from the prompt to the saved image (lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI, only the model files; its presets use the DMD turbo LoRA with 8 steps or fewer, <code>fast</code>, <code>faster</code> and <code>fastest</code> let Spectrum forecast skipped steps, which changes the image. The Strict Moss Sampler node replaces the KSampler of ComfyUI's graph with a resident <code>MossImage.exe</code>, ComfyUI still encodes the prompt and decodes. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it (two model runs per step). With an unchanged prompt ComfyUI and the node both take 3.2–3.3 s per image. The node's gain grows with the size: single images take 6.5 s with ComfyUI against 4.5–4.8 s with the node at 720p, 13.7 s against about 7 s at 1088p; at 480p and below ComfyUI's own overhead dominates. MossWeb is the same Strict code in Chrome on WebGPU with the int4 4-step model (one star less for int4), seconds per image without loading the models or encoding the prompt; 480p is the better choice on the web. <a href={baseUrl + "moss/MossWeb.html"}>Try MossWeb</a>: Chrome, Edge and Firefox with WebGPU, 4 GB of GPU memory or more; on a Galaxy S25 Ultra a 160p image takes about 13 s, 240p about 22 s. RTX 3080, MossImage November 8, ComfyUI October 29, MossWeb November 3, its fastest2steps November 9.</p>
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4, 4 steps). Strict November 8–9, ComfyUI October 29.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
@@ -757,34 +763,31 @@ function Index({ config: siteConfig }) {
                 <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. Since November 12 MossImage decodes with the Flux 2 VAE (0.12 s per 720p image) except fastest and fastest2steps, which keep the tiny taef2 decoder (0.03 s); the taef2 rows show faster and fast with <code>--vae taef2.safetensors</code>. ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 3.5 s there. November 12, MossWeb and ComfyUI November 9.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
-            </div>            
-            <div className="strictBenchCard">
-              <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
-              <p className="sub">Text to video with sound, 12 s clip (480x832, 294 frames), warm, seconds per video from the prompt to the mp4 (text encoding, sampling, video and audio VAE, mp4; lower is better), ★ = quality rated by eye</p>
-              <div className="strictBenchGroup">
-                <BarChart rows={h3Speed} unit="s" lower />
-                <p className="strictBenchNote">With the same model and steps <code>H3Video.exe</code> is 2.5x (fastest4steps against turbo 4 steps) to 2.0x (best against turbo 8 steps) faster than ComfyUI. Since November 10 <code>best</code> runs every block of every step for the best quality (with the block skipping of the other presets it takes 56.9 s). <code>fast</code>, <code>faster</code> and the fewest-step presets skip work with routed attention, block skipping, Spectrum or fewer steps. Strict side November 12, ComfyUI October 28.</p>
-              </div>
-              <div className="strictBenchGroup">
-                <h4>ComfyUI Workflow, 5 s Clip (124 frames, Prompt Cached)</h4>
-                <BarChart rows={h3ComfySpeed} unit="s" lower />
-                <p className="strictBenchNote">ComfyUI's default workflow (turbo LoRA, 8 steps), the same graph with the Strict H3 Sampler node (samples and decodes in a resident <code>H3Video.exe</code>) and <code>H3Video.exe</code> on its own. H3Video November 9, the others October 29.</p>
-              </div>
-              <p className="strictBenchNote">More: <a href={doc("H3Video")}>MiniMax H3 Video Generation</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>
-            <div className="strictBenchCard">
-              <h3>MiniMax H3 Image Generation (RTX 4090)</h3>
-              <p className="sub">Text to image with the 6 distilled steps of ComfyUI's H3 Image template, warm, a new prompt every run, seconds from the prompt to the saved image (text encoding, sampling, VAE decode, save; lower is better)</p>
-              <div className="strictBenchGroup">
-                <BarChart rows={h3ImageSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>H3Image.exe</code> keeps the 32B text encoder, H3 Image and its VAE loaded in a backend; ComfyUI runs the core of its H3 Image template (no prompt upsampler) in a running server, both with the same model files and the nvfp4 text encoder, 6 steps. H3Image is 1.5x (1 MP), 1.9x (4 and 8 MP) and 1.3x (16 MP) faster; at 16 MP the sampling (13.7 s, attention and int8 matmuls near the GPU's peak) dominates. Another seed of the same prompt takes 1.6 s at 1 MP, the first run of a backend about 35 s. Decoders (<code>--vae</code>, decode and save at 1 / 4 / 8 / 16 MP): the H3 Image VAE with 8 bit weights 0.19 / 0.6 / 1.25 / 2.65 s, P-H3's decoder (cleaner faces) 0.33 / 1.06 / 2.2 / 4.7 s, madebyollin's taeh3 draft 0.03 / 0.14 / 0.26 / 0.53 s. November 12.</p>
+            <div className="strictBenchStack">
+              <div className="strictBenchCard">
+                <h3>MiniMax H3 Video + Audio Generation (RTX 4090)</h3>
+                <p className="sub">Text to video with sound, 12 s clip (480x832), warm, seconds from the prompt to the mp4 (lower is better), ★ = quality rated by eye</p>
+                <div className="strictBenchGroup">
+                  <BarChart rows={h3Speed} unit="s" lower />
+                  <p className="strictBenchNote">With the same model and steps 2.0x (<code>best</code> against turbo 8 steps) to 2.5x (fastest4steps against turbo 4 steps) faster than ComfyUI. Strict November 12, ComfyUI October 28.</p>
+                </div>
+                <div className="strictBenchGroup">
+                  <h4>ComfyUI Workflow, 5 s Clip (Prompt Cached)</h4>
+                  <BarChart rows={h3ComfySpeed} unit="s" lower />
+                  <p className="strictBenchNote">The Strict H3 Sampler node makes ComfyUI's default workflow 1.5x faster, ComfyUI's own overhead stays; <code>H3Video.exe</code> on its own is 2.2x faster. October 29 and November 9.</p>
+                </div>
+                <p className="strictBenchNote">More: <a href={doc("H3Video")}>MiniMax H3 Video Generation</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
               </div>
-              <div className="strictBenchGroup">
-                <h4>Image Editing, 2048x2048</h4>
-                <BarChart rows={h3ImageEditSpeed} unit="s" lower />
-                <p className="strictBenchNote">An edit encodes the image with the vision part of the text encoder and with the VAE; the backend keeps both and the encoded image, so editing the same image again with another seed or instruction skips that work. November 12.</p>
+              <div className="strictBenchCard">
+                <h3>MiniMax H3 Image Generation (RTX 4090)</h3>
+                <p className="sub">Text to image, the 6 distilled steps of ComfyUI's H3 Image template, warm, a new prompt every run, seconds to the saved image (lower is better)</p>
+                <div className="strictBenchGroup">
+                  <BarChart rows={h3ImageSpeed} unit="s" lower />
+                  <p className="strictBenchNote">4.7x faster at 1024x1024, 4.3x at 2048x2048 and 1.7x at 4096x4096, where the sampling dominates. Strict November 12, ComfyUI November 11.</p>
+                </div>
+                <p className="strictBenchNote">More: <a href={doc("H3Video") + "#h3-image"}>H3 Image and editing</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
               </div>
-              <p className="strictBenchNote">Source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a> (<code>H3Image.exe</code>, also in StrictGen)</p>
             </div>
           </div>
 

@@ -54,6 +54,20 @@ Per video on the RTX 4090 (480x832, warm), sampling and the finished video:
 
 The first video of a run also loads the 21 GB model (14–20 s) and the VAEs, a new prompt adds the text encoder (about 29 s to load, 7 s per prompt). That is why many videos per run pay off. All charts are in the [Performance section](/#generation), the method in [Benchmarks](Benchmarks.md).
 
+# H3 Image
+
+`H3Image.exe` (also in StrictGen) generates and edits images with MiniMax H3 Image. It keeps the 32B text encoder, H3 Image and its VAE loaded in a backend. Text to image with the 6 distilled steps of ComfyUI's H3 Image template on the RTX 4090, warm, a new prompt every run, seconds from the prompt to the saved image (text encoding, sampling, VAE decode, save) on the same GPU and model files:
+
+| Size | `H3Image` | ComfyUI's H3 Image template | Faster |
+|---|---:|---:|---:|
+| 1024x1024 | 4.9 s | 23 s | 4.7x |
+| 2048x2048 | 7.0 s | 30 s | 4.3x |
+| 4096x4096 | 21.0 s | 35 s | 1.7x |
+
+At 4096x4096 the sampling dominates. Another seed of the same prompt takes 1.6 s at 1024x1024 and 4.2 s at 2048x2048, the first run of a backend about 35 s. The VAE decodes with 8 bit weights (56 dB against 32 bit, 2.5 s down to 0.6 s at 2048x2048). Strict side November 12, ComfyUI November 11.
+
+Editing a 2048x2048 image takes 9.0 s with the same image and instruction and 16.4 s with new ones. An edit encodes the image with the vision part of the text encoder and with the VAE; the backend keeps both and the encoded image, so editing the same image again with another seed or instruction skips that work.
+
 # Supported GPUs
 
 `H3Video` runs on Windows and Linux with an NVIDIA GPU; the release ships compiled GPU code for the RTX 20, 30, 40 and 50 series, other NVIDIA GPUs compile the shipped PTX once. The numbers above are measured on an RTX 4090 with 24 GB: the H3 model alone is 21 GB, so it needs a big card.
