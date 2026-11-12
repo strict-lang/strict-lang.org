@@ -86,14 +86,17 @@ const gpt2Speed = [
 ];
 
 const mossSpeed = [
-  { label: "MossImage fastest2steps ★", value: 1.12, strict: true },
-  { label: "MossImage fastest ★★", value: 1.33, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.91, strict: true },
+  { label: "MossImage fastest ★★", value: 1.14, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 1.57, strict: true },
   { label: "MossImage faster ★★★", value: 1.75, strict: true },
-  { label: "MossImage fast ★★★★", value: 1.91, strict: true },
-  { label: "MossImage best ★★★★★", value: 2.91, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 1.98, strict: true },
+  { label: "MossImage fast ★★★★", value: 2.22, strict: true },
+  { label: "MossImage best ★★★★★", value: 3.23, strict: true },
   { label: "MossWeb fastest2steps 480p ★", value: 3.3, strict: true },
   { label: "MossWeb fastest 480p ★", value: 4.4, strict: true },
   { label: "ComfyUI + Strict node ★★★★★", value: 5.9, strict: true },
+  { label: "MossWeb fastest 480p, Flux 2 VAE ★", value: 6.0, strict: true },
   { label: "MossWeb fast 480p ★★★", value: 7.4, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 7.5 },
   { label: "MossWeb fastest 720p ★", value: 13.7, strict: true },
@@ -755,7 +758,7 @@ function Index({ config: siteConfig }) {
               <p className="sub">720x1280 images of the default prompt in batches, warm, seconds per image from the prompt to the saved image (lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4, 4 steps). Strict November 8–9, ComfyUI October 29.</p>
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4, 4 steps). Since November 12 MossImage decodes with the Flux 2 VAE (decoding and saving a 720p image takes 0.23 s on the 3080) except fastest and fastest2steps, which keep the tiny taef2 decoder (0.04 s); the taef2 rows show faster and fast with <code>--vae taef2.safetensors</code>, for best it saves 9 %. MossImage November 12, MossWeb November 8–9 (its Flux 2 VAE row November 12, taef2 is its default), ComfyUI October 29.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
