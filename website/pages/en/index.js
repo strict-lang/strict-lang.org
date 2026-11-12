@@ -104,10 +104,12 @@ const mossSpeed = [
 
 const mossSpeed4090 = [
   { label: "MossImage fastest2steps ★", value: 0.39, strict: true },
-  { label: "MossImage fastest ★★", value: 0.51, strict: true },
-  { label: "MossImage faster ★★★", value: 0.65, strict: true },
-  { label: "MossImage fast ★★★★", value: 0.75, strict: true },
-  { label: "MossImage best ★★★★★", value: 1.11, strict: true },
+  { label: "MossImage fastest ★★", value: 0.46, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 0.65, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 0.72, strict: true },
+  { label: "MossImage faster ★★★", value: 0.82, strict: true },
+  { label: "MossImage fast ★★★★", value: 0.84, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.19, strict: true },
   { label: "MossWeb fastest2steps 480p ★", value: 1.7, strict: true },
   { label: "MossWeb fastest 480p ★", value: 2.7, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 3.2 }
@@ -132,12 +134,14 @@ const h3ComfySpeed = [
 ];
 
 const h3ImageSpeed = [
-  { label: "H3Image 1024x1024", value: 4.9, strict: true },
-  { label: "H3Image 2048x2048", value: 7.0, strict: true },
-  { label: "H3Image 4096x4096", value: 21.0, strict: true },
-  { label: "ComfyUI 1024x1024", value: 23 },
-  { label: "ComfyUI 2048x2048", value: 30 },
-  { label: "ComfyUI 4096x4096", value: 35 }
+  { label: "H3Image 1 MP (1024x1024)", value: 4.6, strict: true },
+  { label: "ComfyUI 1 MP", value: 6.9 },
+  { label: "H3Image 4 MP (2048x2048)", value: 6.8, strict: true },
+  { label: "H3Image 8 MP (2880x2880)", value: 10.5, strict: true },
+  { label: "ComfyUI 4 MP", value: 13.1 },
+  { label: "ComfyUI 8 MP", value: 20.1 },
+  { label: "H3Image 16 MP (4096x4096)", value: 20.4, strict: true },
+  { label: "ComfyUI 16 MP", value: 27.2 }
 ];
 
 const h3ImageEditSpeed = [
@@ -519,7 +523,7 @@ function Index({ config: siteConfig }) {
             <ul className="strictHeroBenchmarks">
               <li><a href="#llm">LLM</a>: 10% faster than llama.cpp</li>
               <li><a href="#generation">Moss image generation</a>: 3-5x faster (<a href={baseUrl + "moss/MossWeb.html"}>try it locally in your browser</a>)</li>
-              <li><a href="#generation">H3 video generation</a>: 2-3x faster, <a href="#generation">H3 image generation</a>: 4-5x faster</li>
+              <li><a href="#generation">H3 video generation</a>: 2-3x faster, <a href="#generation">H3 image generation</a>: 1.3-1.9x faster</li>
               <li><a href="#leibniz">Leibniz benchmark</a>: 4x faster</li>
               <li><a href="#performance">Game Engine</a>: 2-10x faster</li>
               <li><a href={doc("Benchmarks") + "#fractalzoomer"}>FractalZoomer</a>: 10x faster than anything else (<a href={baseUrl + "games/FractalZoomer/FractalZoomer.html"}>try it locally in your browser</a>)</li>
@@ -750,7 +754,7 @@ function Index({ config: siteConfig }) {
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
                 <BarChart rows={mossSpeed4090} unit="s" lower />
-                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention: <code>best</code> samples an image in 1.0 s (8 steps of 122 ms), ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 3.5 s there. November 9.</p>
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. Since November 12 MossImage decodes with the Flux 2 VAE (0.12 s per 720p image) except fastest and fastest2steps, which keep the tiny taef2 decoder (0.03 s); the taef2 rows show faster and fast with <code>--vae taef2.safetensors</code>. ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 3.5 s there. November 12, MossWeb and ComfyUI November 9.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>            
@@ -773,7 +777,7 @@ function Index({ config: siteConfig }) {
               <p className="sub">Text to image with the 6 distilled steps of ComfyUI's H3 Image template, warm, a new prompt every run, seconds from the prompt to the saved image (text encoding, sampling, VAE decode, save; lower is better)</p>
               <div className="strictBenchGroup">
                 <BarChart rows={h3ImageSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>H3Image.exe</code> keeps the 32B text encoder, H3 Image and its VAE loaded in a backend and is 4.7x (1024x1024) and 4.3x (2048x2048) faster than ComfyUI's H3 Image template on the same GPU and model files; at 4096x4096 the sampling dominates and it is 1.7x faster. Another seed of the same prompt takes 1.6 s at 1024x1024 and 4.2 s at 2048x2048, the first run of a backend about 35 s. The VAE decodes with 8 bit weights (56 dB against 32 bit, 2.5 s down to 0.6 s at 2048x2048). Strict side November 12, ComfyUI November 11.</p>
+                <p className="strictBenchNote"><code>H3Image.exe</code> keeps the 32B text encoder, H3 Image and its VAE loaded in a backend; ComfyUI runs the core of its H3 Image template (no prompt upsampler) in a running server, both with the same model files and the nvfp4 text encoder, 6 steps. H3Image is 1.5x (1 MP), 1.9x (4 and 8 MP) and 1.3x (16 MP) faster; at 16 MP the sampling (13.7 s, attention and int8 matmuls near the GPU's peak) dominates. Another seed of the same prompt takes 1.6 s at 1 MP, the first run of a backend about 35 s. Decoders (<code>--vae</code>, decode and save at 1 / 4 / 8 / 16 MP): the H3 Image VAE with 8 bit weights 0.19 / 0.6 / 1.25 / 2.65 s, P-H3's decoder (cleaner faces) 0.33 / 1.06 / 2.2 / 4.7 s, madebyollin's taeh3 draft 0.03 / 0.14 / 0.26 / 0.53 s. November 12.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>Image Editing, 2048x2048</h4>
