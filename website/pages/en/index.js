@@ -406,7 +406,7 @@ const qwen8Speed = [
   { label: "llama.cpp, 8 sequences", value: 727 },
   { label: "Strict, 4 sequences", value: 530, strict: true },
   { label: "llama.cpp, 4 sequences", value: 439 },
-  { label: "Strict, 1 sequence", value: 151, strict: true },
+  { label: "Strict, 1 sequence", value: 181, strict: true },
   { label: "llama.cpp, 1 sequence", value: 138 }
 ];
 
@@ -418,10 +418,15 @@ const qwen30Speed = [
   { label: "Grok 4.7 (cloud)", value: 92, muted: true }
 ];
 
+const qwen35Speed = [
+  { label: "Strict (MTP drafts)", value: 182, strict: true },
+  { label: "Strict", value: 152, strict: true }
+];
+
 const qwen38Speed = [
-  { label: "Strict (MTP drafts)", value: 76.4, strict: true },
+  { label: "Strict (MTP drafts)", value: 84, strict: true },
   { label: "llama.cpp / Ollama (MTP)", value: 74.7, muted: true },
-  { label: "Strict (Qwen3.8 27B)", value: 49.8, strict: true },
+  { label: "Strict (Qwen3.8 27B)", value: 55.4, strict: true },
   { label: "Strict (Brilliance 50X)", value: 45.3, strict: true },
   { label: "llama.cpp (Brilliance 50X)", value: 43.5 },
   { label: "llama.cpp (Qwen3.8 27B)", value: 43.0 }
@@ -725,6 +730,11 @@ function Index({ config: siteConfig }) {
                 <BarChart rows={qwen8Speed} unit="tok/s" />
               </div>
               <div className="strictBenchGroup">
+                <h4>Qwen3.5 9B with MTP</h4>
+                <BarChart rows={qwen35Speed} unit="tok/s" />
+                <p className="strictBenchNote">unsloth Qwen3.5-9B-MTP: its multi token prediction head drafts 3 tokens, one verify step accepts 2.67 on average, same text as without.</p>
+              </div>
+              <div className="strictBenchGroup">
                 <h4>Qwen3-Coder-30B-A3B (MoE)</h4>
                 <BarChart rows={qwen30Speed} unit="tok/s" />
                 <p className="strictBenchNote">llama.cpp b11658, same GPU. Hosted models for scale (<a href="https://artificialanalysis.ai/">Oct 2026</a>). <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
@@ -737,7 +747,7 @@ function Index({ config: siteConfig }) {
                 <div className="strictBenchGroup">
                   <h4>Qwen3.8 27B &amp; Brilliance 50X</h4>
                   <BarChart rows={qwen38Speed} unit="tok/s" />
-                  <p className="strictBenchNote">Qwen3.8 Brilliance 50X uses extensive thinking to give it a shot against much larger models, runs out of the box. MTP drafting reaches 76.40 tok/s (Ollama 74.70).</p>
+                  <p className="strictBenchNote">Qwen3.8 Brilliance 50X uses extensive thinking to give it a shot against much larger models, runs out of the box. MTP drafting reaches 84.00 tok/s (Ollama 74.70).</p>
                 </div>
                 <p className="strictBenchNote">Source: <a href={doc("Benchmarks") + "#qwen3-and-qwen38"}>Qwen3Benchmark.strict</a></p>
               </div>
@@ -832,7 +842,7 @@ function Index({ config: siteConfig }) {
           </p>
           <h2><a href={doc("MachineLearning") + "#qwen3-8b-faster-than-llamacpp"}>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</a></h2>
           <p>
-            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 49.80 and 45.30 tokens/second on an RTX 4090 — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 55.40 and 45.30 tokens/second on an RTX 4090 (84.00 with MTP drafts) — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
           </p>
           <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
         </div>
