@@ -420,7 +420,9 @@ const qwen30Speed = [
 
 const qwen35Speed = [
   { label: "Strict (MTP drafts)", value: 182, strict: true },
-  { label: "Strict", value: 152, strict: true }
+  { label: "llama.cpp (MTP)", value: 162, muted: true },
+  { label: "Strict", value: 152, strict: true },
+  { label: "llama.cpp", value: 141, muted: true }
 ];
 
 const qwen38Speed = [

@@ -39,7 +39,7 @@ This is how Strict fits into website and internal-application work: use mature f
 
 The [NeuralNetworks and MachineLearning packages](MachineLearning.md) cover training, classifiers, recurrent networks, GRUs, evolution and transformer inference. The collection keeps growing as larger workloads guide compiler and runtime optimizations.
 
-Qwen3-8B Q4_K_M now decodes at 150–151 tokens/second on an RTX 4090, with aggregate throughput of 953 tokens/second across 8 sequences and 2,357 across 32. Qwen3-Coder-30B-A3B reaches 210 decode tokens/second, and Qwen3.8 27B and Brilliance 50X run at 49.8 and 45.3 tokens/second. The transformer logic is Strict, supported by quantized weights, GPU kernels and graph replay. Prompt processing, flash attention, an optional 8-bit KV cache and low-overhead memory reuse are fully implemented. See [Machine Learning](MachineLearning.md) for the measurement conditions and comparisons.
+Qwen3-8B Q4_K_M now decodes at 181 tokens/second on an RTX 4090, with aggregate throughput of 953 tokens/second across 8 sequences and 2,357 across 32. Qwen3-Coder-30B-A3B reaches 210 decode tokens/second, and Qwen3.8 27B and Brilliance 50X run at 55.4 and 45.3 tokens/second, with MTP drafts the 27B reaches 84 and Qwen3.5 9B 182. The transformer logic is Strict, supported by quantized weights, GPU kernels and graph replay. Prompt processing, flash attention, an optional 8-bit KV cache and low-overhead memory reuse are fully implemented. See [Machine Learning](MachineLearning.md) for the measurement conditions and comparisons.
 
 # Strict itself
 

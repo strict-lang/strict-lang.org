@@ -44,17 +44,19 @@ These examples download model files on first use: GPT-2 124M uses a roughly 548 
 
 # Qwen3-8B: faster than llama.cpp
 
-Qwen3-8B Q4_K_M reaches **150–151 generated tokens/second** (6.6–6.7 ms per token) on an RTX 4090 in the development results reviewed October 19. The recorded llama.cpp b11658 CUDA comparison takes 7.25 ms (138 tokens/second). The transformer logic is written in Strict. The measured baseline is llama.cpp, not a separate Ollama run.
+Qwen3-8B Q4_K_M reaches **181 generated tokens/second** (5.5 ms per token) on an RTX 4090 in the development results measured November 13. The recorded llama.cpp b11658 CUDA comparison takes 7.25 ms (138 tokens/second). The transformer logic is written in Strict. The measured baseline is llama.cpp, not a separate Ollama run.
 
 | Model and weights | Strict GPU decode | llama.cpp CUDA comparison |
 |-------------------|-------------------|---------------------------|
-| Qwen3-8B Q4_K_M | 6.6–6.7 ms/token (150–151 tokens/s) | 7.25 ms/token (138 tokens/s) |
+| Qwen3-8B Q4_K_M | 5.5 ms/token (181 tokens/s) | 7.25 ms/token (138 tokens/s) |
 | Qwen3 0.6B Q4_K_M | 2.2–3.1 ms/token | 2.2 ms/token |
 | Qwen3-Coder-30B-A3B Q4_K_M (mixture of experts) | 4.76 ms/token (210 tokens/s) | 5.26 ms/token (190 tokens/s) |
-| Qwen3.8 27B Q4_K_M (Gated DeltaNet hybrid) | 20.1 ms/token (49.8 tokens/s) | 23.2 ms/token (43.0 tokens/s) |
+| Qwen3.5 9B Q4_K_M with MTP drafts | 5.5 ms/token (182 tokens/s) | 6.0–6.3 ms/token (158–167 tokens/s, b11827) |
+| Qwen3.5 9B Q4_K_M | 6.6 ms/token (152 tokens/s) | 7.08 ms/token (141 tokens/s, b11827) |
+| Qwen3.8 27B Q4_K_M (Gated DeltaNet hybrid) | 18.1 ms/token (55.4 tokens/s) | 23.2 ms/token (43.0 tokens/s) |
 | Qwen3.8 Brilliance 50X Q4_K_M (reasoning) | 22.1 ms/token (45.3 tokens/s) | 23.0 ms/token (43.5 tokens/s) |
 
-The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. Qwen3.8 27B with MTP drafting decodes at 13.1 ms/token (76.4 tokens/s, Ollama 13.4 ms). MossImage diffusion at 720x1280 takes 320–345 ms per step on an RTX 3080. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 210 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
+The recorded setup uses an RTX 4090 with 24 GB VRAM, a Threadripper 3990X and 128 GB RAM. The comparison uses the same GGUF weights and greedy sampling. Qwen3.8 27B with MTP drafting decodes at 11.9 ms/token (84 tokens/s, Ollama 13.4 ms). Qwen3.5 9B MTP drafts 3 tokens, one verify step gives 2.67 tokens on average in Strict and 2.89 in llama.cpp (different prompts). MossImage diffusion at 720x1280 takes 320–345 ms per step on an RTX 3080. These are steady-state decode measurements; prompt processing, context length, batching and startup are separate costs. In particular, the 30B example's initial upload of 18.6 GB of experts makes a short end-to-end run much slower than its 210 tokens/s decode rate. The [NeuralNetworks README](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/README.md) records the measurements; the benchmark reports warmup, prefill, median, mean and p95 decode latency separately.
 
 ## Prompt processing, batches and longer context
 
