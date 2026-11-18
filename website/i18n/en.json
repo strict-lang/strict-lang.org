@@ -66,6 +66,9 @@
       "Microservices": {
         "title": "Microservices"
       },
+      "Modular": {
+        "title": "Strict and Modular (Mojo, MAX)"
+      },
       "MossImage": {
         "title": "Moss Image Generation"
       },

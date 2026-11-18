@@ -16,7 +16,7 @@ Line, method, member and nesting limits are checked by [`Validators/Limits.stric
 | Characters per line | 120 | Short lines are easier to read |
 | Lines per method | 13 | Including the header and the tests. Good methods have 1-5 lines of code |
 | Parameters per method | 4 | Keep them to a minimum, 0-2 is best |
-| Methods per type | 15 | Split bigger types into smaller ones |
+| Methods per type | 18 | Split bigger types into smaller ones |
 | Members per type | 15 | Types that only contain constants (enums) may have 40 |
 | Nesting depth | 5 | Don't indent too much |
 | Name length | 2-50 characters | No single letters, no novels |

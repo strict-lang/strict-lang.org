@@ -441,9 +441,9 @@ const logoFrames = [
 ];
 
 const forestFrames = [
-  ["1,000", 0.2, 0.4, 0.28],
-  ["10,000", 0.73, 2.85, 2.06],
-  ["100,000", 6.68, 31.6, 20.3]
+  ["1,000", 0.16, 0.33, 0.23],
+  ["10,000", 0.6, 2.34, 1.69],
+  ["100,000", 7.2, 34.1, 21.9]
 ];
 
 const particleTicks = [
@@ -680,10 +680,10 @@ function Index({ config: siteConfig }) {
             </div>
             <div className="strictBenchCard">
               <h3>3D Instancing Stress Test: Forest</h3>
-              <p className="sub">Fir trees of 192 triangles on a landscape with hills, every tree circles around its spot and turns every frame</p>
-              <img className="strictBenchImage" src={img("screenshots/Forest.webp")} alt="Low poly fir trees seen from just above the forest, rendered by the Strict Forest stress test" loading="lazy" width="960" height="540" />
+              <p className="sub">Fir trees of 156 triangles with shadows on hills that fade into the haze, every tree sways in the wind every frame</p>
+              <img className="strictBenchImage" src={img("screenshots/Forest.webp")} alt="A fir forest on rolling hills fading into the haze, rendered by the Strict Forest stress test" loading="lazy" width="960" height="540" />
               <ResultTable columns={["Trees", "Strict", "Unity, GameObjects", "Unity, instanced"]} rows={forestFrames} />
-              <p className="strictBenchNote">Strict: one instanced draw call, 19.2 million triangles at 100,000 trees. Unity: GameObjects or RenderMeshInstanced. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest">Forest</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare">Unity scene</a>.</p>
+              <p className="strictBenchNote">Strict: one instanced draw call, 15.6 million triangles at 100,000 trees. Unity: GameObjects or RenderMeshInstanced. Sources: <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest">Forest</a>, <a href="https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare">Unity scene</a>.</p>
             </div>
           </div>
 
@@ -720,7 +720,7 @@ function Index({ config: siteConfig }) {
                 </div>
               </div>
             </div>
-            <p className="strictBenchNote">Three lines of plain Strict, no intrinsics, unrolling or threads: the compiler vectorizes the loop and splits it over all cores. A GPU version works too, but its startup cost doesn't pay off for a 10 ms job. Sources: <a href={siteConfig.repoUrl + "/blob/master/Examples/Leibniz.strict"}>Leibniz.strict</a>, <a href="https://github.com/niklas-heer/speed-comparison/tree/master/src">speed-comparison</a>.</p>
+            <p className="strictBenchNote">Three lines of plain Strict, no intrinsics, unrolling or threads: the compiler vectorizes the loop and splits it over all cores. A GPU version works too, but its startup cost doesn't pay off for a 10 ms job. Sources: <a href={siteConfig.repoUrl + "/blob/master/Examples/Leibniz.strict"}>Leibniz.strict</a>, <a href="https://github.com/niklas-heer/speed-comparison/tree/master/src">speed-comparison</a>. <a href="docs/Modular">Detailed comparision of Mojo/MAX from Modular in the docs</a>.</p>
           </div>
 
           <div className="strictPerfGrid" id="llm">
@@ -854,4 +854,3 @@ function Index({ config: siteConfig }) {
 }
 
 module.exports = Index;
-

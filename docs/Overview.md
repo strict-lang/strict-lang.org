@@ -3,7 +3,7 @@ id: Overview
 title: Overview
 ---
 
-**Strict** is a simple programming language that humans can read and understand, and that computers can also understand, modify and write.
+**Strict** is a simple programming language that humans can read and understand, and that computers can also understand, modify and write. Strict is incredibly fast and beats most languages in any benchmark you throw at it. The Strict VM runs many millions of lines and thousands of tests each second, required for higher level projects and all parts need to be very fast to do these complex tasks: Parsing, Unit Tests, Mutations, Caching, GPU, Networking and Interop. Most importantly: release builds use native code, parallization and GPU kernels.
 
 # What it feels like to use
 

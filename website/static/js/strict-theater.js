@@ -159,7 +159,7 @@
       title: 'Forest',
       year: 2026,
       genre: 'Sample',
-      desc: '3D instancing stress test: 10,000 low poly fir trees on rolling hills circle around their spot and turn every frame, all drawn with one instanced draw call.',
+      desc: '3D instancing stress test: 10,000 low poly fir trees on rolling hills sway in the wind every frame, all drawn with one instanced draw call.',
       webPath: '/games/Forest/Forest.html',
       isPlayableWeb: true,
       isFreeToPlay: true,

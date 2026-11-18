@@ -3,7 +3,7 @@ id: MachineLearning
 title: Machine Learning
 ---
 
-Strict now has working [NeuralNetworks](https://github.com/strict-lang/Strict/tree/master/NeuralNetworks) and [MachineLearning](https://github.com/strict-lang/Strict/tree/master/MachineLearning) packages. They exercise the same language, inline tests and native compiler as other programs. The neural-network layers, training algorithms, transformer blocks and tokenizers are written in Strict; small native helpers read tensor data.
+Strict has working [NeuralNetworks](https://github.com/strict-lang/Strict/tree/master/NeuralNetworks) and [MachineLearning](https://github.com/strict-lang/Strict/tree/master/MachineLearning) packages. They exercise the same language, inline tests and native compiler as other programs. The neural-network layers, training algorithms, transformer blocks and tokenizers are written in Strict; small native helpers read tensor data. Several higher level projects use these base packages (e.g. [StrictComfy](https://github.com/strict-lang/StrictComfy)) and it was one of the main motivations to complete the language to get this layer done well for future work.
 
 # Start small
 
