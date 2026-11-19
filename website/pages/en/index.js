@@ -86,20 +86,20 @@ const gpt2Speed = [
 ];
 
 const mossSpeed = [
-  { label: "MossImage fastest2steps ★", value: 0.60, strict: true },
-  { label: "MossImage fastest ★★", value: 0.90, strict: true },
-  { label: "MossImage faster, taef2 ★★★", value: 1.13, strict: true },
-  { label: "MossImage faster ★★★", value: 1.26, strict: true },
-  { label: "MossImage fast, taef2 ★★★★", value: 1.43, strict: true },
-  { label: "MossImage fast ★★★★", value: 1.60, strict: true },
-  { label: "MossImage best ★★★★★", value: 2.46, strict: true },
-  { label: "MossWeb fastest2steps 480p ★", value: 1.9, strict: true },
-  { label: "MossWeb fastest 480p ★★", value: 2.9, strict: true },
-  { label: "ComfyUI + Strict node ★★★★★", value: 5.9, strict: true },
-  { label: "MossWeb fast 480p ★★★", value: 5.0, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.59, strict: true },
+  { label: "MossImage fastest ★★", value: 0.87, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 1.00, strict: true },
+  { label: "MossImage faster ★★★", value: 1.12, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 1.27, strict: true },
+  { label: "MossImage fast ★★★★", value: 1.42, strict: true },
+  { label: "MossImage best ★★★★★", value: 2.49, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 1.6, strict: true },
+  { label: "MossWeb fastest 480p ★★", value: 2.4, strict: true },
+  { label: "MossWeb fast 480p ★★★", value: 4.1, strict: true },
+  { label: "MossWeb fastest 720p ★★", value: 6.8, strict: true },
+  { label: "MossWeb fast 720p ★★★", value: 11.6, strict: true },
+  { label: "ComfyUI + Strict node best ★★★★★", value: 5.9, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 7.5 },
-  { label: "MossWeb fastest 720p ★★", value: 9.8, strict: true },
-  { label: "MossWeb fast 720p ★★★", value: 18.1, strict: true },
   { label: "ComfyUI 25 steps ★★★★★", value: 24 },
   { label: "ComfyUI 50 steps ★★★★★", value: 45 }
 ];
@@ -772,12 +772,12 @@ function Index({ config: siteConfig }) {
               <p className="sub">720x1280 images of the default prompt in batches, warm, sampling seconds per image (lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4). MossImage decodes with the Flux 2 VAE except fastest and fastest2steps, which keep the tiny taef2 decoder; the taef2 rows are faster and fast with <code>--vae taef2.safetensors</code>. MossImage and MossWeb November 19, best warm sample. The 3080 faster row and both taef2 rows were not re-run; they are the November 12 times scaled by the measured fast speedup (2.22 s to 1.60 s). ComfyUI October 29.</p>
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4). MossImage decodes with the Flux 2 VAE except fastest and fastest2steps, which keep the tiny taef2 decoder; the taef2 rows are faster and fast with <code>--vae taef2.safetensors</code>. MossImage and MossWeb November 19 on the RTX 3080, best warm sample best of 3.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
                 <BarChart rows={mossSpeed4090} unit="s" lower />
-                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. MossImage November 19, best of 5 warm images. MossWeb in Chrome November 19, best of 3. ComfyUI's default workflow takes 2.3 s for its 8 steps. A new prompt adds about 3.5 s in the browser. ComfyUI November 9.</p>
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. MossImage November 19, best of 3. ComfyUI's default workflow takes 2.3 s for its 8 steps. A new prompt adds about 3.5 s in the browser.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>
