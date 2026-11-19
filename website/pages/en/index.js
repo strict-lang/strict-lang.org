@@ -86,36 +86,38 @@ const gpt2Speed = [
 ];
 
 const mossSpeed = [
-  { label: "MossImage fastest2steps ★", value: 0.91, strict: true },
-  { label: "MossImage fastest ★★", value: 1.14, strict: true },
-  { label: "MossImage faster, taef2 ★★★", value: 1.57, strict: true },
-  { label: "MossImage faster ★★★", value: 1.75, strict: true },
-  { label: "MossImage fast, taef2 ★★★★", value: 1.98, strict: true },
-  { label: "MossImage fast ★★★★", value: 2.22, strict: true },
-  { label: "MossImage best ★★★★★", value: 3.23, strict: true },
-  { label: "MossWeb fastest2steps 480p ★", value: 3.3, strict: true },
-  { label: "MossWeb fastest 480p ★", value: 4.4, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.60, strict: true },
+  { label: "MossImage fastest ★★", value: 0.90, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 1.13, strict: true },
+  { label: "MossImage faster ★★★", value: 1.26, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 1.43, strict: true },
+  { label: "MossImage fast ★★★★", value: 1.60, strict: true },
+  { label: "MossImage best ★★★★★", value: 2.46, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 1.9, strict: true },
+  { label: "MossWeb fastest 480p ★★", value: 2.9, strict: true },
   { label: "ComfyUI + Strict node ★★★★★", value: 5.9, strict: true },
-  { label: "MossWeb fastest 480p, Flux 2 VAE ★", value: 6.0, strict: true },
-  { label: "MossWeb fast 480p ★★★", value: 7.4, strict: true },
+  { label: "MossWeb fast 480p ★★★", value: 5.0, strict: true },
   { label: "ComfyUI 8 steps ★★★★★", value: 7.5 },
-  { label: "MossWeb fastest 720p ★", value: 13.7, strict: true },
-  { label: "MossWeb fast 720p ★★★", value: 22.6, strict: true },
+  { label: "MossWeb fastest 720p ★★", value: 9.8, strict: true },
+  { label: "MossWeb fast 720p ★★★", value: 18.1, strict: true },
   { label: "ComfyUI 25 steps ★★★★★", value: 24 },
   { label: "ComfyUI 50 steps ★★★★★", value: 45 }
 ];
 
 const mossSpeed4090 = [
-  { label: "MossImage fastest2steps ★", value: 0.39, strict: true },
-  { label: "MossImage fastest ★★", value: 0.46, strict: true },
-  { label: "MossImage faster, taef2 ★★★", value: 0.65, strict: true },
-  { label: "MossImage fast, taef2 ★★★★", value: 0.72, strict: true },
-  { label: "MossImage faster ★★★", value: 0.82, strict: true },
-  { label: "MossImage fast ★★★★", value: 0.84, strict: true },
-  { label: "MossImage best ★★★★★", value: 1.19, strict: true },
-  { label: "MossWeb fastest2steps 480p ★", value: 1.7, strict: true },
-  { label: "MossWeb fastest 480p ★", value: 2.7, strict: true },
-  { label: "ComfyUI 8 steps ★★★★★", value: 3.2 }
+  { label: "MossImage fastest2steps ★", value: 0.26, strict: true },
+  { label: "MossImage fastest ★★", value: 0.39, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 0.51, strict: true },
+  { label: "MossImage faster ★★★", value: 0.52, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 0.64, strict: true },
+  { label: "MossImage fast ★★★★", value: 0.79, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.39, strict: true },
+  { label: "MossWeb fastest2steps 480p ★", value: 1.1, strict: true },
+  { label: "MossWeb fastest 480p ★★", value: 1.8, strict: true },
+  { label: "MossWeb fast 480p ★★★", value: 3.0, strict: true },
+  { label: "ComfyUI 8 steps ★★★★★", value: 3.2 },
+  { label: "MossWeb fastest 720p ★★", value: 4.9, strict: true },
+  { label: "MossWeb fast 720p ★★★", value: 8.6, strict: true }
 ];
 
 const h3Speed = [
@@ -767,15 +769,15 @@ function Index({ config: siteConfig }) {
           <div className="strictPerfGrid" id="generation" style={{ marginTop: "24px" }}>
             <div className="strictBenchCard">
               <h3>Moss Image Generation (RTX 3080 and RTX 4090)</h3>
-              <p className="sub">720x1280 images of the default prompt in batches, warm, seconds per image from the prompt to the saved image (lower is better), ★ = quality rated by eye</p>
+              <p className="sub">720x1280 images of the default prompt in batches, warm, sampling seconds per image (lower is better), ★ = quality rated by eye</p>
               <div className="strictBenchGroup">
                 <BarChart rows={mossSpeed} unit="s" lower />
-                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4, 4 steps). Since November 12 MossImage decodes with the Flux 2 VAE (decoding and saving a 720p image takes 0.23 s on the 3080) except fastest and fastest2steps, which keep the tiny taef2 decoder (0.04 s); the taef2 rows show faster and fast with <code>--vae taef2.safetensors</code>, for best it saves 9 %. MossImage November 12, MossWeb November 8–9 (its Flux 2 VAE row November 12, taef2 is its default), ComfyUI October 29.</p>
+                <p className="strictBenchNote"><code>MossImage.exe</code> needs no Python or ComfyUI. ComfyUI 8 steps is its default workflow with the turbo LoRA, 25 and 50 steps run without it; the Strict node only replaces its sampler. MossWeb is the same Strict code in the browser on WebGPU (int4). MossImage decodes with the Flux 2 VAE except fastest and fastest2steps, which keep the tiny taef2 decoder; the taef2 rows are faster and fast with <code>--vae taef2.safetensors</code>. MossImage and MossWeb November 19, best warm sample. The 3080 faster row and both taef2 rows were not re-run; they are the November 12 times scaled by the measured fast speedup (2.22 s to 1.60 s). ComfyUI October 29.</p>
               </div>
               <div className="strictBenchGroup">
                 <h4>RTX 4090</h4>
                 <BarChart rows={mossSpeed4090} unit="s" lower />
-                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. Since November 12 MossImage decodes with the Flux 2 VAE (0.12 s per 720p image) except fastest and fastest2steps, which keep the tiny taef2 decoder (0.03 s); the taef2 rows show faster and fast with <code>--vae taef2.safetensors</code>. ComfyUI's default workflow takes 2.3 s for its 8 steps. MossWeb in Chrome as above, a new prompt adds about 3.5 s there. November 12, MossWeb and ComfyUI November 9.</p>
+                <p className="strictBenchNote">The same batches on the RTX 4090 with 8 bit attention. MossImage November 19, best of 5 warm images. MossWeb in Chrome November 19, best of 3. ComfyUI's default workflow takes 2.3 s for its 8 steps. A new prompt adds about 3.5 s in the browser. ComfyUI November 9.</p>
               </div>
               <p className="strictBenchNote">More: <a href={doc("MossImage")}>Moss Image Generation</a>, <a href={baseUrl + "moss/MossWeb.html"}>MossWeb in the browser</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
             </div>
