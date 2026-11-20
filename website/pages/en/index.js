@@ -105,13 +105,13 @@ const mossSpeed = [
 ];
 
 const mossSpeed4090 = [
-  { label: "MossImage fastest2steps ★", value: 0.26, strict: true },
-  { label: "MossImage fastest ★★", value: 0.39, strict: true },
-  { label: "MossImage faster, taef2 ★★★", value: 0.51, strict: true },
-  { label: "MossImage faster ★★★", value: 0.52, strict: true },
-  { label: "MossImage fast, taef2 ★★★★", value: 0.64, strict: true },
-  { label: "MossImage fast ★★★★", value: 0.79, strict: true },
-  { label: "MossImage best ★★★★★", value: 1.39, strict: true },
+  { label: "MossImage fastest2steps ★", value: 0.25, strict: true },
+  { label: "MossImage fastest ★★", value: 0.36, strict: true },
+  { label: "MossImage faster, taef2 ★★★", value: 0.47, strict: true },
+  { label: "MossImage faster ★★★", value: 0.61, strict: true },
+  { label: "MossImage fast, taef2 ★★★★", value: 0.58, strict: true },
+  { label: "MossImage fast ★★★★", value: 0.71, strict: true },
+  { label: "MossImage best ★★★★★", value: 1.11, strict: true },
   { label: "MossWeb fastest2steps 480p ★", value: 1.1, strict: true },
   { label: "MossWeb fastest 480p ★★", value: 1.8, strict: true },
   { label: "MossWeb fast 480p ★★★", value: 3.0, strict: true },
@@ -121,11 +121,11 @@ const mossSpeed4090 = [
 ];
 
 const h3Speed = [
-  { label: "H3Video fastest2steps ★", value: 23.3, strict: true },
-  { label: "H3Video fastest4steps ★★★", value: 29.1, strict: true },
-  { label: "H3Video faster ★★★★", value: 30.9, strict: true },
-  { label: "H3Video fast ★★★★", value: 43.9, strict: true },
-  { label: "H3Video best ★★★★", value: 74.6, strict: true },
+  { label: "H3Video fastest2steps ★", value: 20.9, strict: true },
+  { label: "H3Video fastest4steps ★★★", value: 27.6, strict: true },
+  { label: "H3Video faster ★★★★", value: 29.1, strict: true },
+  { label: "H3Video fast ★★★★", value: 41.4, strict: true },
+  { label: "H3Video best ★★★★", value: 70.7, strict: true },
   { label: "ComfyUI TaoMate 3 steps ★", value: 62.4 },
   { label: "ComfyUI turbo 4 steps ★★", value: 71.5 },
   { label: "ComfyUI turbo 8 steps ★★★★", value: 148.9 },
@@ -139,13 +139,13 @@ const h3ComfySpeed = [
 ];
 
 const h3ImageSpeed = [
-  { label: "H3Image 1 MP (1024x1024)", value: 4.6, strict: true },
+  { label: "H3Image 1 MP (1024x1024)", value: 2.8, strict: true },
+  { label: "H3Image 4 MP (2048x2048)", value: 5.1, strict: true },
   { label: "ComfyUI 1 MP", value: 6.9 },
-  { label: "H3Image 4 MP (2048x2048)", value: 6.8, strict: true },
-  { label: "H3Image 8 MP (2880x2880)", value: 10.5, strict: true },
+  { label: "H3Image 8 MP (2880x2880)", value: 8.3, strict: true },
   { label: "ComfyUI 4 MP", value: 13.1 },
+  { label: "H3Image 16 MP (4096x4096)", value: 18.4, strict: true },
   { label: "ComfyUI 8 MP", value: 20.1 },
-  { label: "H3Image 16 MP (4096x4096)", value: 20.4, strict: true },
   { label: "ComfyUI 16 MP", value: 27.2 }
 ];
 
@@ -787,7 +787,7 @@ function Index({ config: siteConfig }) {
                 <p className="sub">Text to video with sound, 12 s clip (480x832), warm, seconds from the prompt to the mp4 (lower is better), ★ = quality rated by eye</p>
                 <div className="strictBenchGroup">
                   <BarChart rows={h3Speed} unit="s" lower />
-                  <p className="strictBenchNote">With the same model and steps 2.0x (<code>best</code> against turbo 8 steps) to 2.5x (fastest4steps against turbo 4 steps) faster than ComfyUI. Strict November 12, ComfyUI October 28.</p>
+                  <p className="strictBenchNote">With the same model and steps 2.1x (<code>best</code> against turbo 8 steps) to 2.6x (fastest4steps against turbo 4 steps) faster than ComfyUI. Strict November 19, ComfyUI October 28.</p>
                 </div>
                 <div className="strictBenchGroup">
                   <h4>ComfyUI Workflow, 5 s Clip (Prompt Cached)</h4>
@@ -801,7 +801,7 @@ function Index({ config: siteConfig }) {
                 <p className="sub">Text to image, the 6 distilled steps of ComfyUI's H3 Image template, warm, a new prompt every run, seconds to the saved image (lower is better)</p>
                 <div className="strictBenchGroup">
                   <BarChart rows={h3ImageSpeed} unit="s" lower />
-                  <p className="strictBenchNote">4.7x faster at 1024x1024, 4.3x at 2048x2048 and 1.7x at 4096x4096, where the sampling dominates. Strict November 12, ComfyUI November 11.</p>
+                  <p className="strictBenchNote">2.5x faster at 1024x1024, 2.6x at 2048x2048 and 1.5x at 4096x4096, where the sampling dominates. Strict November 19, ComfyUI November 12.</p>
                 </div>
                 <p className="strictBenchNote">More: <a href={doc("H3Video") + "#h3-image"}>H3 Image and editing</a>, source: <a href="https://github.com/strict-lang/StrictComfy">StrictComfy</a></p>
               </div>
