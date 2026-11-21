@@ -38,23 +38,35 @@
       title: 'WebWars',
       year: 1999,
       genre: 'Real Time Strategy · Capture the Flag',
-      desc: 'Work in progress: two bases, six unit types with the original art, capture the flag against a computer player (1999). Unit movement and gameplay are unfinished with plenty of bugs.',
-      webPath: '/games/WebWars/WebWars.html',
+      desc: 'Capture the flag against a computer player, from 1999. The browser build is still being finished.',
+      webPath: '',
+      isPlayableWeb: false,
+      isComingSoon: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'The browser build is still being finished.'
+    },
+    quillhop: {
+      title: 'Quillhop',
+      year: 2026,
+      genre: 'Platformer',
+      desc: 'Nim the Quill hops through ten chapters of a torn atlas.',
+      webPath: '/games/Quillhop/Quillhop.html',
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Work in progress: gameplay code is unfinished with plenty of bugs.'
+      storeNote: 'Free to run in the browser.'
     },
     racinggame: {
       title: 'Racing Game',
       year: 2006,
       genre: 'Racing',
-      desc: 'Work in progress: three courses with banked splines, scenery, car selection and lap records. Physics and gameplay code are unfinished with plenty of bugs.',
+      desc: 'Three courses with banked splines, scenery, car selection and lap records.',
       webPath: '/games/RacingGame/RacingGame.html',
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Work in progress: gameplay code is unfinished with plenty of bugs.'
+      storeNote: 'Free to run in the browser.'
     },
     rocketcommander: {
       title: 'Rocket Commander',
@@ -65,7 +77,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     artifex: {
       title: 'Artifex',
@@ -76,7 +88,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     breakout: {
       title: 'Breakout',
@@ -87,7 +99,18 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
+    },
+    blocks: {
+      title: 'Blocks',
+      year: 2013,
+      genre: 'Puzzle',
+      desc: 'Falling jewels. Arrows move and rotate, Space drops.',
+      webPath: '/games/Blocks/Blocks.html',
+      isPlayableWeb: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'Free to run in the browser.'
     },
     armiesofsteel: {
       title: 'Armies of Steel',
@@ -98,7 +121,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     ghostwars: {
       title: 'GhostWars',
@@ -109,7 +132,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     tinybat: {
       title: 'Tiny Bat',
@@ -120,7 +143,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     elemental: {
       title: 'Elemental',
@@ -131,7 +154,7 @@
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Free to play in the browser.'
+      storeNote: 'Free to run in the browser.'
     },
     logoapp: {
       title: 'LogoApp',
@@ -170,12 +193,12 @@
       title: 'BenTris',
       year: 1996,
       genre: 'Puzzle',
-      desc: 'Work in progress: the oldest game here, written as a teenager, last released in 1996. Falling blocks with the recovered DOS graphics, more of the original (levels, editors, weapons, music) still has to be restored.',
+      desc: 'The oldest game here, written as a teenager, last released in 1996. Falling blocks with the recovered DOS graphics.',
       webPath: '/games/BenTris/BenTris.html',
       isPlayableWeb: true,
       isFreeToPlay: true,
       storeLinks: {},
-      storeNote: 'Work in progress: more of the original still has to be restored.'
+      storeNote: 'Free to run in the browser.'
     }
   };
 
@@ -261,13 +284,13 @@
     storeLinksEl.innerHTML = linksHtml;
 
     // Games without a web build show their store links
+    const hasStore = game.storeLinks && (game.storeLinks.steam || game.storeLinks.googlePlay || game.storeLinks.appStore);
     loadingEl.style.display = 'flex';
     loadingEl.querySelector('#stmLoadingMsg').innerHTML = `
       <div style="text-align:center;padding:20px;max-width:540px;">
-        <h3 style="color:#ffd166;font-size:1.45rem;margin:0 0 12px;">${game.title} — Web Version Coming Soon</h3>
+        <h3 style="color:#ffd166;font-size:1.45rem;margin:0 0 12px;">${game.title} — Coming Soon</h3>
         <p style="color:#c5d8e2;line-height:1.6;font-size:0.95rem;margin:0 0 16px;">
-          The standalone web release is currently being finalized with the latest DeltaEngine optimizations.<br><br>
-          In the meantime, you can play the full game on Steam or mobile stores using the links below!
+          ${game.storeNote || 'The browser build is not ready yet.'}${hasStore ? '<br><br>Until then, the released game is on the stores below.' : ''}
         </p>
       </div>
     `;

@@ -47,11 +47,13 @@ const spotlightGames = [
     facts: ["12 ms per half megapixel image in the browser", "60 fps while zooming", "deep views find their iterations by themselves"],
     review: ["Benchmarks and details", "/docs/Benchmarks#fractalzoomer"], stores: [] },
   { key: "webwars", title: "WebWars", year: 1999, genre: "Real Time Strategy · Capture the Flag", price: "Free", image: "games/WebWars.jpg",
-    wip: true,
-    desc: "Work in progress: created in 2 months back in 1999, capture the flag against a computer player. Gameplay code is unfinished with plenty of bugs.", stores: [] }
+    comingSoon: true,
+    desc: "Capture the flag against a computer player, from 1999. The browser build is still being finished.", stores: [] }
 ];
 
 const moreGames = [
+  { key: "quillhop", title: "Quillhop", year: 2026, genre: "Platformer", image: "games/Quillhop.webp",
+    desc: "Nim the Quill hops through ten chapters of a torn atlas." },
   { key: "forest", title: "Forest", year: 2026, genre: "Sample", image: "screenshots/Forest.webp",
     desc: "Fir trees on rolling hills, all in one instanced draw call." },
   { key: "elemental", title: "Elemental", year: 2020, genre: "Real Time Strategy", image: "games/Elemental.webp",
@@ -62,18 +64,20 @@ const moreGames = [
     desc: "Drag and rotate temple ruins to stack a tower above the line." },
   { key: "breakout", title: "Breakout", year: 2013, genre: "Arcade", image: "games/Breakout.webp",
     desc: "Paddle, ball and bricks with the original art and sounds." },
+  { key: "blocks", title: "Blocks", year: 2013, genre: "Puzzle", image: "games/Blocks.jpg",
+    desc: "Falling jewels. Arrows move and rotate, Space drops." },
   { key: "ghostwars", title: "GhostWars", year: 2013, genre: "Strategy · Game Jam", image: "games/GhostWars.webp",
     desc: "Send ghosts between trees until you own every tree." },
   { key: "logoapp", title: "LogoApp", year: 2009, genre: "Sample", image: "games/LogoApp.webp",
     desc: "Bouncing logos, the first sample of every engine version." },
   { key: "racinggame", title: "Racing Game", year: 2006, genre: "Racing", image: "games/RacingGame.webp",
-    desc: "Work in progress: three courses and lap records, physics still unfinished." },
+    desc: "Three courses, car selection and lap records." },
   { key: "rocketcommander", title: "Rocket Commander", year: 2005, genre: "Space Flight", image: "games/RocketCommander.webp",
     desc: "Fly through moving asteroid fields, collect fuel and points." },
   { key: "armiesofsteel", title: "Armies of Steel", year: 2005, genre: "Real Time Strategy", image: "games/ArmiesOfSteel.jpg",
     desc: "Tank skirmish from 2005, revived in 2023." },
   { key: "bentris", title: "BenTris", year: 1996, genre: "Puzzle", image: "games/BenTris.webp",
-    desc: "The oldest game here, written as a teenager, still being restored." }
+    desc: "The oldest game here, from 1996, with the recovered DOS graphics." }
 ];
 
 const gpt2Speed = [
@@ -570,7 +574,7 @@ function Index({ config: siteConfig }) {
       <section className="strictArcadeSection" id="games">
         <div className="wrapper">
           <div className="strictSectionHeading">
-            <p className="strictEyebrow">Games written or ported to Strict run in the browser</p>
+            <p className="strictEyebrow">Quillhop, Racing Game, Tiny Bat and the smaller games run in the browser. SoulCraft, Arena Wars and WebWars are still on the way.</p>
           </div>
           <div className="strictArcadeSpotlight">
             {spotlightGames.map(game => (
@@ -622,13 +626,16 @@ function Index({ config: siteConfig }) {
                   <img src={img(game.image)} alt={game.title + " " + game.genre} loading="lazy" width="480" height="300" />
                   <div className="strictCardBadges">
                     <span className="strictBadge year">{game.year}</span>
+                    {game.comingSoon && <span className="strictBadge comingSoon">Coming Soon</span>}
                     {game.genre.split(" · ").map(genre => <span className="strictBadge genre" key={genre}>{genre}</span>)}
                   </div>
                 </div>
                 <div className="strictMoreGameBody">
                   <h4>{game.title}</h4>
                   <p title={game.desc}>{game.desc}</p>
-                  <button type="button" className="strictPlayBtn" data-play-game={game.key}>▶ Play in Browser</button>
+                  <button type="button" className={"strictPlayBtn" + (game.comingSoon ? " comingSoon" : "")} data-play-game={game.key}>
+                    {game.comingSoon ? "Coming Soon" : "▶ Play in Browser"}
+                  </button>
                 </div>
               </div>
             ))}
@@ -846,7 +853,7 @@ function Index({ config: siteConfig }) {
           </p>
           <h2><a href={doc("MachineLearning") + "#qwen3-8b-faster-than-llamacpp"}>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</a></h2>
           <p>
-            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 55.40 and 45.30 tokens/second on an RTX 4090 (84.00 with MTP drafts) — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). All DeltaEngine games and samples also compile to WebAssembly and WebGL 2 via <code>strict build Game.strict web</code>.
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 55.40 and 45.30 tokens/second on an RTX 4090 (84.00 with MTP drafts) — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). A game compiles to WebAssembly and WebGL 2 with <code>strict build Game.strict web</code>. Quillhop, Racing Game, Rocket Commander and the smaller samples run on the site. SoulCraft, Arena Wars and WebWars are still to come.
           </p>
           <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
         </div>
