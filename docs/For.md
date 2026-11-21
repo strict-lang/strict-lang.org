@@ -10,7 +10,6 @@ A `for` loop is also the one place where `mutable` variables make sense. The com
 # Normal iteration
 
 ```
-has logger
 Run
 	constant someList = (1, 2, 3)
 	for someList
@@ -312,7 +311,6 @@ Sometimes a loop needs state, like a counter or the previous values. This is whe
 
 ```
 has number
-has logger
 GetNthFibonacci Number
 	Fibonacci(5).GetNthFibonacci is 5
 	Fibonacci(10).GetNthFibonacci is 55

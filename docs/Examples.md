@@ -17,7 +17,6 @@ strict build Examples/FizzBuzz.strict
 
 ```
 has text
-has logger
 Greet Text
 	Greeter("World").Greet is "Hello, World!"
 	Greeter("Strict").Greet is "Hello, Strict!"

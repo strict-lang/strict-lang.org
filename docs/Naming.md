@@ -35,7 +35,7 @@ It is fine to reuse the same names over and over, like /entities, /services, /re
 
 # Names in Strict
 
-* **Members don't repeat their type.** `has number`, `has logger`, `has keysAndValues List(key Generic, mappedValue Generic)`. If the name says the type, the type is left out.
+* **Members don't repeat their type.** `has number`, `has text`, `has keysAndValues List(key Generic, mappedValue Generic)`. If the name says the type, the type is left out.
 * **Plurals are lists.** `numbers` is a list of `Number`, `ValidationIssues` is a list of `ValidationIssue`. Names never start with `List`: `numbers`, not `listOfNumbers`.
 * **Case shows visibility.** Types, public members and public methods start with an uppercase letter. Private members, parameters and variables start with a lowercase letter.
 * **No abbreviations or single letters.** `index`, not `i`. `separatorIndex`, not `si`. Names are 2 to 50 characters long.

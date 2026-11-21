@@ -55,7 +55,7 @@ Most of these are traits or have methods without bodies. The native runtime ([`C
 
 | Type | Description |
 |------|-------------|
-| [`Logger`](https://github.com/strict-lang/Strict/blob/master/Logger.strict) | `Log(text)` writes to its `TextWriter`, the console by default. Add `has logger` to any type to log. |
+| [`Logger`](https://github.com/strict-lang/Strict/blob/master/Logger.strict) | `logger.Log(text)` writes to the console. Every type can use `logger` without declaring it. `has logger` is only for a different logger passed into `from`. |
 | [`TextReader`](https://github.com/strict-lang/Strict/blob/master/TextReader.strict) | Trait: `ReadLines` returns `Texts`. |
 | [`TextWriter`](https://github.com/strict-lang/Strict/blob/master/TextWriter.strict) | Trait: `Write(lines Texts)`. |
 | [`BytesReader`](https://github.com/strict-lang/Strict/blob/master/BytesReader.strict) | Trait: `ReadBytes` returns `Bytes`. |

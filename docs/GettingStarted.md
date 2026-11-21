@@ -123,7 +123,6 @@ Windowed `Run` programs build into a persistent `Release` folder. Existing conte
 [`Examples/Sum.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Sum.strict) is the smallest program that takes arguments:
 
 ```
-has logger
 Run(numbers)
 	logger.Log(numbers.Sum)
 ```
@@ -151,7 +150,6 @@ Create a folder for your project anywhere, it doesn't have to be inside the Stri
 
 ```
 has number
-has logger
 IsEven Boolean
 	Parity(2).IsEven
 	Parity(3).IsEven is false
@@ -164,9 +162,9 @@ Run
 	logger.Log(Parity(5).Describe)
 ```
 
-* The file name `Parity` is the type name. `has number` is a `Number` member and `has logger` is a `Logger` member. Because the names say which type they are, you don't write the type.
+* The file name `Parity` is the type name. `has number` is a `Number` member. Because the name says the type, you don't write it. `logger` is the console logger, so a type that only logs does not declare it.
 * `IsEven Boolean` is a method returning a `Boolean`. Its first two lines are tests. A test that is already a `Boolean`, like `Parity(2).IsEven`, doesn't need `is true`.
-* `Parity(4)` creates an instance. Arguments fill the members in order. The `logger` member is filled in automatically.
+* `Parity(4)` creates an instance. Arguments fill the members in order. `logger` is already the console logger.
 * The last line of a method is its result.
 
 Now try every command inside the `Kata` folder:

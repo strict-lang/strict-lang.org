@@ -25,7 +25,6 @@ Every `.strict` file is one type, and the file name is the type name. Here is [`
 
 ```
 has celsius Number
-has logger
 ToFahrenheit Number
 	TemperatureConverter(100).ToFahrenheit is 212
 	TemperatureConverter(0).ToFahrenheit is 32
@@ -42,7 +41,7 @@ Run
 	logger.Log("100C in Kelvin: " + boiling.ToKelvin)
 ```
 
-* `has celsius Number` and `has logger` are **members**. `logger` has no explicit type because the name already says it is a `Logger`.
+* `has celsius Number` is a **member**. `logger` is the console logger, available in every method without a member. Declare `has logger` only to take a different logger in `from`.
 * `ToFahrenheit Number` is a **method** that returns a `Number`. Method bodies are indented with one tab.
 * The first lines of each method are **tests**. Every method needs at least one test, written as a comparison with `is`. Tests run once when the code is compiled and are then removed.
 * The last line of a method is its return value. `return` is only needed to leave a method early.

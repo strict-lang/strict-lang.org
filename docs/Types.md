@@ -7,7 +7,6 @@ Everything in Strict is a type, and every type is one `.strict` file. The file n
 
 ```
 has number
-has logger
 Classify Text
 	FizzBuzz(3).Classify is "Fizz"
 	FizzBuzz(5).Classify is "Buzz"
@@ -44,7 +43,7 @@ That is the complete [`ImageProcessing/Image.strict`](https://github.com/strict-
 Call the type name with its member values in order: `FizzBuzz(3)`, `Range(2, 5)`, `Vector2(3, 4)`.
 
 * Members with an initial value (`has Alpha = 1`) are not arguments, but you can still pass them.
-* Members of types that need no arguments are filled automatically. `has logger` gets the standard `Logger`, so `FizzBuzz(3)` is enough.
+* Members of types that need no arguments are filled automatically, so `FizzBuzz(3)` is enough. `logger` is the console logger and is not a constructor argument. Declare `has logger` only to pass a different logger into `from`.
 * A `mutable` member that isn't passed gets its default value, see [`Examples/AutofilledMutable.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/AutofilledMutable.strict).
 * If the only member is a list, the arguments become that list: `ReverseList(1, 2, 3, 4)` fills `has numbers` with `(1, 2, 3, 4)`.
 

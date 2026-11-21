@@ -12,7 +12,6 @@
       typeName: 'AreaCalculator',
       code: `has width Number
 has height Number
-has logger
 Area Number
 \tAreaCalculator(3, 4).Area is 12
 \tAreaCalculator(10, 5).Area is 50
@@ -22,7 +21,6 @@ Area Number
       name: 'Temperature',
       typeName: 'TemperatureConverter',
       code: `has celsius Number
-has logger
 ToFahrenheit Number
 \tTemperatureConverter(100).ToFahrenheit is 212
 \tTemperatureConverter(0).ToFahrenheit is 32

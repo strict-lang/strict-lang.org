@@ -26,7 +26,7 @@ constant NewLine = Character(10)
 mutable Colors with Length is Size.Length
 ```
 
-* **The name implies the type.** `has number` is a `Number` and `has logger` is a `Logger`. If the name already says it, don't repeat the type: write `has number`, not `has number Number`. When the name is different from its type, write the type after it: `has Start Number`.
+* **The name implies the type.** `has number` is a `Number` and `has text` is a `Text`. If the name already says it, don't repeat the type: write `has number`, not `has number Number`. When the name is different from its type, write the type after it: `has Start Number`. `logger` needs no member: it is the console logger unless `has logger` takes a different one.
 * **Names starting with an uppercase letter are public**, lowercase names are private to the type. A private member that is never used is a [validation error](CodeValidations.md).
 * **Initial values** use `=`. A `has` member computed from constants, like `has number = 17 + 4`, must be a `constant` instead.
 * **Constraints** use `with`, see [Types](Types.md#constraints-with-with).
