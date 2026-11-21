@@ -43,7 +43,7 @@ That is the complete [`ImageProcessing/Image.strict`](https://github.com/strict-
 Call the type name with its member values in order: `FizzBuzz(3)`, `Range(2, 5)`, `Vector2(3, 4)`.
 
 * Members with an initial value (`has Alpha = 1`) are not arguments, but you can still pass them.
-* Members of types that need no arguments are filled automatically, so `FizzBuzz(3)` is enough. `logger` is the console logger and is not a constructor argument. Declare `has logger` only to pass a different logger into `from`.
+* Members of types that need no arguments are filled automatically, so `FizzBuzz(3)` is enough. `logger` is the console logger and is not a constructor argument.
 * A `mutable` member that isn't passed gets its default value, see [`Examples/AutofilledMutable.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/AutofilledMutable.strict).
 * If the only member is a list, the arguments become that list: `ReverseList(1, 2, 3, 4)` fills `has numbers` with `(1, 2, 3, 4)`.
 
@@ -58,6 +58,17 @@ from(text)
 	Character("ab") is Error
 	text(0)
 ```
+
+`logger` is the console logger in every method. A type does not declare it, and `logger.Log(text)` writes to the console.
+
+A type that needs a different logger takes it in `from`. The caller passes that logger when it creates the instance:
+
+```
+from(logger)
+	logger.Log("started")
+```
+
+You can define that logger yourself. Any type with `Log` can be passed into `from` by writing its type: `from(logger Recorder)`. It can keep the lines, write a file, or do anything other than the console. Where a type does not take a logger, `logger` stays the console logger.
 
 Types are values too. `List(Number)` is an empty list of numbers, `Dictionary(Text, Number)` is an empty dictionary, and `Numbers` is the same as `List(Number)`.
 

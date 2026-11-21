@@ -28,9 +28,9 @@ These come from [`UsageRules`](https://github.com/strict-lang/Strict/blob/master
 
 | Rule | Meaning |
 |------|---------|
-| `UnusedMethodVariableMustBeRemoved` | A `constant`, `let` or `mutable` variable is declared but never used. |
+| `UnusedMethodVariableMustBeRemoved` | A `constant`, let (a plain assignment such as `total = input + 5`) or `mutable` variable is declared but never used. |
 | `UnusedMethodParameterMustBeRemoved` | A parameter is never used in the method. |
-| `VariableDeclaredAsMutableButValueNeverChanged` | A `mutable` variable is never reassigned or changed, so it should be `let` or `constant`. |
+| `VariableDeclaredAsMutableButValueNeverChanged` | A `mutable` variable is never reassigned or changed, so it should be a plain assignment or `constant`. |
 | `ParameterMustNotBeMutableReturnTheChangedValue` | A parameter is `mutable`. Parameters never change: change a mutable copy and return it. |
 | `VariableHidesMemberUseDifferentName` | A variable has the same name as a member. |
 | `ParameterHidesMemberUseDifferentName` | A parameter has the same name as a member. |
@@ -53,7 +53,7 @@ Many of these rules came out of [mutation testing](Tests.md#mutation-testing): w
 | Rule | Meaning |
 |------|---------|
 | `NumberMustBeNamedConstant` | A magic number in a method body, like `if number is in Range(97, 123)`. Name it with a `constant` (`constant LowercaseA = 97`). Single digits, `10`, `0.5` and powers of ten like `100` or `0.01` are fine, test lines and `constant` lines are not checked. Checked by [`MagicNumbers`](https://github.com/strict-lang/Strict/blob/master/Validators/MagicNumbers.strict). |
-| `LoopInvariantMustBeOutsideLoop` | In a method under 10 lines, a multiplication, division, remainder, power or longer computation inside a loop uses only values that don't change in the loop. Compute it once with a `let` before the loop. |
+| `LoopInvariantMustBeOutsideLoop` | In a method under 10 lines, a multiplication, division, remainder, power or longer computation inside a loop uses only values that don't change in the loop. Compute it once with an assignment before the loop, such as `scale = width / steps`. |
 | `LoopGuardMustBeOutsideLoop` | An inner loop branches on a condition that doesn't change in it, with a constant or `return` branch. Check it once before the loop. |
 | `LoopEdgeMustBeOutsideLoop` | An inner loop branches on its first (`index is 0`) or last iteration. Handle that iteration outside the loop. |
 | `NestedLoopsMustNameIterators` | A loop whose only line is another loop must name both iterators, so `value` and `index` are never ambiguous. |

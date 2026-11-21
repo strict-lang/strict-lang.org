@@ -50,7 +50,7 @@ A method may be at most 13 lines long, including its header and tests. There are
 
 # Computed methods
 
-A header such as `Area = Width * Height` defines a computed method and infers its return type. It is evaluated when used, like a computed name inside a method. See [Members and Variables](Variables.md#computed-names).
+A header such as `Area = Width * Height` defines a computed method and infers its return type. It is evaluated when used. Inside a method, a plain assignment is a let and is calculated once. A computed name has parameters and is evaluated again on every use: `next(add = 1) = position + add`. See [Members and Variables](Variables.md#computed-names).
 
 # Calling methods
 
@@ -98,7 +98,7 @@ Now `Register(0, 1, 2) + Register(1, 2, 3)` calls this method.
 
 | Method | Purpose | Example |
 |--------|---------|---------|
-| `from(...)` | Custom constructor, called as `Type(...)` | `from(text)` in [`Character.strict`](https://github.com/strict-lang/Strict/blob/master/Character.strict) |
+| `from(...)` | Custom constructor, called as `Type(...)`. A different logger is a parameter here | `from(text)` in [`Character.strict`](https://github.com/strict-lang/Strict/blob/master/Character.strict), `from(logger)` in [Types](Types.md#creating-instances) |
 | `to Type` | Conversion, called as `value to Type` | `to Text`, `to Number`, `to Character` |
 | `is(other)` | Equality, called as `a is b` and `a is not b` | `is(other) Boolean` in [`Text.strict`](https://github.com/strict-lang/Strict/blob/master/Text.strict) |
 | `in(...)` | Containment, called as `a is in b` and `a is not in b` | `in(number) Boolean` in [`Range.strict`](https://github.com/strict-lang/Strict/blob/master/Range.strict) |

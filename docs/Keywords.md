@@ -14,10 +14,11 @@ Keywords and operator words can't be used as names.
 |---------|---------|-----|
 | `has` | Member that is set once when the instance is created | [Members and Variables](Variables.md) |
 | `constant` | Member or variable computed only from constants, always optimized away | [Members and Variables](Variables.md) |
-| `let` | Variable that doesn't change | [Members and Variables](Variables.md) |
 | `mutable` | Member or variable that may change (parameters never do) | [Members and Variables](Variables.md) |
 | `with` | Constraint on a member or parameter | [Types](Types.md#constraints-with-with) |
-| `from` | Custom constructor | [Types](Types.md#creating-instances) |
+| `from` | Custom constructor. A different logger is passed in here | [Types](Types.md#creating-instances) |
+
+An assignment that is not `constant` or `mutable` is a let: `total = input + 5`. The compiler classifies that line as a let definition. The word `let` is not a keyword.
 
 # Control flow
 
@@ -49,6 +50,7 @@ Keywords and operator words can't be used as names.
 | `value` | The instance in a method, the current element in a `for` loop, the member value in a `with` constraint |
 | `index` | The position in a `for` loop, starting at 0 |
 | `outer` | The `value` from outside the current `for` loop |
+| `logger` | The console logger, available in every method. A different logger is passed into `from` |
 | `true`, `false` | The two `Boolean` values |
 | `None` | The state of an optional value that was never set, see [`or None`](Types.md#optional-values-with-or-none) |
 

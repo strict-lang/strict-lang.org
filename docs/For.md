@@ -16,7 +16,7 @@ Run
 		logger.Log(index + ": " + value)
 ```
 
-This logs (the logger writes to the console by default):
+This logs. `logger` is the console logger in every method:
 
 ```text
 0: 1

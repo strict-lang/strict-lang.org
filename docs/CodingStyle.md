@@ -37,7 +37,7 @@ There is exactly one way to format Strict code:
 # One way to do things
 
 * **Members don't repeat their type** when the name already says it: `has number`, not `has number Number`.
-* **`constant`** for values computed only from constants, **`let`** for everything else that doesn't change, **`mutable`** only when a value really changes, like a loop counter.
+* **`constant`** for values computed only from constants, a plain assignment for everything else that doesn't change (`total = input + 5`, a let), **`mutable`** only when a value really changes, like a loop counter.
 * **Values never change.** `list + element` gives a new list, and a `mutable` variable can only be reassigned to such a new value. Never change an old version of a list. A list is either fixed, or growing and then only its latest version is used.
 * **Tests are Boolean comparisons** at the start of every method. `is true` is never written. Test with distinguishing values: `Square(3) is 9` instead of `Square(1) is 1` or `Square(0) is 0`, where many wrong implementations give the same result.
 * **No magic numbers.** A number other than a single digit, `10`, `0.5` or a power of ten is a named `constant` (`NumberMustBeNamedConstant`). Tests and constant lines may use any number.
@@ -45,7 +45,7 @@ There is exactly one way to format Strict code:
 * **Other packages are written as `Package/Type`** only in declarations: members, parameters and return types. Method bodies use the plain type name.
 * **Comparisons bind before Boolean operators.** `a is b and c is d` needs no extra brackets, see [precedence](Statements.md#precedence).
 * **A conditional as one of several arguments needs brackets:** `Text(value, (isShort then 2 else 4))`.
-* **Keywords and operator words** (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, `let`, ...) can't be names. A parameter can't be called `value` either, because that is always the instance.
+* **Keywords and operator words** (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, ...) can't be names. A parameter can't be called `value` either, because that is always the instance.
 * **No duplicated code.** Use what exists: `Text.Combine` instead of joining texts in your own loop, `Length` instead of `characters.Length`. Strict replaces reimplemented code with the existing method.
 
 # Naming

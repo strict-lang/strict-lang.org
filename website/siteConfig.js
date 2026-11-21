@@ -14,9 +14,9 @@ const hljs = require('highlight.js');
 const strictLanguage = hljs => ({
   aliases: ['str'],
   keywords: {
-    keyword: 'has constant let mutable if else then for in is not and or xor return to from with as long',
+    keyword: 'has constant mutable if else then for in is not and or xor return to from with as long',
     literal: 'true false None',
-    built_in: 'value index outer',
+    built_in: 'value index outer logger',
   },
   contains: [
     hljs.QUOTE_STRING_MODE,
@@ -24,7 +24,7 @@ const strictLanguage = hljs => ({
     { className: 'number', begin: /\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/, relevance: 0 },
     {
       className: 'title',
-      begin: /^(?!(has|constant|mutable|let|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
+      begin: /^(?!(has|constant|mutable|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
     },
     { className: 'type', begin: /\b[A-Z][A-Za-z]*\b/, relevance: 0 },
   ],

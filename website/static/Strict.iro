@@ -2,7 +2,7 @@ name = strict
 file_extensions[] = strict;
 
 __KEYWORD_CONTROL \= ((if|else|for|then|from|return)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))
-__KEYWORD_OTHER \= ((has|constant|let|with)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))
+__KEYWORD_OTHER \= ((has|constant|with)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))
 __KEYWORD_OPERATORS \= (\b(?:is|not|and|or|xor|in|to)\b)
 __OPERATORS \= ([\{\}.+|\-()<>\[\]!=%*,:/^]+)
 __IDENTIFIER \= ([a-zA-Z]+[a-zA-Z0-9_]*)
@@ -10,7 +10,7 @@ __OPTIONAL_IDENTIFIER \= ([a-zA-Z]*[a-zA-Z0-9_]*)
 __TYPE_NAME \= ([a-zA-Z][a-zA-Z0-9_<>\[\]\?(),]*)
 __DANGER_TYPES \= (Any|any|(Mutable)(\([^\)]*\))?)
 __BASE_TYPES \= ((None|Any|Boolean|Booleans|Number|Numbers|Character|Characters|HashCode|Range|Ranges|Text|Texts|Error|Errors|ErrorWithValue|ErrorWithValues|Iterator|Iterators|List|Lists|Type|Types|Method|Methods|Logger|App|System|File|Files|Directory|Directories|TextWriter|TextReader|Stacktrace|Stacktraces|Name|Names|Dictionary|Dictionaries)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))
-__BUILTIN \= (true|false|generic|iterator|elements|value|index|other|outer)
+__BUILTIN \= (true|false|generic|iterator|elements|value|index|other|outer|logger)
 
 styles [] {
    .None : style {

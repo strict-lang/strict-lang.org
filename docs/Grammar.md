@@ -51,9 +51,11 @@ selector_if   = 'if ' expression (' is' | ' is not') LF (TAB+ NAME ' then ' expr
 for           = 'for ' ((reference ' in ' expression) | expression) LF block
 return        = 'return ' expression
 mutable       = 'mutable ' name_and_type (' = ' expression)?
-assignment    = (('constant' | 'mutable' | 'let') SPACE)? assignable ' = ' expression
+assignment    = (('constant' | 'mutable') SPACE)? assignable ' = ' expression
 assignable    = NAME | variable_or_method_call
 ```
+
+An assignment with no keyword is a let. `total = input + 5` defines `total` and is calculated once. `constant` and `mutable` are written in front of the name when they apply. The word `let` is not in the grammar.
 
 # Syntax highlighting files
 

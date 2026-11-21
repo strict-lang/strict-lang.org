@@ -162,7 +162,7 @@ Run
 	logger.Log(Parity(5).Describe)
 ```
 
-* The file name `Parity` is the type name. `has number` is a `Number` member. Because the name says the type, you don't write it. `logger` is the console logger, so a type that only logs does not declare it.
+* The file name `Parity` is the type name. `has number` is a `Number` member. Because the name says the type, you don't write it. `logger` is the console logger in every method. A different logger is passed into `from`.
 * `IsEven Boolean` is a method returning a `Boolean`. Its first two lines are tests. A test that is already a `Boolean`, like `Parity(2).IsEven`, doesn't need `is true`.
 * `Parity(4)` creates an instance. Arguments fill the members in order. `logger` is already the console logger.
 * The last line of a method is its result.

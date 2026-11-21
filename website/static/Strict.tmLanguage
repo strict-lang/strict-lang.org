@@ -511,7 +511,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>(true|false|generic|iterator|elements|value|index|other|outer)</string>
+          <string>(true|false|generic|iterator|elements|value|index|other|outer|logger)</string>
           <key>name</key>
           <string>variable.language.strict</string>
         </dict>
@@ -542,7 +542,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>((has|constant|let|with)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))</string>
+          <string>((has|constant|with)(?!([a-zA-Z]+[a-zA-Z0-9_]*)))</string>
           <key>name</key>
           <string>keyword.other.strict</string>
         </dict>

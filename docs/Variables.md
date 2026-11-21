@@ -26,7 +26,8 @@ constant NewLine = Character(10)
 mutable Colors with Length is Size.Length
 ```
 
-* **The name implies the type.** `has number` is a `Number` and `has text` is a `Text`. If the name already says it, don't repeat the type: write `has number`, not `has number Number`. When the name is different from its type, write the type after it: `has Start Number`. `logger` needs no member: it is the console logger unless `has logger` takes a different one.
+* **The name implies the type.** `has number` is a `Number` and `has text` is a `Text`. If the name already says it, don't repeat the type: write `has number`, not `has number Number`. When the name is different from its type, write the type after it: `has Start Number`.
+* **`logger` is always available.** It is the console logger in every method, so a type has no `logger` member. A different logger is passed into `from`, and you can define that logger yourself. See [Types](Types.md#creating-instances).
 * **Names starting with an uppercase letter are public**, lowercase names are private to the type. A private member that is never used is a [validation error](CodeValidations.md).
 * **Initial values** use `=`. A `has` member computed from constants, like `has number = 17 + 4`, must be a `constant` instead.
 * **Constraints** use `with`, see [Types](Types.md#constraints-with-with).
@@ -50,10 +51,11 @@ Variables are created inside a method body. They look almost the same as members
 
 | Keyword | Use it for |
 |---------|------------|
+| *(none)* | A let: a value that does not change and is not a constant. Write `fraction = value % 1`. |
 | `constant` | Values computed only from constants. They are always optimized away. |
 | `mutable` | Only when a value really changes, usually a counter in a loop. |
 
-A local that does not change has no keyword: `fraction = value % 1`. It is calculated once. That is the usual variable, including a value computed from a member or parameter.
+A local that does not change has no keyword. The line `fraction = value % 1` is a let: the compiler classifies that assignment as a let definition, and the value is calculated once. That is the usual variable, including a value computed from a member or parameter. `total = input + 5` is the same kind of line. The word `let` is not written.
 
 ```
 Floor Number
@@ -83,7 +85,16 @@ The compiler checks the rules for you. A variable that is never used, a `mutable
 
 # Computed names
 
-`name = expression` inside a method defines a computed name, evaluated again whenever it is used rather than storing one result like `let`. A type can expose a computed method the same way: `Area = Width * Height` infers its return type. Use this when the expression should follow the current values it depends on.
+A plain assignment is a let and is calculated once: `total = input + 5`. A computed name has parameters and is evaluated again whenever it is used:
+
+```
+mutable position = 3
+next(add = 1) = position + add
+next is 4
+next(2) is 5
+```
+
+A type can expose a computed method the same way: `Area = Width * Height` infers its return type. See [`Examples/ComputedRectangle.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ComputedRectangle.strict). Use a computed name when the expression should follow the current values it depends on.
 
 # See variables as they execute
 

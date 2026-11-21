@@ -65,7 +65,7 @@ Arithmetic works as in mathematics: `(1 + 2) * 3 is not 1 + 2 * 3`. These rules 
 
 # Lines are short
 
-A line has at most 120 characters, and blocks can be nested at most 5 levels deep. If a line gets long, give part of it a name with `let` or move it into its own method.
+A line has at most 120 characters, and blocks can be nested at most 5 levels deep. If a line gets long, give part of it a name with an assignment (`scaled = value * factor`) or move it into its own method.
 
 # No comments
 

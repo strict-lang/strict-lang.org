@@ -41,7 +41,7 @@ Run
 	logger.Log("100C in Kelvin: " + boiling.ToKelvin)
 ```
 
-* `has celsius Number` is a **member**. `logger` is the console logger, available in every method without a member. Declare `has logger` only to take a different logger in `from`.
+* `has celsius Number` is a **member**. `logger` is the console logger, available in every method. A different logger is passed into `from`, and you can define that logger yourself.
 * `ToFahrenheit Number` is a **method** that returns a `Number`. Method bodies are indented with one tab.
 * The first lines of each method are **tests**. Every method needs at least one test, written as a comparison with `is`. Tests run once when the code is compiled and are then removed.
 * The last line of a method is its return value. `return` is only needed to leave a method early.
@@ -91,6 +91,7 @@ The flip side: when a new feature, a design change or a new limit comes in, all 
 
 # Current developments
 
+* **No `let` keyword, and `logger` is always there.** An assignment that is not `constant` or `mutable` is a let: `total = input + 5`. `logger` is the console logger in every method. A different logger is passed into `from`.
 * **Mutation testing on every test run:** each method is mutated and tested again after its tests pass, survivors fail the run. Over 6,400 surviving mutants across the Strict packages were fixed with better tests or by removing code that made no difference, see the [November 5 update](/blog/2026/11/05/mutation-testing-for-every-test).
 * **A much richer editor:** SCrunch test results, source-line values, coverage and timings; semantic highlighting, hover, completion and F12 navigation.
 * **Libraries and exact values:** native C/C# interop, generated bindings and stepped decimals that stay exact as C# `decimal` parameters and results.

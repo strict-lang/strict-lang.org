@@ -328,17 +328,13 @@
 
       for (const lineObj of method.bodyLines) {
         let text = lineObj.text.trim();
-        if (text.startsWith('let ')) {
-          const eqIdx = text.indexOf('=');
-          if (eqIdx > 4) {
-            const varName = text.substring(4, eqIdx).trim();
-            const valExpr = text.substring(eqIdx + 1).trim();
-            const val = evaluateExpression(valExpr, methodContext);
-            locals[varName] = val;
-            recordValue(lineObj.lineIndex, val);
-            lastVal = val;
-            continue;
-          }
+        const assignment = text.match(/^(?:constant |mutable )?([A-Za-z][A-Za-z0-9]*) = (.+)$/);
+        if (assignment) {
+          const val = evaluateExpression(assignment[2].trim(), methodContext);
+          locals[assignment[1]] = val;
+          recordValue(lineObj.lineIndex, val);
+          lastVal = val;
+          continue;
         }
         const evaluated = evaluateExpression(text, methodContext);
         recordValue(lineObj.lineIndex, evaluated);

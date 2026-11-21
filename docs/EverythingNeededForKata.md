@@ -128,7 +128,7 @@ See [If](If.md).
 
 ## For
 
-`value` is the current element and `index` its position. A nested `for` also binds `index`, so keep the outer index in a `let` before the inner loop. What a method ending in `for` returns depends on its return type:
+`value` is the current element and `index` its position. A nested `for` also binds `index`, so keep the outer index in an assignment before the inner loop (`outerIndex = index`). What a method ending in `for` returns depends on its return type:
 
 | Loop | Result |
 |------|--------|

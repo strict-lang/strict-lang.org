@@ -7,11 +7,11 @@
 		</Settings>
 		<KeywordLists>
 			<Keywords name="Keywords1">if else for then from return</Keywords>
-			<Keywords name="Keywords2">has constant let with</Keywords>
+			<Keywords name="Keywords2">has constant with</Keywords>
 			<Keywords name="Keywords3">is not and or xor in to</Keywords>
 			<Keywords name="Keywords4">mutable Any Mutable Mutables</Keywords>
 			<Keywords name="Keywords5">None Boolean Booleans Number Numbers Character Characters HashCode Range Ranges Text Texts Error Errors ErrorWithValue ErrorWithValues Iterator Iterators List Lists Type Types Variable Variables Dictionary Dictionaries</Keywords>
-			<Keywords name="Keywords6">true false iterator elements value index other outer</Keywords>
+			<Keywords name="Keywords6">true false iterator elements value index other outer logger</Keywords>
 			<Keywords name="Keywords7"></Keywords>
 			<Keywords name="Keywords8"></Keywords>
 			<Keywords name="Operators1">+ - * / % ^ = ( ) , .</Keywords>

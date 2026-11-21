@@ -176,9 +176,9 @@ Square Number
       window.hljs.registerLanguage('strict', hljs => ({
         aliases: ['str'],
         keywords: {
-          keyword: 'has constant let mutable if else then for in is not and or xor return to from with as long',
+          keyword: 'has constant mutable if else then for in is not and or xor return to from with as long',
           literal: 'true false None',
-          built_in: 'value index outer',
+          built_in: 'value index outer logger',
         },
         contains: [
           hljs.QUOTE_STRING_MODE,
@@ -186,7 +186,7 @@ Square Number
           { className: 'number', begin: /\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/, relevance: 0 },
           {
             className: 'title',
-            begin: /^(?!(has|constant|mutable|let|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
+            begin: /^(?!(has|constant|mutable|if|else|for|return)\b)([A-Za-z]+|[+\-*\/%^<>=]+)(?=[( ]|$)/,
           },
           { className: 'type', begin: /\b[A-Z][A-Za-z]*\b/, relevance: 0 },
         ],
@@ -216,12 +216,12 @@ Square Number
       let firstIdentIsTitle = false;
       if (!isIndented) {
         const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith('has ') && !trimmed.startsWith('constant ') && !trimmed.startsWith('let ') && !trimmed.startsWith('mutable ')) {
+        if (trimmed && !trimmed.startsWith('has ') && !trimmed.startsWith('constant ') && !trimmed.startsWith('mutable ')) {
           firstIdentIsTitle = true;
         }
       }
 
-      const tokenRegex = /("(?:[^"\\]|\\.)*")|(\b-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|(\b(?:has|constant|let|mutable|if|else|then|for|in|is|not|and|or|xor|return|to|from|with|as|long)\b)|(\b(?:true|false|None)\b)|(\b(?:value|index|outer)\b)|(\b[A-Z][A-Za-z0-9_]*\b)|(\b[a-z_][A-Za-z0-9_]*\b)|(#.*|\/\/.*)|([^\s\w]+|\s+)/g;
+      const tokenRegex = /("(?:[^"\\]|\\.)*")|(\b-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|(\b(?:has|constant|mutable|if|else|then|for|in|is|not|and|or|xor|return|to|from|with|as|long)\b)|(\b(?:true|false|None)\b)|(\b(?:value|index|outer|logger)\b)|(\b[A-Z][A-Za-z0-9_]*\b)|(\b[a-z_][A-Za-z0-9_]*\b)|(#.*|\/\/.*)|([^\s\w]+|\s+)/g;
       let match;
       let hasSeenFirstWord = false;
 
