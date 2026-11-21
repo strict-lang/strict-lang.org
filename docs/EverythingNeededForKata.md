@@ -72,7 +72,7 @@ Use a method Strict already has (`Sum`, `Length`, `Reverse`) instead of writing 
 | `has price Number with Step 0.01` | Exact decimal precision, half-to-even rounding |
 | `constant Max = 255` | Constant member |
 | `mutable Colors` | Member that may change |
-| `let fraction = value % 1` | Variable that does not change |
+| `fraction = value % 1` | Local that does not change, calculated once |
 | `mutable count = 0` | Variable that changes |
 | `count = count + 1` | Reassignment of a mutable variable |
 

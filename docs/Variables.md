@@ -51,8 +51,9 @@ Variables are created inside a method body. They look almost the same as members
 | Keyword | Use it for |
 |---------|------------|
 | `constant` | Values computed only from constants. They are always optimized away. |
-| `let` | Everything else that doesn't change, for example a value computed from a member or parameter that is different for each instance. |
 | `mutable` | Only when a value really changes, usually a counter in a loop. |
+
+A local that does not change has no keyword: `fraction = value % 1`. It is calculated once. That is the usual variable, including a value computed from a member or parameter.
 
 ```
 Floor Number
@@ -60,7 +61,7 @@ Floor Number
 	2.4.Floor is 2
 	(0 - 2.4).Floor is -3
 	0.1.Floor is 0
-	let fraction = value % 1
+	fraction = value % 1
 	fraction < 0 then value - fraction - 1 else value - fraction
 ```
 
@@ -142,4 +143,4 @@ Process(image) Image
 	adjusted
 ```
 
-The value the caller passed in stays unchanged, and the caller uses the result: `let image = AdjustBrightness(0.25).Process(Image(Size(width, height)))`. A `mutable` parameter is the [validation error](CodeValidations.md) `ParameterMustNotBeMutableReturnTheChangedValue`.
+The value the caller passed in stays unchanged, and the caller uses the result: `image = AdjustBrightness(0.25).Process(Image(Size(width, height)))`. A `mutable` parameter is the [validation error](CodeValidations.md) `ParameterMustNotBeMutableReturnTheChangedValue`.

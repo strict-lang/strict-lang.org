@@ -15,7 +15,7 @@ These are all the kinds of lines that can appear in a method body:
 |-----------|---------|-----|
 | Test | `(1, 2, 3).Sum is 6` | [Tests](Tests.md) |
 | Constant | `constant notANumber = Error` | [Members and Variables](Variables.md) |
-| Let | `let fraction = value % 1` | [Members and Variables](Variables.md) |
+| Local | `fraction = value % 1` | [Members and Variables](Variables.md) |
 | Mutable | `mutable startIndex = 0` | [Members and Variables](Variables.md) |
 | Reassignment | `startIndex = startIndex + 1` | [Members and Variables](Variables.md) |
 | Element assignment | `image.Colors(index) = GetBrightnessAdjustedColor(normalized)` | [Lists](Lists.md) |

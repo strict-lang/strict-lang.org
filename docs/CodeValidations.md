@@ -42,7 +42,7 @@ These come from [`Names`](https://github.com/strict-lang/Strict/blob/master/Vali
 
 | Rule | Meaning |
 |------|---------|
-| `CannotUseKeywordsAsName` | A member, variable or parameter is named like a keyword, for example `has from Text` or `let constant = 1`. |
+| `CannotUseKeywordsAsName` | A member, variable or parameter is named like a keyword, for example `has from Text` or `mutable if = 1`. |
 | `ListPrefixIsNotAllowedUseImplementationTypeNameInPlural` | A member or method is named `List…` or `list…`. Use the plural of the element type instead, like `numbers`. |
 | `ConstantNameMustNotBeATypeOrMethodName` | A constant has the name of a type or of a method of its type, like `constant Number = 3`. |
 

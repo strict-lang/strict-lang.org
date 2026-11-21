@@ -60,7 +60,7 @@ Sum Number
 	mutable second = 1
 	mutable total = 0
 	for Range(1, number)
-		let next = first + second
+		next = first + second
 		if next >= number
 			return total
 		total = AddIfEven(total, next)

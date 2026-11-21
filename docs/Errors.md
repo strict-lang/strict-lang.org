@@ -19,7 +19,7 @@ to Number
 	Character("3") to Number is 3
 	constant notANumber = Error
 	Character("A") to Number is notANumber
-	let result = number - zeroCharacter
+	result = number - zeroCharacter
 	result is in Range(0, 10) then result else notANumber(value)
 ```
 
@@ -59,7 +59,7 @@ Keep the result, check it, then use the normal value. From [`Examples/ErrorHandl
 Checked Number
 	ErrorHandling(5).Checked is 10
 	ErrorHandling(0).Checked is 0
-	let found = Found
+	found = Found
 	if found is Error
 		return 0
 	found * 2
