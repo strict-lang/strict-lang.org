@@ -3,7 +3,7 @@ id: Concurrency
 title: Concurrency
 ---
 
-Strict code uses ordinary expressions and immutable values. Native compilation decides which numeric loops can run on several CPU threads or an NVIDIA GPU. There are no thread, lock or async keywords to add to your program.
+Strict code uses ordinary expressions and immutable values. Native compilation decides which numeric loops can run on several CPU threads, with SIMD and AVX, or on a GPU. NVIDIA GPUs use tensor cores and need no CUDA toolkit. AMD GPUs go through HIP. macOS uses Metal. The same source also builds to WebAssembly. There are no thread, lock or async keywords to add to your program. See [Platforms](Platforms.md).
 
 # CPU parallel loops
 
@@ -25,7 +25,7 @@ Eligible numeric loops become PTX kernels in the native executable. The runtime 
 
 Packed Q4_K, Q6_K, Q8_0, 16-bit and 32-bit data reduce memory traffic. Transformer calculations can keep intermediate results on the device, and graph replay reduces repeated host launch work. This lets a Qwen3 step run predominantly on the GPU rather than copying each matrix result back to the CPU.
 
-[Qwen3-8B measurements](MachineLearning.md#qwen3-8b-faster-than-llamacpp) now reach 150–151 decode tokens/second on an RTX 4090, with 953 aggregate tokens/second across 8 sequences and 2,357 across 32. Tiled tensor-core matrix products, fused biases, flash attention and an optional 8-bit KV cache are implemented. The native GPU runtime targets NVIDIA hardware with full CPU fallback.
+[Qwen3-8B measurements](MachineLearning.md#qwen3-8b-faster-than-llamacpp) reach 181 decode tokens/second on an RTX 4090, with 953 aggregate tokens/second across 8 sequences and 2,357 across 32. Qwen3.8 27B reaches 55.4 tokens/second, 84 with MTP drafts. Tiled tensor-core matrix products, fused biases, flash attention and an optional 8-bit KV cache are implemented. Moss image generation and H3 image and video generation use the same GPU path. The native GPU runtime targets NVIDIA hardware with full CPU fallback, with HIP for AMD and Metal on macOS.
 
 [![MlirGpu.strict in VS Code showing tests and generated GPU launch code](/img/screenshots/gpu-kernels.jpg)](/img/screenshots/gpu-kernels.jpg)
 

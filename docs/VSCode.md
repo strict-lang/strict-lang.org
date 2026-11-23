@@ -6,7 +6,7 @@ sidebar_label: The VS Code Experience
 
 Write a test, change the code, see the result. That is the everyday Strict workflow. SCrunch keeps tests running in the background and puts the feedback beside the code you are editing: passing and failing tests, execution times, coverage and the values used on each line.
 
-Thousands of small tests with subsecond feedback were a major goal for Strict. The result is an editor that feels responsive: you can try an idea and see what happened while it is still fresh in your mind. Test cost depends on the code; native profiling and model downloads are separate from this fast editing loop.
+A unit test usually finishes in well under a millisecond, so a save can retest the affected methods while the edit is still fresh. Native profiling and model downloads are separate from this editing loop.
 
 [![SCrunch showing 1,307 passing methods and per-line runtime values in the Strict repository](/img/screenshots/csv-test-explorer.jpg)](/img/screenshots/csv-test-explorer.jpg)
 

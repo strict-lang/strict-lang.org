@@ -181,7 +181,9 @@ Tabs only, one expression per line, no empty lines, no comments, no trailing bla
 
 # Ben
 
-Ben is a Strict program still in development, it is the language build on top of Strict. Strict is the DNA, Ben is the organism with memory, skills, tools and a lot of knowledge. It is not really a programming language anymore and also not like an llm, but you can talk to it via Strict or LLMs. It starts from Strict's base types, builds candidate programs for a typed kata, and keeps a program only after `strict test` accepts it. A kept program becomes a skill. The next kata can call that skill instead of searching for it again.
+Ben and TestSolver are not released. They are the higher level system on top of Strict. Strict is the exact layer underneath. Ben is the part with memory, skills, tools and a growing knowledge base. The goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds. Today 8 to 16 problems run at once. Some searches try millions of variations. A program is kept only after `strict test` accepts it, and a kept program becomes a skill the next search can call.
+
+This is not an LLM. There is no pre-training pass. It is an expert system of knowledge and skills, and it becomes more useful the more it does and learns. You can talk to it through Strict, and it can ask an LLM for a candidate, but only a program Strict verifies is kept. It starts from Strict's base types.
 
 The measured ladder (lists, toddler, beginner, loops, Codewars 8 kyu through 5 kyu, and the trap questions) is in the Ben README. This section is how to run that loop and what it is doing.
 

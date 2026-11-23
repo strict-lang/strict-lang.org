@@ -52,7 +52,7 @@ const spotlightGames = [
 ];
 
 const moreGames = [
-  { key: "quillhop", title: "Quillhop", year: 2026, genre: "Platformer", image: "games/Quillhop.webp",
+  { key: "quillhop", title: "Quillhop", year: 2026, genre: "Platformer", image: "games/Quillhop.jpg",
     desc: "Nim the Quill hops through ten chapters of a torn atlas." },
   { key: "forest", title: "Forest", year: 2026, genre: "Sample", image: "screenshots/Forest.webp",
     desc: "Fir trees on rolling hills, all in one instanced draw call." },

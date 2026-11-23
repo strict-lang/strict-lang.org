@@ -19,7 +19,7 @@ Count(searchFor Generic) Number
 
 [SCrunch in VS Code](VSCode.md) keeps the tests close to the code: ✓/✗ marks on tests, coverage dots on implementation lines, method durations and expected/actual values on failures. The Testing view groups the project by package, type and method. Save a change to test it and its dependents, then keep editing with the result in view.
 
-Line-value feedback shows what the tests used as they executed. Follow locals, assignments, loops and branch hits through a method without adding logging. Hover and **SCrunch: Show Tests for Line** connect a line to the tests behind it. Thousands of small tests with subsecond feedback are the goal for the editing loop; cached results are identified separately from fresh executions.
+Line-value feedback shows what the tests used as they executed. Follow locals, assignments, loops and branch hits through a method without adding logging. Hover and **SCrunch: Show Tests for Line** connect a line to the tests behind it. A unit test usually finishes in well under a millisecond. Cached results are identified separately from fresh executions.
 
 # Writing tests
 
@@ -95,7 +95,7 @@ The only test uses a total above 100, so a `Discount` that always takes the firs
 
 Mutants are not new source files. Strict compiles a method once into bytecode and swaps a single instruction right before execution, so a mutant needs no parsing, validation or compilation. All mutated methods of a file get their next mutant together in one round, each judged only by the tests of its own type on a fresh VM machine, so a file needs as many rounds as its most mutated method has mutants. A file with more than 16 rounds hands them to up to 16 worker processes, and folder runs test their files in parallel anyway. A mutant that loops forever stops after 100,000 steps per frame or ten times the file's normal test time.
 
-Since unit tests take milliseconds, thousands of tests per second run on the VM. A full run over the Strict repository alone executes several million mutation tests, the projects using Strict many more. The vast majority of mutants make a test line fail somewhere, which proves the change is bad. The few that survive point at badly tested code, missed corner cases, actual bugs or unused code. The Math package takes 0.7 s without and 2.4 s with mutation testing.
+Almost every unit test finishes in well under a millisecond. That is why a full run over the Strict repository executes several million mutation tests in seconds, and the projects using Strict many more. The vast majority of mutants make a test line fail somewhere, which proves the change is bad. The few that survive point at badly tested code, missed corner cases, actual bugs or unused code. The Math package takes 0.7 s without and 2.4 s with mutation testing.
 
 Everything is tested, all the time. Every single .strict method has multiple tests, so every line runs many times, and mutation testing tries every possible change hundreds of times more. All of this runs far faster than other languages ever could, because the whole language is designed around this concept.
 

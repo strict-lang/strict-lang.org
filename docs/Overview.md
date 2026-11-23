@@ -3,19 +3,21 @@ id: Overview
 title: Overview
 ---
 
-**Strict** is a simple programming language that humans can read and understand, and that computers can also understand, modify and write. Strict is incredibly fast and beats most languages in any benchmark you throw at it. The Strict VM runs many millions of lines and thousands of tests each second, required for higher level projects and all parts need to be very fast to do these complex tasks: Parsing, Unit Tests, Mutations, Caching, GPU, Networking and Interop. Most importantly: release builds use native code, parallization and GPU kernels.
+**Strict** is simple to read for humans and computers alike. Every type is one file, every method starts with its tests, and there is one way to write each thing. Release builds are native code: SIMD and AVX, automatic parallelization, NVIDIA GPUs with tensor cores, AMD GPUs, Metal on macOS and WebAssembly. Charts for LLMs, Moss and H3 image generation, H3 video, the Leibniz benchmark, game-engine stress tests and the browser games are on the [homepage](/).
+
+Almost every unit test finishes in well under a millisecond. That is why many millions of mutation tests on a large codebase finish in seconds. Parsing, tests, mutations, caching, GPU, networking and interop all have to stay that fast. [Ben and TestSolver](EverythingNeededForKata.md#ben) are the higher level system on top. They are not released. Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. They are not an LLM: there is no pre-training, and a base of expert knowledge and skills grows as they work.
 
 # What it feels like to use
 
 Open a project in [VS Code](VSCode.md), write a few examples of what a method should do and save. SCrunch runs the tests in the background, marks the results beside the source and shows the values used on each executed line. You can try an idea and follow what happened without adding logging. Semantic highlighting, hover details, completion and F12 make the rest of the code easy to explore.
 
-The Testing view connects the project overview to each type and method. Thousands of small tests with subsecond feedback are the design goal; unchanged code reuses cached results. Native profiling and large external workloads have separate execution costs. [Try the editor walkthrough](VSCode.md#start-with-a-small-example).
+The Testing view connects the project overview to each type and method. A unit test usually finishes in well under a millisecond, and unchanged code reuses cached results. Native profiling and large external workloads have separate execution costs. [Try the editor walkthrough](VSCode.md#start-with-a-small-example).
 
 # What you can build
 
 [DeltaEngine games and SoulCraft](Projects.md), website and application logic alongside ASP.NET or Vite, [neural networks and Qwen3 inference](MachineLearning.md), or [native libraries for C and C#](UsingApis.md). Keep existing frameworks and use Strict for the logic you want to test and inspect. [Stepped decimals](Decimals.md) keep exact values across application boundaries.
 
-The long-term goal is a language that computers can understand, modify and write as well as humans. Short methods, explicit examples and fast execution provide the foundation. Today's projects give that goal practical workloads.
+The long-term goal is a system that computers can understand, modify and write as well as humans. Short methods, explicit examples and fast execution are the foundation. [Ben and TestSolver](EverythingNeededForKata.md#ben), not released yet, are that next layer: they search variations, keep only programs Strict accepts, and grow a knowledge base of skills. Today's games, models and the compiler itself are the workloads that keep this layer fast.
 
 Strict is written in Strict. The compiler is a set of `.strict` packages that compiles itself into a native executable. No .NET, JVM or other runtime is needed. The C# implementation that bootstrapped the language lives on the [`dotnet` branch](https://github.com/strict-lang/Strict/tree/dotnet). All source code is at [github.com/strict-lang/Strict](https://github.com/strict-lang/Strict).
 
@@ -71,7 +73,7 @@ Values never change. `list + element` gives a new list. `mutable` exists, but on
 
 ## Fast
 
-The runtime reuses list storage where possible, rewrites uniquely owned values in place, and combines generational collection with deferred reference counting. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD, packed weights, CPU workers and NVIDIA GPUs, see [Concurrency](Concurrency.md). The recorded runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. See [Architecture](Architecture.md) for memory and build details.
+The runtime reuses list storage where possible, rewrites uniquely owned values in place, and combines generational collection with deferred reference counting. The compiler emits MLIR, which `mlir-opt`, `mlir-translate` and `clang` turn into small native executables. Native numeric loops can use SIMD and AVX, packed weights, automatic parallelization across CPU cores, NVIDIA GPUs with tensor cores, AMD GPUs and Metal on macOS. The same source also builds to WebAssembly. See [Concurrency](Concurrency.md) and [Platforms](Platforms.md). The recorded runtime benchmark reports 1 million loop iterations in 40 ms natively and 105 ms on the Strict VM. These are development measurements, not performance guarantees. See [Architecture](Architecture.md) for memory and build details.
 
 ## Small
 
@@ -111,7 +113,7 @@ See the [October 16 update](/blog/2026/10/16/strict-live-feedback-qwen3-and-inte
 
 # Why this matters
 
-Only code that is actually called is ever parsed, validated, tested and executed. This approach lets you generate millions of lines of `.strict` code and immediately discard anything that isn't needed or doesn't work.
+Only code that is actually called is ever parsed, validated, tested and executed. Unit tests usually finish in well under a millisecond, so millions of mutation tests finish in seconds. Millions of lines of code and tests per second is the goal of [Ben and TestSolver](EverythingNeededForKata.md#ben), which are not released yet.
 
 * **Fast feedback.** Formatting and type errors fail instantly, long before the VM.
 * **Deterministic builds.** Immutable trees plus one canonical code style mean no drift. `strict` even builds itself byte-identically.
