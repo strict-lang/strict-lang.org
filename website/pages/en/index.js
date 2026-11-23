@@ -36,6 +36,10 @@ const spotlightGames = [
     desc: "Fight as an Angel against Demons and Humans in real-world locations, 3D heroes with custom shaders and loot.",
     facts: ["50M downloads"],
     stores: [["Steam", "https://store.steampowered.com/app/369700/SoulCraft/"], ["Google Play", "https://play.google.com/store/apps/details?id=de.mobilebits.soulcraftdefault"], ["App Store", "https://apps.apple.com/app/soulcraft-action-rpg/id558133054"]] },
+  { key: "torinstowers", title: "Torins Towers", year: 2023, genre: "Real Time Strategy · Action", price: "Free to Play", image: "games/TorinsTowers.webp",
+    comingSoon: true,
+    desc: "Your army is your resource: sacrifice units at towers to upgrade, research and counter the enemy across 80 campaign and multiplayer levels.",
+    stores: [["Steam", "https://store.steampowered.com/app/1673670/Torins_Towers_Rise_of_Heroes/"], ["Google Play", "https://play.google.com/store/apps/details?id=net.deltaengine.towers"], ["App Store", "https://apps.apple.com/us/app/towers-rts/id1178379069"]] },
   { key: "arenawars", title: "Arena Wars", year: 2004, genre: "Real Time Strategy · Capture the Flag", price: "Free to Play", image: "ArenaWars.webp",
     comingSoon: true,
     desc: "Fast real time strategy without base building: buy units, steal the enemy flag and bring it home.",
@@ -45,13 +49,12 @@ const spotlightGames = [
   { key: "fractalzoomer", title: "FractalZoomer", year: 1997, genre: "Sample", price: "Free", image: "games/FractalZoomer.webp",
     desc: "Real time Mandelbrot and Julia explorer down to 1e35x zoom, all fractal math in Strict, running as WebGPU compute shaders in the browser.",
     facts: ["12 ms per half megapixel image in the browser", "60 fps while zooming", "deep views find their iterations by themselves"],
-    review: ["Benchmarks and details", "/docs/Benchmarks#fractalzoomer"], stores: [] },
-  { key: "webwars", title: "WebWars", year: 1999, genre: "Real Time Strategy · Capture the Flag", price: "Free", image: "games/WebWars.jpg",
-    comingSoon: true,
-    desc: "Capture the flag against a computer player, from 1999. The browser build is still being finished.", stores: [] }
+    review: ["Benchmarks and details", "/docs/Benchmarks#fractalzoomer"], stores: [] }
 ];
 
 const moreGames = [
+  { key: "starfalldefense", title: "Starfall Defense", year: 2026, genre: "Tower Defense", image: "games/StarfallDefense.webp",
+    desc: "Defend the power core across 10 sci-fi levels with laser, rocket and plasma towers." },
   { key: "quillhop", title: "Quillhop", year: 2026, genre: "Platformer", image: "games/Quillhop.jpg",
     desc: "Nim the Quill hops through ten chapters of a torn atlas." },
   { key: "forest", title: "Forest", year: 2026, genre: "Sample", image: "screenshots/Forest.webp",
@@ -76,6 +79,9 @@ const moreGames = [
     desc: "Fly through moving asteroid fields, collect fuel and points." },
   { key: "armiesofsteel", title: "Armies of Steel", year: 2005, genre: "Real Time Strategy", image: "games/ArmiesOfSteel.jpg",
     desc: "Tank skirmish from 2005, revived in 2023." },
+  { key: "webwars", title: "WebWars", year: 1999, genre: "Real Time Strategy · Capture the Flag", image: "games/WebWars.jpg",
+    comingSoon: true,
+    desc: "Capture the flag against a computer player, from 1999." },
   { key: "bentris", title: "BenTris", year: 1996, genre: "Puzzle", image: "games/BenTris.webp",
     desc: "The oldest game here, from 1996, with the recovered DOS graphics." }
 ];
@@ -574,7 +580,7 @@ function Index({ config: siteConfig }) {
       <section className="strictArcadeSection" id="games">
         <div className="wrapper">
           <div className="strictSectionHeading">
-            <p className="strictEyebrow">Quillhop, Racing Game, Tiny Bat and the smaller games run in the browser. SoulCraft, Arena Wars and WebWars are still on the way.</p>
+            <p className="strictEyebrow">Older games done by DeltaEngine, exDream, MobileBits are ported to Strict and run in the browser. Soon: SoulCraft, Arena Wars</p>
           </div>
           <div className="strictArcadeSpotlight">
             {spotlightGames.map(game => (
@@ -853,7 +859,7 @@ function Index({ config: siteConfig }) {
           </p>
           <h2><a href={doc("MachineLearning") + "#qwen3-8b-faster-than-llamacpp"}>Qwen3.8 27B &amp; Brilliance 50X Run in Strict, 30B MoE at 210.00 tok/s</a></h2>
           <p>
-            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 55.40 and 45.30 tokens/second on an RTX 4090 (84.00 with MTP drafts) — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). A game compiles to WebAssembly and WebGL 2 with <code>strict build Game.strict web</code>. Quillhop, Racing Game, Rocket Commander and the smaller samples run on the site. SoulCraft, Arena Wars and WebWars are still to come.
+            Qwen3.8 27B and the newly released <strong>Brilliance 50X</strong> reasoning model run directly in Strict with Gated DeltaNet layers, reaching 55.40 and 45.30 tokens/second on an RTX 4090 (84.00 with MTP drafts) — matching and slightly beating llama.cpp base decoding. Qwen3-Coder-30B-A3B MoE now reaches 210.00 tokens/second in Strict (ahead of llama.cpp at 190.00). A game compiles to WebAssembly and WebGL 2 with <code>strict build Game.strict web</code>. Starfall Defense, Quillhop, Racing Game, Rocket Commander and the smaller samples run on the site. SoulCraft, Torins Towers, Arena Wars and WebWars are still to come.
           </p>
           <a className="button" href={baseUrl + "blog/"}>Read the Development Blog</a>
         </div>

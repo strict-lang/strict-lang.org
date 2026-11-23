@@ -21,6 +21,32 @@
       },
       storeNote: 'Web release coming soon! Available now on Steam, Google Play, and App Store.'
     },
+    torinstowers: {
+      title: 'Torins Towers',
+      year: 2023,
+      genre: 'Real Time Strategy · Action',
+      desc: 'Your army is your resource: sacrifice units at towers to upgrade, research and counter the enemy across campaign and multiplayer levels. Ported to Strict on the DeltaEngine.',
+      webPath: '',
+      isPlayableWeb: false,
+      isComingSoon: true,
+      storeLinks: {
+        steam: 'https://store.steampowered.com/app/1673670/Torins_Towers_Rise_of_Heroes/',
+        googlePlay: 'https://play.google.com/store/apps/details?id=net.deltaengine.towers',
+        appStore: 'https://apps.apple.com/us/app/towers-rts/id1178379069'
+      },
+      storeNote: 'Web release coming soon! Available now on Steam, Google Play, and App Store.'
+    },
+    starfalldefense: {
+      title: 'Starfall Defense',
+      year: 2026,
+      genre: 'Tower Defense',
+      desc: 'Defend the power core from alien machines across 10 handcrafted levels with laser, rocket and plasma towers, pilot upgrades and the Armory shop.',
+      webPath: '/games/StarfallDefense/StarfallDefense.html',
+      isPlayableWeb: true,
+      isFreeToPlay: true,
+      storeLinks: {},
+      storeNote: 'Free to run in the browser.'
+    },
     arenawars: {
       title: 'Arena Wars',
       year: 2004,
