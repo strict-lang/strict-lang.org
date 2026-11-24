@@ -72,9 +72,9 @@ input::placeholder { color: #acbdc8; }
 .post video { width: 100%; border: 1px solid var(--strict-border); border-radius: 8px; }
 .strictHome .wrapper { max-width: 1180px; }
 .strictHome [id] { scroll-margin-top: 60px; }
-.strictHero { background: var(--strict-panel); border-bottom: 1px solid var(--strict-border); padding: 36px 0 40px; }
+.strictHero { background: var(--strict-panel); border-bottom: 1px solid var(--strict-border); padding: 36px 0 0px; }
 .strictHeroGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: start; }
-.strictHeroText h1.strictEyebrow { font-size: .78rem; line-height: 1.5; margin: 0 0 14px; }
+.strictHeroText h1.strictEyebrow { font-size: .78rem; line-height: 1.5; margin: 0 0 10px; }
 .strictHeroLead { font-size: 1.08rem; color: var(--strict-muted); margin: 0 0 18px; }
 .strictHeroSpeed { font-size: .95rem; color: #d6e5ed; border-left: 3px solid #55dd93; padding: 2px 0 2px 14px; margin: 0 0 22px; }
 .strictHeroSpeed strong { color: #55dd93; }
