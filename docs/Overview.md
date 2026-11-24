@@ -5,7 +5,7 @@ title: Overview
 
 **Strict** is simple to read for humans and computers alike. Every type is one file, every method starts with its tests, and there is one way to write each thing. Release builds are native code: SIMD and AVX, automatic parallelization, NVIDIA GPUs with tensor cores, AMD GPUs, Metal on macOS and WebAssembly. Charts for LLMs, Moss and H3 image generation, H3 video, the Leibniz benchmark, game-engine stress tests and the browser games are on the [homepage](/).
 
-Almost every unit test finishes in well under a millisecond. That is why many millions of mutation tests on a large codebase finish in seconds. Parsing, tests, mutations, caching, GPU, networking and interop all have to stay that fast. [Ben and TestSolver](EverythingNeededForKata.md#ben) are the higher level system on top. They are not released. Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. They are not an LLM: there is no pre-training, and a base of expert knowledge and skills grows as they work.
+Almost every unit test finishes in well under a millisecond. That is why many millions of mutation tests on a large codebase finish in seconds. Parsing, tests, mutations, caching, GPU, networking and interop all have to stay that fast. [Ben and Solver](EverythingNeededForKata.md#ben) are the higher level system on top. They are not released. Their goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds, 8 to 16 of them at once. They are not an LLM: there is no pre-training, and a base of expert knowledge and skills grows as they work.
 
 # What it feels like to use
 
@@ -17,7 +17,7 @@ The Testing view connects the project overview to each type and method. A unit t
 
 [DeltaEngine games and SoulCraft](Projects.md), website and application logic alongside ASP.NET or Vite, [neural networks and Qwen3 inference](MachineLearning.md), or [native libraries for C and C#](UsingApis.md). Keep existing frameworks and use Strict for the logic you want to test and inspect. [Stepped decimals](Decimals.md) keep exact values across application boundaries.
 
-The long-term goal is a system that computers can understand, modify and write as well as humans. Short methods, explicit examples and fast execution are the foundation. [Ben and TestSolver](EverythingNeededForKata.md#ben), not released yet, are that next layer: they search variations, keep only programs Strict accepts, and grow a knowledge base of skills. Today's games, models and the compiler itself are the workloads that keep this layer fast.
+The long-term goal is a system that computers can understand, modify and write as well as humans. Short methods, explicit examples and fast execution are the foundation. [Ben and Solver](EverythingNeededForKata.md#ben), not released yet, are that next layer: they search variations, keep only programs Strict accepts, and grow a knowledge base of skills. Today's games, models and the compiler itself are the workloads that keep this layer fast.
 
 Strict is written in Strict. The compiler is a set of `.strict` packages that compiles itself into a native executable. No .NET, JVM or other runtime is needed. The C# implementation that bootstrapped the language lives on the [`dotnet` branch](https://github.com/strict-lang/Strict/tree/dotnet). All source code is at [github.com/strict-lang/Strict](https://github.com/strict-lang/Strict).
 
@@ -113,7 +113,7 @@ See the [October 16 update](/blog/2026/10/16/strict-live-feedback-qwen3-and-inte
 
 # Why this matters
 
-Only code that is actually called is ever parsed, validated, tested and executed. Unit tests usually finish in well under a millisecond, so millions of mutation tests finish in seconds. Millions of lines of code and tests per second is the goal of [Ben and TestSolver](EverythingNeededForKata.md#ben), which are not released yet.
+Only code that is actually called is ever parsed, validated, tested and executed. Unit tests usually finish in well under a millisecond, so millions of mutation tests finish in seconds. Millions of lines of code and tests per second is the goal of [Ben and Solver](EverythingNeededForKata.md#ben), which are not released yet.
 
 * **Fast feedback.** Formatting and type errors fail instantly, long before the VM.
 * **Deterministic builds.** Immutable trees plus one canonical code style mean no drift. `strict` even builds itself byte-identically.

@@ -181,7 +181,7 @@ Tabs only, one expression per line, no empty lines, no comments, no trailing bla
 
 # Ben
 
-Ben and TestSolver are not released. They are the higher level system on top of Strict. Strict is the exact layer underneath. Ben is the part with memory, skills, tools and a growing knowledge base. The goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds. Today 8 to 16 problems run at once. Some searches try millions of variations. A program is kept only after `strict test` accepts it, and a kept program becomes a skill the next search can call.
+Ben and Solver are not released. They are the higher level system on top of Strict. Strict is the exact layer underneath. Ben is the part with memory, skills, tools and a growing knowledge base. The goal is millions of lines of code and tests per second, and solving new programming problems in a few seconds. Today 8 to 16 problems run at once. Some searches try millions of variations. A program is kept only after `strict test` accepts it, and a kept program becomes a skill the next search can call.
 
 This is not an LLM. There is no pre-training pass. It is an expert system of knowledge and skills, and it becomes more useful the more it does and learns. You can talk to it through Strict, and it can ask an LLM for a candidate, but only a program Strict verifies is kept. It starts from Strict's base types.
 
