@@ -33,7 +33,7 @@
   <!-- strict -->
   <rect x="24" y="208" width="680" height="60" rx="10" fill="#21434C"/>
   <text x="364" y="234" font-size="19" font-weight="600" fill="#ffffff" text-anchor="middle">strict  &lt;file&gt; | build | test | check | version</text>
-  <text x="364" y="255" font-size="12" fill="#D6EAF3" text-anchor="middle">Strict.strict, one native executable written in Strict, builds itself byte for byte</text>
+  <text x="364" y="255" font-size="12" fill="#D6EAF3" text-anchor="middle">Cli/Strict.strict, one native executable written in Strict, builds itself byte for byte</text>
 
   <rect x="728" y="208" width="208" height="60" rx="10" fill="#EAF4F9" stroke="#21434C" stroke-width="2"/>
   <text x="832" y="234" font-size="14" font-weight="600" fill="#21434C" text-anchor="middle">Bootstrap.mlir seed</text>

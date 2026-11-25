@@ -128,7 +128,7 @@ Reverse List
 
 # Filtering
 
-An `if` without `else` inside a loop is a filter: only the values of iterations where the condition is true end up in the result. From [`Examples/RemoveDuplicateWords.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveDuplicateWords.strict):
+An `if` without `else` inside a loop is a filter: only the values of iterations where the condition is true end up in the result. From [`Examples/Collections/RemoveDuplicateWords.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/RemoveDuplicateWords.strict):
 
 ```
 has texts
@@ -202,7 +202,7 @@ Count(searchFor Generic) Number
 			1
 ```
 
-**Other operators.** You can start the body line with an operator instead of using the default. `+ value` gives the same sum as above, so Strict, being very picky, would replace it with the shorter version. Multiplying is different. A body line starting with `*` gives the product. From [`Examples/ReduceButGrow.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ReduceButGrow.strict):
+**Other operators.** You can start the body line with an operator instead of using the default. `+ value` gives the same sum as above, so Strict, being very picky, would replace it with the shorter version. Multiplying is different. A body line starting with `*` gives the product. From [`Examples/Collections/ReduceButGrow.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/ReduceButGrow.strict):
 
 ```
 has numbers
@@ -307,7 +307,7 @@ for Range(0, 10)
 
 # Mutable variables in loops
 
-Sometimes a loop needs state, like a counter or the previous values. This is where `mutable` belongs. From [`Examples/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Fibonacci.strict):
+Sometimes a loop needs state, like a counter or the previous values. This is where `mutable` belongs. From [`Examples/Algorithms/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Fibonacci.strict):
 
 ```
 has number
@@ -323,7 +323,7 @@ GetNthFibonacci Number
 	second
 ```
 
-And [`Examples/RemoveParentheses.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveParentheses.strict) combines a mutable counter with filtering:
+And [`Examples/Collections/RemoveParentheses.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/RemoveParentheses.strict) combines a mutable counter with filtering:
 
 ```
 has text

@@ -49,7 +49,7 @@ sh Compiler/bootstrap.sh      # Linux, creates strict in the Strict folder
 From now on `strict` can build itself from its own `.strict` sources:
 
 ```sh
-strict build Strict.strict
+strict build Cli/Strict.strict
 ```
 
 On Windows the compiler links `strict.new.exe`, swaps it into place and keeps the running executable as `strict.old.exe` until the next build.

@@ -23,7 +23,7 @@ else if parentheses is 0
 	value
 ```
 
-An `if` often leaves a method early with `return`. From [`Examples/FizzBuzz.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/FizzBuzz.strict):
+An `if` often leaves a method early with `return`. From [`Examples/Algorithms/FizzBuzz.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/FizzBuzz.strict):
 
 ```
 Classify Text
@@ -86,7 +86,7 @@ A conditional that is one of several arguments needs brackets: `Text(value, (isS
 
 # Selector if
 
-The selector `if` starts like a block `if`, but the `if` line ends with `is` (or `is not`). Each line below it is a case with a value and `then`. It works like `switch` or `match` in other languages, but it is more powerful: a case can be any expression, any arithmetic or comparison, or a type check. From [`Examples/ArithmeticFunction.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ArithmeticFunction.strict):
+The selector `if` starts like a block `if`, but the `if` line ends with `is` (or `is not`). Each line below it is a case with a value and `then`. It works like `switch` or `match` in other languages, but it is more powerful: a case can be any expression, any arithmetic or comparison, or a type check. From [`Examples/Algorithms/ArithmeticFunction.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/ArithmeticFunction.strict):
 
 ```
 has first Number

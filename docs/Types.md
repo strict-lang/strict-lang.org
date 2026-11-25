@@ -3,7 +3,7 @@ id: Types
 title: Types
 ---
 
-Everything in Strict is a type, and every type is one `.strict` file. The file name is the type name: `Number.strict` defines `Number`, and `Examples/FizzBuzz.strict` defines `FizzBuzz`. A file starts with its [members](Variables.md), followed by its [methods](Methods.md). There are no classes, structs, interfaces, inheritance, access modifiers, `static` or `null`.
+Everything in Strict is a type, and every type is one `.strict` file. The file name is the type name: `Number.strict` defines `Number`, and `Examples/Algorithms/FizzBuzz.strict` defines `FizzBuzz`. A file starts with its [members](Variables.md), followed by its [methods](Methods.md). There are no classes, structs, interfaces, inheritance, access modifiers, `static` or `null`.
 
 ```
 has number
@@ -44,7 +44,7 @@ Call the type name with its member values in order: `FizzBuzz(3)`, `Range(2, 5)`
 
 * Members with an initial value (`has Alpha = 1`) are not arguments, but you can still pass them.
 * Members of types that need no arguments are filled automatically, so `FizzBuzz(3)` is enough. `logger` is the console logger and is not a constructor argument.
-* A `mutable` member that isn't passed gets its default value, see [`Examples/AutofilledMutable.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/AutofilledMutable.strict).
+* A `mutable` member that isn't passed gets its default value, see [`Examples/Collections/AutofilledMutable.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/AutofilledMutable.strict).
 * If the only member is a list, the arguments become that list: `ReverseList(1, 2, 3, 4)` fills `has numbers` with `(1, 2, 3, 4)`.
 
 A type can define a custom constructor with `from`. It runs instead of filling the members directly. [`Character.strict`](https://github.com/strict-lang/Strict/blob/master/Character.strict) creates a character from a single-letter text:

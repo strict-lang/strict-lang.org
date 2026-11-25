@@ -71,9 +71,9 @@ Official Mojo and MAX examples from the [modular repository](https://github.com/
 
 | Sample | Mojo | Strict |
 |---|---:|---:|
-| Leibniz, whole program | 14 lines ([leibniz.mojo](https://github.com/niklas-heer/speed-comparison/blob/master/src/leibniz.mojo)) | the calculation is 4 lines ([Leibniz.strict](https://github.com/strict-lang/Strict/blob/master/Examples/Leibniz.strict)) |
+| Leibniz, whole program | 14 lines ([leibniz.mojo](https://github.com/niklas-heer/speed-comparison/blob/master/src/leibniz.mojo)) | the calculation is 4 lines ([Leibniz.strict](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Leibniz.strict)) |
 | Complex number type with operators | 110 lines and 184 lines of tests in a second file (`operators/my_complex.mojo`) | 31 lines, 12 of them tests ([Complex.strict](https://github.com/strict-lang/Strict/blob/master/Math/Complex.strict)) |
-| Add two lists on the GPU | 43 lines (`gpu-functions/vector_addition.mojo`) | 4 lines (`Added` in [Gpt2Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Block.strict)) |
+| Add two lists on the GPU | 43 lines (`gpu-functions/vector_addition.mojo`) | 4 lines (`Added` in [Gpt2Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2Block.strict)) |
 | Sum of a list on the GPU | 125 lines (`gpu-functions/reduction.mojo`) | 4 lines (`Sum` in [List.strict](https://github.com/strict-lang/Strict/blob/master/List.strict)) |
 | Change every pixel of an image | 72 lines, grayscale (`gpu-functions/grayscale.mojo`) | 11 lines, brightness ([AdjustBrightness.strict](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/AdjustBrightness.strict)) |
 | Matrix product | 68 lines, any size on the GPU (`gpu-functions/naive_matrix_multiplication.mojo`) | 10 lines, 4x4 only (`*` in [Matrix.strict](https://github.com/strict-lang/Strict/blob/master/Math/Matrix.strict)) |

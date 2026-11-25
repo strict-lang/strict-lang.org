@@ -94,7 +94,7 @@ next is 4
 next(2) is 5
 ```
 
-A type can expose a computed method the same way: `Area = Width * Height` infers its return type. See [`Examples/ComputedRectangle.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ComputedRectangle.strict). Use a computed name when the expression should follow the current values it depends on.
+A type can expose a computed method the same way: `Area = Width * Height` infers its return type. See [`Examples/Algorithms/ComputedRectangle.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/ComputedRectangle.strict). Use a computed name when the expression should follow the current values it depends on.
 
 # See variables as they execute
 

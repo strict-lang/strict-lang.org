@@ -46,7 +46,7 @@ A Boolean expression standing on its own must be true, not just in tests. An unh
 # Running tests
 
 ```sh
-strict test Examples/FizzBuzz.strict
+strict test Examples/Algorithms/FizzBuzz.strict
 ```
 
 `test` collects the inline tests of every method into a generated `$Tests` method and runs it on the Strict VM, in memory and without the MLIR tools. Each executed test reports its source location and elapsed time. A failed test also prints the value it actually got:
@@ -130,19 +130,19 @@ Mutation runs can't write or delete files, open sockets or run tools, so a mutan
 `strict test Examples` tests a folder and its package subfolders. Successful tests write `Name.strictbinary` next to the source, containing the bytecode of used types and references to matching caches in the same package. Running, testing and building reuse this bytecode while its tracked inputs are unchanged. Inputs include source files and files read by tests through `Process.FilesRead`; replacing `strict.exe` alone does not invalidate the cache. A cached test result does not measure a fresh execution.
 
 ```sh
-strict test Examples/FizzBuzz.strict lines
+strict test Examples/Algorithms/FizzBuzz.strict lines
 ```
 
 The `lines` option builds and runs tests natively. It reports how often each source line ran, its total time including callees, and its self time excluding them. It needs the LLVM tools and has native-build overhead. VS Code exposes it as **Run with Coverage** and marks slow lines. **SCrunch: Time All Tests (without cache)** forces fresh test timings.
 
 # Values on executed lines
 
-`strict test <file> values` runs on the VM and reports source-line hit counts and captured values. The editor uses these records for execution feedback. For values that change across repeated hits, counts and summaries describe the execution rather than pretending there is one fixed value. Text and collection summaries keep the feedback readable. For [`Examples/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Fibonacci.strict):
+`strict test <file> values` runs on the VM and reports source-line hit counts and captured values. The editor uses these records for execution feedback. For values that change across repeated hits, counts and summaries describe the execution rather than pretending there is one fixed value. Text and collection summaries keep the feedback readable. For [`Examples/Algorithms/Fibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Fibonacci.strict):
 
 ```
-Value Examples/Fibonacci.strict:line 5 hit 2 times: first = 1
-Value Examples/Fibonacci.strict:line 7 hit 11 times, each: 2, 3, 4, 2, 3, 4, 5, 6, 7, 8, ...
-Value Examples/Fibonacci.strict:line 8 hit 11 times, each: 2, 3, 5, 2, 3, 5, 8, 13, 21, 34, ...
+Value Examples/Algorithms/Fibonacci.strict:line 5 hit 2 times: first = 1
+Value Examples/Algorithms/Fibonacci.strict:line 7 hit 11 times, each: 2, 3, 4, 2, 3, 4, 5, 6, 7, 8, ...
+Value Examples/Algorithms/Fibonacci.strict:line 8 hit 11 times, each: 2, 3, 5, 2, 3, 5, 8, 13, 21, 34, ...
 ```
 
 A line with the same values on every hit shows its substituted calculation, like `sum = 5 + 3 = 8`; otherwise up to 10 values per hit follow `each:`. Test lines print nothing, because a passed test is true.

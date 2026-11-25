@@ -735,7 +735,7 @@ function Index({ config: siteConfig }) {
                 </div>
               </div>
             </div>
-            <p className="strictBenchNote">Three lines of plain Strict, no intrinsics, unrolling or threads: the compiler vectorizes the loop and splits it over all cores. A GPU version works too, but its startup cost doesn't pay off for a 10 ms job. Sources: <a href={siteConfig.repoUrl + "/blob/master/Examples/Leibniz.strict"}>Leibniz.strict</a>, <a href="https://github.com/niklas-heer/speed-comparison/tree/master/src">speed-comparison</a>. <a href="docs/Modular">Detailed comparision of Mojo/MAX from Modular in the docs</a>.</p>
+            <p className="strictBenchNote">Three lines of plain Strict, no intrinsics, unrolling or threads: the compiler vectorizes the loop and splits it over all cores. A GPU version works too, but its startup cost doesn't pay off for a 10 ms job. Sources: <a href={siteConfig.repoUrl + "/blob/master/Examples/Algorithms/Leibniz.strict"}>Leibniz.strict</a>, <a href="https://github.com/niklas-heer/speed-comparison/tree/master/src">speed-comparison</a>. <a href="docs/Modular">Detailed comparision of Mojo/MAX from Modular in the docs</a>.</p>
           </div>
 
           <div className="strictPerfGrid" id="llm">

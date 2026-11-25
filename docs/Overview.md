@@ -23,7 +23,7 @@ Strict is written in Strict. The compiler is a set of `.strict` packages that co
 
 # A first look
 
-Every `.strict` file is one type, and the file name is the type name. Here is [`Examples/TemperatureConverter.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/TemperatureConverter.strict):
+Every `.strict` file is one type, and the file name is the type name. Here is [`Examples/Algorithms/TemperatureConverter.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/TemperatureConverter.strict):
 
 ```
 has celsius Number

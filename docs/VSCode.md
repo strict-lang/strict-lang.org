@@ -19,7 +19,7 @@ The Test Explorer and inline annotations in the actual Strict repository. Open t
   <a href="/img/SCrunchDemo.mp4">Watch the edit/test walkthrough</a>
 </video>
 
-In `Examples/Fibonacci.strict`, the tests come first and fail with the actual values they got. Writing the loop turns them green, and every line shows its hit count and the values it produced. This walkthrough uses actual VS Code captures; pauses are shortened.
+In `Examples/Algorithms/Fibonacci.strict`, the tests come first and fail with the actual values they got. Writing the loop turns them green, and every line shows its hit count and the values it produced. This walkthrough uses actual VS Code captures; pauses are shortened.
 
 # Start with a small example
 

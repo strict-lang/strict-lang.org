@@ -42,4 +42,4 @@ Generated [C# bindings](UsingApis.md#call-strict-from-c-and-c) carry the scale i
 
 Include examples for rounding ties, negative values, the smallest accepted step and overflow. Those examples document the contract for both your Strict callers and your host application. SCrunch shows the actual values, so an accidental precision change is visible while you edit.
 
-See [`Examples/Prices.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Prices.strict) for the core syntax, [Types](Types.md#constraints-with-with) for other constraints, and [Using APIs](UsingApis.md) for integrating the result into C or C# applications.
+See [`Examples/Algorithms/Prices.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Prices.strict) for the core syntax, [Types](Types.md#constraints-with-with) for other constraints, and [Using APIs](UsingApis.md) for integrating the result into C or C# applications.

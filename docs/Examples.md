@@ -6,9 +6,9 @@ title: Examples
 The [`Examples`](https://github.com/strict-lang/Strict/tree/master/Examples) folder holds example programs that show the current language features. It is also a playground for katas and for trying out new syntax. Every example can be tested, run and built:
 
 ```sh
-strict Examples/FizzBuzz.strict
-strict test Examples/FizzBuzz.strict
-strict build Examples/FizzBuzz.strict
+strict Examples/Algorithms/FizzBuzz.strict
+strict test Examples/Algorithms/FizzBuzz.strict
+strict build Examples/Algorithms/FizzBuzz.strict
 ```
 
 # Showcase
@@ -28,7 +28,7 @@ Run
 	logger.Log(strict.Greet)
 ```
 
-[`Examples/ReverseList.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ReverseList.strict): a `for` loop over a reversed range builds the result list.
+[`Examples/Collections/ReverseList.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/ReverseList.strict): a `for` loop over a reversed range builds the result list.
 
 ```
 has numbers
@@ -38,7 +38,7 @@ Reverse Numbers
 		numbers(index)
 ```
 
-[`Examples/ReduceButGrow.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/ReduceButGrow.strict): `* value` multiplies all elements.
+[`Examples/Collections/ReduceButGrow.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/ReduceButGrow.strict): `* value` multiplies all elements.
 
 ```
 has numbers
@@ -50,7 +50,7 @@ GetMultiplicationOfNumbers Number
 		* value
 ```
 
-[`Examples/EvenFibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/EvenFibonacci.strict): mutable variables, an early `return`, and an `if`/`else` as the result of a method.
+[`Examples/Algorithms/EvenFibonacci.strict`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/EvenFibonacci.strict): mutable variables, an early `return`, and an `if`/`else` as the result of a method.
 
 ```
 has number
@@ -82,39 +82,39 @@ More showcases are on the other pages: [FizzBuzz](If.md#block-if), [ArithmeticFu
 
 **Programs and katas**
 
-- [`AreaCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/AreaCalculator.strict): a rectangle's area and perimeter from width and height.
-- [`ArithmeticFunction`](https://github.com/strict-lang/Strict/blob/master/Examples/ArithmeticFunction.strict): applies the operation named by a text with a selector `if`.
-- [`AutofilledMutable`](https://github.com/strict-lang/Strict/blob/master/Examples/AutofilledMutable.strict): a `mutable` member gets a default when it isn't passed.
-- [`Beeramid`](https://github.com/strict-lang/Strict/blob/master/Examples/Beeramid.strict): kata that counts the complete levels of a beer can pyramid you can buy, recursively.
-- [`ConvertingNumbers`](https://github.com/strict-lang/Strict/blob/master/Examples/ConvertingNumbers.strict): converts a list of numbers to texts with a `for` expression.
-- [`EvenFibonacci`](https://github.com/strict-lang/Strict/blob/master/Examples/EvenFibonacci.strict): sums the even Fibonacci numbers below a limit (Project Euler 2).
+- [`AreaCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/AreaCalculator.strict): a rectangle's area and perimeter from width and height.
+- [`ArithmeticFunction`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/ArithmeticFunction.strict): applies the operation named by a text with a selector `if`.
+- [`AutofilledMutable`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/AutofilledMutable.strict): a `mutable` member gets a default when it isn't passed.
+- [`Beeramid`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Beeramid.strict): kata that counts the complete levels of a beer can pyramid you can buy, recursively.
+- [`ConvertingNumbers`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/ConvertingNumbers.strict): converts a list of numbers to texts with a `for` expression.
+- [`EvenFibonacci`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/EvenFibonacci.strict): sums the even Fibonacci numbers below a limit (Project Euler 2).
 - [`ExecuteOperation`](https://github.com/strict-lang/Strict/blob/master/Examples/ExecuteOperation.strict): adds or subtracts two `Register` values through operator methods.
-- [`Fibonacci`](https://github.com/strict-lang/Strict/blob/master/Examples/Fibonacci.strict): the nth Fibonacci number with mutable variables and a `Range` loop.
-- [`FindFirstNonConsecutiveNumber`](https://github.com/strict-lang/Strict/blob/master/Examples/FindFirstNonConsecutiveNumber.strict): the first element that isn't one more than the one before it.
-- [`FindNumberCount`](https://github.com/strict-lang/Strict/blob/master/Examples/FindNumberCount.strict): counts the numbers in a range by producing 1 per iteration.
-- [`FizzBuzz`](https://github.com/strict-lang/Strict/blob/master/Examples/FizzBuzz.strict): classifies a number as Fizz, Buzz, FizzBuzz or itself.
-- [`GcdCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/GcdCalculator.strict): the greatest common divisor with Euclid's algorithm.
-- [`Grade`](https://github.com/strict-lang/Strict/blob/master/Examples/Grade.strict): turns a score into a letter grade with `if`/`else if`.
+- [`Fibonacci`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Fibonacci.strict): the nth Fibonacci number with mutable variables and a `Range` loop.
+- [`FindFirstNonConsecutiveNumber`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/FindFirstNonConsecutiveNumber.strict): the first element that isn't one more than the one before it.
+- [`FindNumberCount`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/FindNumberCount.strict): counts the numbers in a range by producing 1 per iteration.
+- [`FizzBuzz`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/FizzBuzz.strict): classifies a number as Fizz, Buzz, FizzBuzz or itself.
+- [`GcdCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/GcdCalculator.strict): the greatest common divisor with Euclid's algorithm.
+- [`Grade`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/Grade.strict): turns a score into a letter grade with `if`/`else if`.
 - [`Greeter`](https://github.com/strict-lang/Strict/blob/master/Examples/Greeter.strict): returns and logs "Hello, X!".
 - [`HelloLogger`](https://github.com/strict-lang/Strict/blob/master/Examples/HelloLogger.strict): the minimal hello world, logs "Hi".
 - [`Instruction`](https://github.com/strict-lang/Strict/blob/master/Examples/Instruction.strict) and [`InstructionType`](https://github.com/strict-lang/Strict/blob/master/Examples/InstructionType.strict): a toy virtual machine instruction and an enum of its kinds.
-- [`LinkedListAnalyzer`](https://github.com/strict-lang/Strict/blob/master/Examples/LinkedListAnalyzer.strict): counts loop steps up to a maximum with a mutable counter.
-- [`MatchingLoopFinder`](https://github.com/strict-lang/Strict/blob/master/Examples/MatchingLoopFinder.strict): finds a matching loop bracket, from a Brainfuck interpreter kata.
+- [`LinkedListAnalyzer`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/LinkedListAnalyzer.strict): counts loop steps up to a maximum with a mutable counter.
+- [`MatchingLoopFinder`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/MatchingLoopFinder.strict): finds a matching loop bracket, from a Brainfuck interpreter kata.
 - [`Node`](https://github.com/strict-lang/Strict/blob/master/Examples/Node.strict): returns its number plus one.
-- [`NumberSummer`](https://github.com/strict-lang/Strict/blob/master/Examples/NumberSummer.strict): sums a list with a mutable total and logs it.
+- [`NumberSummer`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/NumberSummer.strict): sums a list with a mutable total and logs it.
 - [`Pixel`](https://github.com/strict-lang/Strict/blob/master/Examples/Pixel.strict): an RGB pixel with `Brighten` and `Darken`.
 - [`Processor`](https://github.com/strict-lang/Strict/blob/master/Examples/Processor.strict): returns `true`, `false` or a text, showing a `Boolean or Text` return type.
 - [`PureAdder`](https://github.com/strict-lang/Strict/blob/master/Examples/PureAdder.strict): adds two numbers, the smallest pure function.
-- [`ReduceButGrow`](https://github.com/strict-lang/Strict/blob/master/Examples/ReduceButGrow.strict): multiplies all numbers of a list with `* value`.
+- [`ReduceButGrow`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/ReduceButGrow.strict): multiplies all numbers of a list with `* value`.
 - [`Register`](https://github.com/strict-lang/Strict/blob/master/Examples/Register.strict): three numbers with `+`, `-`, `*` and `/` operator methods.
-- [`RemoveDuplicateWords`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveDuplicateWords.strict): keeps the first occurrence of each text.
-- [`RemoveExclamation`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveExclamation.strict): removes every "!" from a text.
-- [`RemoveParentheses`](https://github.com/strict-lang/Strict/blob/master/Examples/RemoveParentheses.strict): removes parenthesized parts of a text with a mutable nesting counter.
-- [`ReverseList`](https://github.com/strict-lang/Strict/blob/master/Examples/ReverseList.strict): reverses a list by iterating a reversed `Range`.
+- [`RemoveDuplicateWords`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/RemoveDuplicateWords.strict): keeps the first occurrence of each text.
+- [`RemoveExclamation`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/RemoveExclamation.strict): removes every "!" from a text.
+- [`RemoveParentheses`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/RemoveParentheses.strict): removes parenthesized parts of a text with a mutable nesting counter.
+- [`ReverseList`](https://github.com/strict-lang/Strict/blob/master/Examples/Collections/ReverseList.strict): reverses a list by iterating a reversed `Range`.
 - [`ShorterPath`](https://github.com/strict-lang/Strict/blob/master/Examples/ShorterPath.strict): builds a direction text of "N" and "E" from north and east counts.
-- [`SimpleCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/SimpleCalculator.strict): adds and multiplies two numbers.
+- [`SimpleCalculator`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/SimpleCalculator.strict): adds and multiplies two numbers.
 - [`Sum`](https://github.com/strict-lang/Strict/blob/master/Examples/Sum.strict): logs the sum of the numbers passed on the command line.
-- [`TemperatureConverter`](https://github.com/strict-lang/Strict/blob/master/Examples/TemperatureConverter.strict): Celsius to Fahrenheit and Kelvin.
+- [`TemperatureConverter`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/TemperatureConverter.strict): Celsius to Fahrenheit and Kelvin.
 
 **Base type tour**, in [`Examples/BaseTypesTest`](https://github.com/strict-lang/Strict/tree/master/Examples/BaseTypesTest):
 
@@ -126,7 +126,7 @@ More showcases are on the other pages: [FizzBuzz](If.md#block-if), [ArithmeticFu
 
 **Parsing demos**, in [`Examples/Parsing`](https://github.com/strict-lang/Strict/tree/master/Examples/Parsing): [`ParseExpressions`](https://github.com/strict-lang/Strict/blob/master/Examples/Parsing/ParseExpressions.strict), [`ParseHelloLogger`](https://github.com/strict-lang/Strict/blob/master/Examples/Parsing/ParseHelloLogger.strict) and [`ParseMethodHeaders`](https://github.com/strict-lang/Strict/blob/master/Examples/Parsing/ParseMethodHeaders.strict) classify source lines the way an early parser did.
 
-**Native smoke tests and probes**: [`NativeArithmetic`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeArithmetic.strict), [`NativeConditions`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeConditions.strict), [`NativeLoop`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeLoop.strict), [`NumberStats`](https://github.com/strict-lang/Strict/blob/master/Examples/NumberStats.strict), [`MemoryPressure`](https://github.com/strict-lang/Strict/blob/master/Examples/MemoryPressure.strict) (appends 20,000 numbers to stress the collector), [`DirProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/DirProbe.strict) and [`ProcessProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/ProcessProbe.strict).
+**Native smoke tests and probes**: [`NativeArithmetic`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeArithmetic.strict), [`NativeConditions`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeConditions.strict), [`NativeLoop`](https://github.com/strict-lang/Strict/blob/master/Examples/NativeLoop.strict), [`NumberStats`](https://github.com/strict-lang/Strict/blob/master/Examples/Algorithms/NumberStats.strict), [`MemoryPressure`](https://github.com/strict-lang/Strict/blob/master/Examples/MemoryPressure.strict) (appends 20,000 numbers to stress the collector), [`DirProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/DirProbe.strict) and [`ProcessProbe`](https://github.com/strict-lang/Strict/blob/master/Examples/ProcessProbe.strict).
 
 # Games, websites and larger programs
 

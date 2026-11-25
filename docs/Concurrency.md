@@ -11,7 +11,7 @@ A collecting `for` with at least 256 elements can use a worker pool when its bod
 
 Logging, files, processes, random numbers, list writes, constructing texts or lists, and nested collecting loops exclude a loop from this path. Loops with side effects or unsupported control flow remain serial. This is a native compiler optimization; running bytecode on the Strict VM does not use these native loop kernels.
 
-The implementation is in [MlirParallel](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirParallel.strict) and [MlirPurity](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirPurity.strict). [NeuralNetworks/Layer](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Layer.strict) uses this for matrix products, computing one result for each weight row.
+The implementation is in [MlirParallel](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLoops/MlirParallel.strict) and [MlirPurity](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirPurity.strict). [NeuralNetworks/Layer](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Layer.strict) uses this for matrix products, computing one result for each weight row.
 
 # SIMD and packed numbers
 
@@ -29,7 +29,7 @@ Packed Q4_K, Q6_K, Q8_0, 16-bit and 32-bit data reduce memory traffic. Transform
 
 [![MlirGpu.strict in VS Code showing tests and generated GPU launch code](/img/screenshots/gpu-kernels.jpg)](/img/screenshots/gpu-kernels.jpg)
 
-The compiler builds GPU launch code in Strict. [Open MlirGpu.strict](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirGpu.strict).
+The compiler builds GPU launch code in Strict. [Open MlirGpu.strict](https://github.com/strict-lang/Strict/blob/master/Compiler/Gpu/MlirGpu.strict).
 
 # Measure your workload
 

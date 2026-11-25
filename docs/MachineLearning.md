@@ -10,20 +10,20 @@ Strict has working [NeuralNetworks](https://github.com/strict-lang/Strict/tree/m
 From the Strict repository root:
 
 ```sh
-strict build NeuralNetworks/Xor.strict
-strict build NeuralNetworks/Iris.strict
+strict build NeuralNetworks/Training/Xor.strict
+strict build NeuralNetworks/Training/Iris.strict
 strict build MachineLearning/IrisClassifiers.strict
 ```
 
-Run the resulting executable next to each source file to try it. Small programs can also run on the VM with `strict NeuralNetworks/Xor.strict`.
+Run the resulting executable next to each source file to try it. Small programs can also run on the VM with `strict NeuralNetworks/Training/Xor.strict`.
 
 | Example | What it demonstrates |
 |---------|----------------------|
-| [LogicGates](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/LogicGates.strict) and [Xor](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Xor.strict) | Perceptrons and a hidden layer |
-| [Iris](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Iris.strict) | Classification, softmax and cross-entropy training |
-| [ActivationComparison](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/ActivationComparison.strict) and [OptimizerComparison](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/OptimizerComparison.strict) | Activation functions, momentum, RMSprop and Adam |
-| [BinaryAddition](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/BinaryAddition.strict) and [ReberPrediction](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/ReberPrediction.strict) | Recurrent networks and GRUs learning sequences |
-| [Neuroevolution](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Neuroevolution.strict) and [ArmEvolution](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/ArmEvolution.strict) | Evolving network weights and robot-arm joint angles |
+| [LogicGates](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/LogicGates.strict) and [Xor](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/Xor.strict) | Perceptrons and a hidden layer |
+| [Iris](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/Iris.strict) | Classification, softmax and cross-entropy training |
+| [ActivationComparison](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/ActivationComparison.strict) and [OptimizerComparison](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/OptimizerComparison.strict) | Activation functions, momentum, RMSprop and Adam |
+| [BinaryAddition](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/BinaryAddition.strict) and [ReberPrediction](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/ReberPrediction.strict) | Recurrent networks and GRUs learning sequences |
+| [Neuroevolution](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/Neuroevolution.strict) and [ArmEvolution](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Training/ArmEvolution.strict) | Evolving network weights and robot-arm joint angles |
 | [IrisClusters](https://github.com/strict-lang/Strict/blob/master/MachineLearning/IrisClusters.strict) and [IrisClassifiers](https://github.com/strict-lang/Strict/blob/master/MachineLearning/IrisClassifiers.strict) | K-means, nearest neighbors, naive Bayes, decision trees and random forests |
 | [MarkovText](https://github.com/strict-lang/Strict/blob/master/MachineLearning/MarkovText.strict) | Character generation from a downloaded text corpus |
 
@@ -32,8 +32,8 @@ Larger datasets belong outside the compiler repository. The [Mnist project](http
 # GPT-2 and Qwen3 inference
 
 ```sh
-strict build NeuralNetworks/Gpt2Text.strict
-strict build NeuralNetworks/Qwen3Text.strict
+strict build NeuralNetworks/Models/Gpt2Text.strict
+strict build NeuralNetworks/Models/Qwen3Text.strict
 ```
 
 These examples download model files on first use: GPT-2 124M uses a roughly 548 MB safetensors file in `gpt2/`, and Qwen3 0.6B uses a roughly 805 MB Q8_0 GGUF file in `qwen3/`. Use native builds for the real models; the VM is not suitable for them. Inline tests use tiny model fixtures instead.
@@ -77,11 +77,11 @@ An optional **8-bit key/value cache uses 74 KB instead of 295 KB per token** for
 Build the benchmark from the repository root, then pass a local GGUF file:
 
 ```sh
-strict build NeuralNetworks/Qwen3Benchmark.strict
-NeuralNetworks/Qwen3Benchmark.exe path/to/Qwen3-8B-Q4_K_M.gguf 4 128
+strict build NeuralNetworks/Models/Qwen3Benchmark.strict
+NeuralNetworks/Models/Qwen3Benchmark.exe path/to/Qwen3-8B-Q4_K_M.gguf 4 128
 ```
 
-On Linux run `NeuralNetworks/Qwen3Benchmark` without the `.exe` suffix. The second argument keeps the weights in their quantized form; the final argument selects the number of generated tokens.
+On Linux run `NeuralNetworks/Models/Qwen3Benchmark` without the `.exe` suffix. The second argument keeps the weights in their quantized form; the final argument selects the number of generated tokens.
 
 ![Qwen3-8B inference pipeline in Strict at 150 tokens per second](/img/QwenInference.svg)
 
@@ -93,6 +93,6 @@ Graph replay, tiled tensor-core matrix products, fused bias operations, flash at
 
 # More than inference
 
-The package also trains networks and implements recurrent models, GRUs, optimizers and evolutionary algorithms. [Qwen3CoderText](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3CoderText.strict) runs Qwen3-Coder-30B-A3B with expert routing. Tiny model fixtures compare logits and generated tokens with reference implementations, keeping the tests small while real models remain external downloads.
+The package also trains networks and implements recurrent models, GRUs, optimizers and evolutionary algorithms. [Qwen3CoderText](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3CoderText.strict) runs Qwen3-Coder-30B-A3B with expert routing. Tiny model fixtures compare logits and generated tokens with reference implementations, keeping the tests small while real models remain external downloads.
 
 Open a block or layer in [VS Code](VSCode.md), press F12 into the operations it uses and read the tests beside the implementation. [Line values and coverage](Tests.md) make these algorithms easier to follow, using the same workflow as your own application code.

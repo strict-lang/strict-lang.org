@@ -13,12 +13,13 @@ This is a substantial real-world Strict application: open it in [VS Code](VSCode
 
 | Package | Responsibility |
 |---------|----------------|
-| [root types](BaseTypes.md) | `Number`, `Text`, `List`, `Dictionary`, `Error`, `File`, ... define the language and are its documentation, [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) is the `strict` command |
+| [root types](BaseTypes.md) | `Number`, `Text`, `List`, `Dictionary`, `Error`, `File`, ... define the language and are its documentation |
 | [`Expressions`](#expressions) | Tokenizer, syntax tree, statements, header tokens, type shapes, known types, and type inference over all packages |
 | [`Validators`](#validators) | Unused and never-changed variables, names, magic numbers, loop rules, constant folding, limits (`ValidateCheck` behind `strict check`) |
 | [`Bytecode`](#bytecode) | Compiles a type into register-based instructions (`FileCompiler`), inlines constants, removes tests, links used types, writes `.strictbinary` |
 | [`Runtime`](#runtime) | The Strict VM that runs those instructions (`Execute` behind `strict <file>` and `strict test`) and mutation testing |
 | [`Compiler`](#compiler) | `NativeBuild` behind `strict build`: instructions to MLIR, the native runtime (texts, lists, files, processes, collector), then `mlir-opt`, `mlir-translate` and `clang` |
+| [`Cli`](https://github.com/strict-lang/Strict/tree/master/Cli) | [`Cli/Strict.strict`](https://github.com/strict-lang/Strict/blob/master/Cli/Strict.strict) and [`Cli/Command.strict`](https://github.com/strict-lang/Strict/blob/master/Cli/Command.strict) implement the `strict` command |
 | [VS Code extension](#tools) | Edit, test, check and run `.strict` files, all through `strict` |
 
 # How a program is compiled
@@ -49,22 +50,22 @@ The [current VM benchmark](https://github.com/strict-lang/Strict/blob/master/Run
 
 # Expressions
 
-[`Expressions`](https://github.com/strict-lang/Strict/tree/master/Expressions) is the compiler front end. It tokenizes and parses Strict lines into [`SyntaxNode`](https://github.com/strict-lang/Strict/blob/master/Expressions/SyntaxNode.strict) trees, reads type and method headers, and infers the type of every statement. `FileCompiler` calls [`ResolveCheck`](https://github.com/strict-lang/Strict/blob/master/Expressions/ResolveCheck.strict) to build the type inference for all files.
+[`Expressions`](https://github.com/strict-lang/Strict/tree/master/Expressions) is the compiler front end (with syntax types in [`Expressions/Syntax`](https://github.com/strict-lang/Strict/tree/master/Expressions/Syntax)). It tokenizes and parses Strict lines into [`SyntaxNode`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/SyntaxNode.strict) trees, reads type and method headers, and infers the type of every statement. `FileCompiler` calls [`ResolveCheck`](https://github.com/strict-lang/Strict/blob/master/Expressions/ResolveCheck.strict) to build the type inference for all files.
 
 **Parsing**
 
-- [`Tokenizer`](https://github.com/strict-lang/Strict/blob/master/Expressions/Tokenizer.strict): splits a source line into words, numbers, quoted texts and operators.
+- [`Tokenizer`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/Tokenizer.strict): splits a source line into words, numbers, quoted texts and operators.
 - [`PhraseTokenizer`](https://github.com/strict-lang/Strict/blob/master/Expressions/PhraseTokenizer.strict): splits a phrase on spaces into tokens.
 - [`NumberChars`](https://github.com/strict-lang/Strict/blob/master/Expressions/NumberChars.strict): checks whether a text starts with a digit or a minus sign.
-- [`SyntaxNode`](https://github.com/strict-lang/Strict/blob/master/Expressions/SyntaxNode.strict): a syntax tree node (kind, text, children) with precedence-aware printing.
-- [`SyntaxParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/SyntaxParser.strict): precedence-based expression parser for binary operators, `not`, negation, calls, members, lists and literals.
-- [`StatementParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/StatementParser.strict): parses one line into a statement: declaration, `return`, `if`, `for`, `else`, reassignment or expression.
+- [`SyntaxNode`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/SyntaxNode.strict): a syntax tree node (kind, text, children) with precedence-aware printing.
+- [`SyntaxParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/SyntaxParser.strict): precedence-based expression parser for binary operators, `not`, negation, calls, members, lists and literals.
+- [`StatementParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/StatementParser.strict): parses one line into a statement: declaration, `return`, `if`, `for`, `else`, reassignment or expression.
 - [`BodyParser`](https://github.com/strict-lang/Strict/blob/master/Expressions/BodyParser.strict): parses indented method body lines into nested blocks by tab depth.
 - [`ShuntingYard`](https://github.com/strict-lang/Strict/blob/master/Expressions/ShuntingYard.strict): converts infix expressions to postfix by operator precedence.
-- [`HeaderTokens`](https://github.com/strict-lang/Strict/blob/master/Expressions/HeaderTokens.strict): reads member and method headers: declared or implicit types, parameters, return type and whether it returns `Mutable`.
+- [`HeaderTokens`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/HeaderTokens.strict): reads member and method headers: declared or implicit types, parameters, return type and whether it returns `Mutable`.
 - [`TypeShape`](https://github.com/strict-lang/Strict/blob/master/Expressions/TypeShape.strict): analyzes a type's lines: members, methods, parameters, constants, enum values, traits and generics.
 - [`MethodBodies`](https://github.com/strict-lang/Strict/blob/master/Expressions/MethodBodies.strict): flattens method bodies into scoped statements, tracking declarations and `value`, `index` and `outer`.
-- [`Scope`](https://github.com/strict-lang/Strict/blob/master/Expressions/Scope.strict): ordered names and types, later entries shadow earlier ones.
+- [`Scope`](https://github.com/strict-lang/Strict/blob/master/Expressions/Syntax/Scope.strict): ordered names and types, later entries shadow earlier ones.
 - [`ScopedStatement`](https://github.com/strict-lang/Strict/blob/master/Expressions/ScopedStatement.strict): a parsed statement with its visible scope and source line.
 
 **Types**
@@ -120,34 +121,34 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 - [`IndexCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/IndexCodegen.strict): indexing like `numbers(1)`, two-dimensional `Colors(x, y)` flattened by `Size.Width`, and `error(value)`, which attaches a value to an `Error`.
 - [`ListCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ListCodegen.strict): list literals, `Add`/`Remove`, list operators, and copies for shared lists.
 - [`ConversionCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ConversionCodegen.strict): inserts implicit `from`/`to` conversions for assignments, operands and list elements.
-- [`BranchValues`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BranchValues.strict): turns branch values into returns or loop accumulations (sum, product, list, any).
+- [`BranchValues`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Optimize/BranchValues.strict): turns branch values into returns or loop accumulations (sum, product, list, any).
 - [`CallTarget`](https://github.com/strict-lang/Strict/blob/master/Bytecode/CallTarget.strict): resolves method signatures, full type names, parameter types and implicit owners of calls.
 - [`CodeBlock`](https://github.com/strict-lang/Strict/blob/master/Bytecode/CodeBlock.strict): an immutable instruction block under construction: next register, jump ids, scope and list ownership.
 - [`TestLines`](https://github.com/strict-lang/Strict/blob/master/Bytecode/TestLines.strict): separates the inline test lines of a method from its code lines.
 - [`TestCodegen`](https://github.com/strict-lang/Strict/blob/master/Bytecode/TestCodegen.strict): builds the `$Tests` method from inline tests. It prints failures and returns the failed count.
 
-**Optimizations**
+**Optimizations** ([`Bytecode/Optimize`](https://github.com/strict-lang/Strict/tree/master/Bytecode/Optimize))
 
-- [`ConstantFolding`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ConstantFolding.strict): inlines constants, including those of other types, and folds arithmetic on number literals.
-- [`LoadReuse`](https://github.com/strict-lang/Strict/blob/master/Bytecode/LoadReuse.strict): drops repeated loads of an unchanged variable by reusing the earlier register.
+- [`ConstantFolding`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Optimize/ConstantFolding.strict): inlines constants, including those of other types, and folds arithmetic on number literals.
+- [`LoadReuse`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Optimize/LoadReuse.strict): drops repeated loads of an unchanged variable by reusing the earlier register.
 
-**Instruction format**
+**Instruction format** ([`Bytecode/Binary`](https://github.com/strict-lang/Strict/tree/master/Bytecode/Binary))
 
-- [`InstructionEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionEntry.strict): one instruction (kind, names, numeric payload) with constructors and its byte encoding.
-- [`InstructionType`](https://github.com/strict-lang/Strict/blob/master/Bytecode/InstructionType.strict): the opcodes: loads, stores, arithmetic, comparisons, invoke, loops, jumps, list writes, print and field loads.
-- [`MethodEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/MethodEntry.strict): a compiled method (name, parameters, return type, instructions).
-- [`MemberEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/MemberEntry.strict): a compiled member (name, type, initial value instructions, constant flag).
-- [`TypeEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/TypeEntry.strict): a compiled type with members and methods, encoded as `.bytecode` bytes.
-- [`BinaryNames`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryNames.strict): the per-type name table (predefined built-in names plus the type's own names) and its encoding.
-- [`ByteEncoder`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ByteEncoder.strict): encodes integers, 7-bit variable-length numbers, UTF-8 texts and IEEE doubles as bytes.
+- [`InstructionEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/InstructionEntry.strict): one instruction (kind, names, numeric payload) with constructors and its byte encoding.
+- [`InstructionType`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/InstructionType.strict): the opcodes: loads, stores, arithmetic, comparisons, invoke, loops, jumps, list writes, print and field loads.
+- [`MethodEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/MethodEntry.strict): a compiled method (name, parameters, return type, instructions).
+- [`MemberEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/MemberEntry.strict): a compiled member (name, type, initial value instructions, constant flag).
+- [`TypeEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/TypeEntry.strict): a compiled type with members and methods, encoded as `.bytecode` bytes.
+- [`BinaryNames`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/BinaryNames.strict): the per-type name table (predefined built-in names plus the type's own names) and its encoding.
+- [`ByteEncoder`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/ByteEncoder.strict): encodes integers, 7-bit variable-length numbers, UTF-8 texts and IEEE doubles as bytes.
 - [`Register`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Register.strict): the 64 registers of the Strict VM, named `R0` to `R63`.
 
 **Packaging**
 
 - [`BinaryFile`](https://github.com/strict-lang/Strict/blob/master/Bytecode/BinaryFile.strict): packs compiled types into a `.strictbinary` zip with one `<Type>.bytecode` entry per type.
-- [`ZipWriter`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ZipWriter.strict): writes uncompressed zip archives.
-- [`ZipEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/ZipEntry.strict): named bytes with their CRC-32 checksum.
-- [`Crc`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Crc.strict): CRC-32 computed with plain arithmetic.
+- [`ZipWriter`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/ZipWriter.strict): writes uncompressed zip archives.
+- [`ZipEntry`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/ZipEntry.strict): named bytes with their CRC-32 checksum.
+- [`Crc`](https://github.com/strict-lang/Strict/blob/master/Bytecode/Binary/Crc.strict): CRC-32 computed with plain arithmetic.
 
 # Runtime
 
@@ -157,13 +158,13 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 - [`Machine`](https://github.com/strict-lang/Strict/blob/master/Runtime/Machine.strict): the VM core. Finds methods, binds members and parameters, and steps through the instructions, handling calls, indexing, printing and field loads.
 - [`Frame`](https://github.com/strict-lang/Strict/blob/master/Runtime/Frame.strict): executes a method using an owned list of slots for registers and locals, avoiding a new frame per instruction.
 - [`Resolver`](https://github.com/strict-lang/Strict/blob/master/Runtime/Resolver.strict): resolves names to slots before execution.
-- [`VmValue`](https://github.com/strict-lang/Strict/blob/master/Runtime/VmValue.strict): the universal runtime value (kind, number, text, items) with factories and text formatting.
+- [`VmValue`](https://github.com/strict-lang/Strict/blob/master/Runtime/Core/VmValue.strict): the universal runtime value (kind, number, text, items) with factories and text formatting.
 - [`Invocation`](https://github.com/strict-lang/Strict/blob/master/Runtime/Invocation.strict): decodes an invoke instruction into type, method, return type, parameters, arguments and instance.
 - [`Mutation`](https://github.com/strict-lang/Strict/blob/master/Runtime/Mutation.strict), [`MutationKinds`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationKinds.strict) and [`MutationFlow`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationFlow.strict): make the mutants of a method from its bytecode (comparisons always true or false, results replaced by defaults, dropped assignments and calls, swapped operators, emptied texts) and skip instructions whose values only reach errors, logs or loop counts.
 - [`Mutants`](https://github.com/strict-lang/Strict/blob/master/Runtime/Mutants.strict): runs every mutant alone on a fresh machine against the tests of its type, in rounds and up to 16 worker processes, and reports survivors as `MutationSurvived` with the method source. [`MutationCache`](https://github.com/strict-lang/Strict/blob/master/Runtime/MutationCache.strict) keeps the result in `obj/Name.mutations` until the source changes. See [mutation testing](Tests.md#mutation-testing).
 - [`ErrorCheck`](https://github.com/strict-lang/Strict/blob/master/Runtime/ErrorCheck.strict): detects unhandled Error values and propagates them with source stack frames.
 - [`Looping`](https://github.com/strict-lang/Strict/blob/master/Runtime/Looping.strict): loop begin and end, keeping the `index` and `value` state for numbers, ranges, lists and texts.
-- [`Operations`](https://github.com/strict-lang/Strict/blob/master/Runtime/Operations.strict): arithmetic and comparisons, including text and list concatenation and removing list elements.
+- [`Operations`](https://github.com/strict-lang/Strict/blob/master/Runtime/Core/Operations.strict): arithmetic and comparisons, including text and list concatenation and removing list elements.
 - [`Storage`](https://github.com/strict-lang/Strict/blob/master/Runtime/Storage.strict): loads and stores between registers and locals, plus list appends.
 - [`Natives`](https://github.com/strict-lang/Strict/blob/master/Runtime/Natives.strict): built-in behavior for methods without bytecode: `from` constructors, `to` conversions, `Length`, logic, `in`, text methods, processes and default member values.
 - [`Hosted`](https://github.com/strict-lang/Strict/blob/master/Runtime/Hosted.strict): file, directory, process and `Math` calls that the Strict VM hands to the running `strict` executable.
@@ -175,30 +176,30 @@ Successful tests write a `.strictbinary` cache. Source and test-read file timest
 
 **Command line and toolchain**
 
-- [`Strict`](https://github.com/strict-lang/Strict/blob/master/Strict.strict) (in the repository root): the `strict` command. Runs a file, or the `test`, `check`, `build`, `format`, `update` and `version` commands, and finds the base types next to `strict.exe`.
+- [`Cli/Strict`](https://github.com/strict-lang/Strict/blob/master/Cli/Strict.strict) (with [`Cli/Command`](https://github.com/strict-lang/Strict/blob/master/Cli/Command.strict)): the `strict` command. Runs a file, or the `test`, `check`, `build`, `format`, `update` and `version` commands, and finds the base types next to `strict.exe`.
 - [`NativeBuild`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeBuild.strict): `strict build`. Runs the tests, compiles the program (or its tests for a type without `Run`) to MLIR, builds the executables and removes the intermediate tool files.
 - [`Toolchain`](https://github.com/strict-lang/Strict/blob/master/Compiler/Toolchain.strict): finds and installs the tools, lowers MLIR, links executables, and cross-builds the Linux executable through WSL.
 - [`ToolRunner`](https://github.com/strict-lang/Strict/blob/master/Compiler/ToolRunner.strict): finds and runs an external tool and returns its `ProcessResult`.
 - [`Platform`](https://github.com/strict-lang/Strict/blob/master/Compiler/Platform.strict): the Windows, Linux and MacOS constants and detection of the current OS.
 
-**MLIR generation**
+**MLIR generation** (split across `Compiler/Mlir`, `Compiler/MlirValues`, `Compiler/MlirStructs`, `Compiler/MlirLoops`, `Compiler/MlirDevice` and `Compiler/Gpu`)
 
-- [`MlirModule`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirModule.strict): builds the whole module from the reachable functions, globals and helpers.
-- [`MlirEntry`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirEntry.strict): emits `main`: starts the collector, creates the instance, parses the arguments, calls the entry method and returns the exit code.
-- [`MlirFunction`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirFunction.strict): translates one method into an MLIR function.
-- [`MlirStatements`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirStatements.strict): arithmetic, comparisons, stores, returns and jumps.
-- [`MlirCalls`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirCalls.strict): method calls, constructor calls, default arguments, native helper calls and printing.
-- [`MlirConstants`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirConstants.strict): constant values and escaped text globals.
-- [`MlirInstances`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirInstances.strict): creating instances, loading fields, default member values and referenced constants.
-- [`MlirLayout`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLayout.strict): decides the memory layout: base type, single-member wrapper or heap struct.
-- [`MlirKinds`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirKinds.strict): infers which kind of value (number, text, boolean, list, type) each register holds.
-- [`MlirLists`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLists.strict): list literals, appending, indexing, element writes, copies and list operators.
-- [`MlirListOperators`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirListOperators.strict): `+`, `-`, `*` and `/` between lists, or between a list and a number.
-- [`MlirLoops`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLoops.strict): loop begin and end for ranges, counts and collections.
+- [`MlirModule`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirModule.strict): builds the whole module from the reachable functions, globals and helpers.
+- [`MlirEntry`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirEntry.strict): emits `main`: starts the collector, creates the instance, parses the arguments, calls the entry method and returns the exit code.
+- [`MlirFunction`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirFunction.strict): translates one method into an MLIR function.
+- [`MlirStatements`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirStructs/MlirStatements.strict): arithmetic, comparisons, stores, returns and jumps.
+- [`MlirCalls`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirCalls.strict): method calls, constructor calls, default arguments, native helper calls and printing.
+- [`MlirConstants`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirConstants.strict): constant values and escaped text globals.
+- [`MlirInstances`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirInstances.strict): creating instances, loading fields, default member values and referenced constants.
+- [`MlirLayout`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirLayout.strict): decides the memory layout: base type, single-member wrapper or heap struct.
+- [`MlirKinds`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLoops/MlirKinds.strict): infers which kind of value (number, text, boolean, list, type) each register holds.
+- [`MlirLists`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirLists.strict): list literals, appending, indexing, element writes, copies and list operators.
+- [`MlirListOperators`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirListOperators.strict): `+`, `-`, `*` and `/` between lists, or between a list and a number.
+- [`MlirLoops`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirLoops/MlirLoops.strict): loop begin and end for ranges, counts and collections.
 - [`MlirTexts`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirTexts.strict): text concatenation and conversions from and to text.
-- [`MlirNatives`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirNatives.strict): maps `Text`, `List`, `File`, `Directory` and `Process` methods to runtime functions.
-- [`MlirMemory`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirMemory.strict): pointer and bits conversion, allocation and slot access.
-- [`MlirAutomatic`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirAutomatic.strict): generates automatic `to Text` for types and lists of them.
+- [`MlirNatives`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirNatives.strict): maps `Text`, `List`, `File`, `Directory` and `Process` methods to runtime functions.
+- [`MlirMemory`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirValues/MlirMemory.strict): pointer and bits conversion, allocation and slot access.
+- [`MlirAutomatic`](https://github.com/strict-lang/Strict/blob/master/Compiler/Mlir/MlirAutomatic.strict): generates automatic `to Text` for types and lists of them.
 - [`MlirEquality`](https://github.com/strict-lang/Strict/blob/master/Compiler/MlirEquality.strict): generates member-by-member equality for types and lists, used by `is`.
 
 **Native optimizations and packages**
@@ -215,7 +216,7 @@ The default **fast** build uses `-O2`; `strict build <file> small` uses `-Os` fo
 - [`NativeRuntimeWindows.mlir`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeRuntimeWindows.mlir): Windows memory, directories, temporary files and processes.
 - [`NativeRuntimeLinux.mlir`](https://github.com/strict-lang/Strict/blob/master/Compiler/NativeRuntimeLinux.mlir): Linux memory, directories, temporary files and processes.
 
-**Bootstrapping.** `Compiler/Bootstrap.mlir` is `Strict.strict` compiled by itself. `Compiler/Bootstrap.cmd` (Windows) and `Compiler/bootstrap.sh` (Linux) combine it with the native runtime and build `strict.exe` (Linux: `strict`) in the repository root with just the LLVM tools, see [Getting Started](GettingStarted.md#3-bootstrap-strict).
+**Bootstrapping.** `Compiler/Bootstrap.mlir` is `Cli/Strict.strict` compiled by itself. `Compiler/Bootstrap.cmd` (Windows) and `Compiler/bootstrap.sh` (Linux) combine it with the native runtime and build `strict.exe` (Linux: `strict`) in the repository root with just the LLVM tools, see [Getting Started](GettingStarted.md#3-bootstrap-strict).
 
 # Shared libraries
 

@@ -10,12 +10,12 @@ All paths are in the [Strict repository](https://github.com/strict-lang/Strict) 
 | Benchmark | Source | Compared against |
 |-----------|--------|------------------|
 | Image Blur | [ImageProcessing/BenchBlur.strict](https://github.com/strict-lang/Strict/blob/master/ImageProcessing/BenchBlur.strict) | [ImageProcessing/Compare](https://github.com/strict-lang/Strict/tree/master/ImageProcessing/Compare): C, Rust, Goose, C#, TypeScript, Python, NumPy |
-| Qwen3 models | [NeuralNetworks/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) | llama.cpp, Ollama |
-| Qwen3.8 and reasoning models | [NeuralNetworks/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) | llama.cpp, Ollama |
+| Qwen3 models | [NeuralNetworks/Models/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3Benchmark.strict) | llama.cpp, Ollama |
+| Qwen3.8 and reasoning models | [NeuralNetworks/Models/Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3Benchmark.strict) | llama.cpp, Ollama |
 | Bouncing logos (game engine stress test) | [DeltaEngine Games/LogoApp](https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/LogoApp/Compare) |
 | Forest (3D instancing stress test) | [DeltaEngine Games/Forest](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/Forest/Compare) |
 | 1 million particles (entity stress test) | [DeltaEngine Games/ParticleStress](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress) | [Unity 2022.3](https://github.com/strict-lang/DeltaEngine/tree/main/Games/ParticleStress/Compare) |
-| GPT-2 text generation | [NeuralNetworks/Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Benchmark.strict) | PyTorch with Hugging Face transformers |
+| GPT-2 text generation | [NeuralNetworks/Models/Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2Benchmark.strict) | PyTorch with Hugging Face transformers |
 | Moss image generation | [StrictComfy MossImage.strict](https://github.com/strict-lang/StrictComfy/blob/main/MossImage.strict), [MossWeb.strict](https://github.com/strict-lang/StrictComfy/blob/main/MossWeb.strict) | ComfyUI |
 | MiniMax H3 video | [StrictComfy H3Video.strict](https://github.com/strict-lang/StrictComfy/blob/main/H3Video.strict) | ComfyUI |
 
@@ -81,20 +81,20 @@ cat artifacts/FractalZoomer.txt
 
 # Qwen3 and Qwen3.8
 
-The model code is in [Qwen3.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3.strict) and [Qwen3Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Block.strict), the GGUF reader in `Gguf.strict`. [Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Benchmark.strict) reports prefill and decode speed, [Qwen3Text.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Qwen3Text.strict) generates text. The baseline is llama.cpp (b11658, CUDA) on the same GGUF files and GPU.
+The model code is in [Qwen3.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3.strict) and [Qwen3Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3Block.strict), the GGUF reader in `Gguf.strict`. [Qwen3Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3Benchmark.strict) reports prefill and decode speed, [Qwen3Text.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Qwen3Text.strict) generates text. The baseline is llama.cpp (b11658, CUDA) on the same GGUF files and GPU.
 
 ```sh
-strict build NeuralNetworks/Qwen3Benchmark.strict
+strict build NeuralNetworks/Models/Qwen3Benchmark.strict
 ```
 
 See [Machine Learning](MachineLearning.md) for the downloads and measured results.
 
 # GPT-2
 
-[Gpt2.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2.strict), [Gpt2Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Block.strict) and [Gpt2Tokens.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Tokens.strict) hold the model, [Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Gpt2Benchmark.strict) measures milliseconds per token. The baseline is PyTorch with Hugging Face transformers, best of 3 runs.
+[Gpt2.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2.strict), [Gpt2Block.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2Block.strict) and [Gpt2Tokens.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2Tokens.strict) hold the model, [Gpt2Benchmark.strict](https://github.com/strict-lang/Strict/blob/master/NeuralNetworks/Models/Gpt2Benchmark.strict) measures milliseconds per token. The baseline is PyTorch with Hugging Face transformers, best of 3 runs.
 
 ```sh
-strict build NeuralNetworks/Gpt2Benchmark.strict
+strict build NeuralNetworks/Models/Gpt2Benchmark.strict
 ```
 
 # Moss image and MiniMax H3 video
